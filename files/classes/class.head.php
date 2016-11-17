@@ -11,7 +11,7 @@ class Head
 	var $Meta		= array();
 	var $Favicon	= '';
 	var $Icon		= '';
-	var $Charset	= "iso-8859-1";
+	var $Charset	= "UTF-8";
 
 	function __construct()
 	{
@@ -40,7 +40,7 @@ class Head
 		echo '<meta http-equiv="Content-Type" content="application/xhtml+xml; charset='.$this->Charset.'">';
     	echo '<meta charset="'.$this->Charset.'" >';
 		include("../../includes/inc.head.php");
-		echo "<title> Renovatio | ".$this->Title."</title>";
+		echo "<title> ".$this->Title." | Roller Service</title>";
 		echo $this->Favicon;
 		$this->echoLink();
 		$this->echoMeta();

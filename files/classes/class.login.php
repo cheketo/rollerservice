@@ -54,18 +54,18 @@ class Login extends DataBase
 		$_SESSION['first_name'] 	= $this->AdminData[0]['first_name'];
 		$_SESSION['last_name'] 		= $this->AdminData[0]['last_name'];
 		$_SESSION['profile_id'] 	= $this->AdminData[0]['profile_id'];
-		$_SESSION['meli']			= boolval($this->AdminData[0]['meli']);
-		$MeliAppData = $this->fetchAssoc("renovatio_configuration","*");
-		$_SESSION['meli_application_id'] = $MeliAppData[0]['meli_application_id'];
-		$_SESSION['meli_secret'] 	= $MeliAppData[0]['meli_secret'];
+		// $_SESSION['meli']			= boolval($this->AdminData[0]['meli']);
+		// $MeliAppData = $this->fetchAssoc("renovatio_configuration","*");
+		// $_SESSION['meli_application_id'] = $MeliAppData[0]['meli_application_id'];
+		// $_SESSION['meli_secret'] 	= $MeliAppData[0]['meli_secret'];
 		
-		if($_SESSION['meli'])
-		{
-			$_SESSION['meli_code'] 			= $this->AdminData[0]['meli_code'];
-			$_SESSION['meli_access_token'] 	= $this->AdminData[0]['meli_access_token'];
-			$_SESSION['meli_refresh_token'] = $this->AdminData[0]['meli_refresh_token'];
-			$_SESSION['meli_expires_in'] 	= $this->AdminData[0]['meli_expires_in'];
-		}
+		// if($_SESSION['meli'])
+		// {
+		// 	$_SESSION['meli_code'] 			= $this->AdminData[0]['meli_code'];
+		// 	$_SESSION['meli_access_token'] 	= $this->AdminData[0]['meli_access_token'];
+		// 	$_SESSION['meli_refresh_token'] = $this->AdminData[0]['meli_refresh_token'];
+		// 	$_SESSION['meli_expires_in'] 	= $this->AdminData[0]['meli_expires_in'];
+		// }
 	}
 
 	public function setCookies()
@@ -178,14 +178,14 @@ class Login extends DataBase
 			}else{
 				if($this->PassMatch) /* Password Match*/
 				{
-					if($this->checkCustomer())
-					{
+					// if($this->checkCustomer())
+					// {
 						$this->setSessionVars();
 						$this->setCookies();
 						$this->queryLogin();
-					}else{
-						echo "4";
-					}
+					// }else{
+					// 	echo "4";
+					// }
 				}else{
 					$this->queryPasswordFail(); /* Password does not Match*/
 					echo "2";
@@ -201,7 +201,7 @@ class Login extends DataBase
 	{
 		session_destroy();
 		//Unset Cookies
-		setcookie("renovatio", "", 0 ,"/");
+		setcookie("rollerservice", "", 0 ,"/");
 		//setcookie("user", "", 0 ,"/");
 		setcookie("password", "", 0 ,"/");
 		setcookie("admin_id", "", 0 ,"/");

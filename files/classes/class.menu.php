@@ -59,30 +59,32 @@ class Menu extends DataBase
 		$this->GetMenues($PorfileID,$AdminID);
 		$Rows	= $this->fetchAssoc('menu','*',"parent_id = 0 AND status = 'A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")","position");
 
-
+		echo '<ul class="nav side-menu">';
 		foreach($Rows as $Row)
 		{
 			if($this->hasChild($Row['menu_id']))
 			{
-					$DropDown 		= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
-					$ParentClass 	= ' treeview ';
+					$DropDown 		= ' <span class="fa fa-chevron-down"></span>';
+					//$ParentClass 	= ' treeview ';
 					$Link 				= '';
 					$Active 			= '';
 			}else{
 					$DropDown 		= '';
-					$ParentClass 	= '';
-					$Link 				= $Row['link'];
-					if('../'.$this->getLink() == $Link)
+					//$ParentClass 	= '';
+					$Link 				= 'href="'.$Row['link'].'"';
+					if('../'.$this->getLink() == $Row['link'])
 					{
 						$Active 		= ' active ';
 					}else{
 						$Active 		= '';
 					}
 			}
-			echo '<li class="'.$ParentClass.$Active.'"><a href="'.$Link.'" data-target="#ddmenu'.$Row['menu_id'].'" class="faa-parent animated-hover"><i class="fa '.$Row['icon'].' faa-tada"></i> <span>'.$Row['title'].'</span>'.$DropDown.'</a>';
+			
+			echo '<li class="'.$Active.'"><a '.$Link.'  class="faa-parent animated-hover"><i class="fa '.$Row['icon'].' faa-tada"></i> '.$Row['title'].$DropDown.'</a>';
 				$this->insertSubMenu($Row['menu_id']);
 			echo '</li>';
 		}
+		echo '</ul>';
 	}
 
 	public function insertSubMenu($Parent_id)
@@ -91,25 +93,26 @@ class Menu extends DataBase
 		$NumRows	= count($Rows);
 		if($NumRows>0)
 		{
-			echo '<ul class="treeview-menu">';
+			echo '<ul class="nav child_menu">';
 			foreach($Rows as $Row)
 			{
 				if($this->hasChild($Row['menu_id']))
 				{
-						$DropDown 		= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
-						$Link 				= '';
-						$Active 			= '';
+						$DropDown 		= ' <span class="fa fa-chevron-down"></span>';
+						$Link 			= '';
+						$Active 		= '';
 				}else{
 						$DropDown 		= '';
-						$Link 				= $Row['link'];
-						if('../'.$this->getLink() == $Link)
+						$Link 				= 'href="'.$Row['link'].'"';
+						if('../'.$this->getLink() == $Row['link'])
 						{
 							$Active 		= ' active ';
 						}else{
 							$Active 		= '';
 						}
 				}
-				echo '<li class="'.$Active.'"><a href="'.$Link.'" data-target="#ddmenu'.$Row['menu_id'].'" class="faa-parent animated-hover"><i class="fa '.$Row['icon'].' faa-tada"></i> '.$Row['title'].$DropDown.'</a>';
+				echo '<li class="'.$Active.'"><a '.$Link.' class="faa-parent animated-hover"><i class="fa '.$Row['icon'].' faa-tada"></i> '.$Row['title'].$DropDown.'</a>';
+				//echo '<li class="'.$Active.'"><a '.$Link.'>'.$Row['title'].$DropDown.'</a>';
 					$this->insertSubMenu($Row['menu_id']);
 				echo '</li>';
 			}

@@ -51,9 +51,11 @@ VALIDATION ATRIBUTES:
 	var checkboxGroups		= new Array();
 
 	function ValidateFields() {
-		validateErrorClass 	= "ErrorText Red";
+		validateErrorClass 	= "ErrorText";
 		validateElements	= "input, select, textarea";
 		validateTag			= "div";
+		validateParentClass = "bad";
+		validateInputClass	= "RedInput"; 
 		validateValid;
 	}
 
@@ -446,6 +448,10 @@ VALIDATION ATRIBUTES:
 		}else{
 			$("#"+$(object).attr("id")+"ErrorDiv").hide();
 		}
+		if(validateInputClass)
+			$("#"+$(object).attr("id")).removeClass(validateInputClass);
+		if(validateParentClass)
+			$("#"+$(object).attr("id")).parent().removeClass(validateParentClass);
 	}
 
 	ValidateFields.prototype.showDiv	= function(object)
@@ -469,6 +475,10 @@ VALIDATION ATRIBUTES:
 		}else{
 			$("#"+$(object).attr("id")+"ErrorDiv").show();
 		}
+		if(validateInputClass)
+			$("#"+$(object).attr("id")).addClass(validateInputClass);
+		if(validateParentClass)
+			$("#"+$(object).attr("id")).parent().addClass(validateParentClass);
 	}
 
 	// Auxiliar Function: Pause

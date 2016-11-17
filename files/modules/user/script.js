@@ -184,3 +184,25 @@ function fillCheckboxTree()
 	});
 }
 
+/////////////////
+///DATATABLES
+$(document).ready(function() {
+    $("#table_id").DataTable({
+    	//keys: true,
+    	select: true,
+    	dom: "Bfrtip",
+        //buttons: [{extend:"copy",className:"btn-sm"},{extend:"csv",className:"btn-sm"}],
+        responsive: true
+        // buttons: [
+        //     'selectAll',
+        //     'selectNone'
+        // ],
+        // language: {
+        //     buttons: {
+        //         selectAll: "Select all items",
+        //         selectNone: "Select none"
+        //     }
+        // }
+    });
+});
+

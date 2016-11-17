@@ -1,38 +1,94 @@
-<!-- Left side column. contains the sidebar -->
-<aside class="main-sidebar">
-  <!-- sidebar: style can be found in sidebar.less -->
-  <section class="sidebar">
+        <div class="top_nav">
+          <div class="nav_menu">
+            <nav>
+              <div class="nav toggle">
+                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+              </div>
 
-    <!-- Sidebar customer panel -->
-    <div class="user-panel">
-      <div class="pull-left image">
-        <img src="../../../skin/images/customers/1.png" style="max-width:100%;" alt="User Image">
-      </div>
-      <!-- <div class="pull-left info">
-        <h4><p>Fascination</p></h4>
-        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-      </div> -->
-    </div>
+              <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <img src="<?php echo $Admin->Img; ?>" alt="" id="UserImgCircle"><span id="userfullname"><?php echo $Admin->FullName; ?></span>
+                    <span class=" fa fa-angle-down"></span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-usermenu pull-right">
+                    <li><a href="javascript:;"> Perfil</a></li>
+                    <li>
+                      <a href="javascript:;">
+                        <!--<span class="badge bg-red pull-right">50%</span>-->
+                        <span>Configuración</span>
+                      </a>
+                    </li>
+                    <!--<li><a href="javascript:;">Help</a></li>-->
+                    <li id="Logout"><a><i class="fa fa-sign-out pull-right"></i> Salir</a></li>
+                  </ul>
+                </li>
 
-    <!-- search form -->
-    <!-- <form action="#" method="get" class="sidebar-form">
-      <div class="input-group">
-        <input type="text" name="q" class="form-control" placeholder="Search...">
-            <span class="input-group-btn">
-              <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
-              </button>
-            </span>
-      </div>
-    </form> -->
-    <!-- /.search form -->
-
-    <!-- sidebar menu: : style can be found in sidebar.less -->
-    <ul class="sidebar-menu">
-      <li class="header">MEN&Uacute; DEL SISTEMA</li>
-      <?php
-        $Menu   ->insertMenu($_SESSION['profile_id'],$_SESSION['admin_id']);
-      ?>
-    </ul>
-  </section>
-  <!-- /.sidebar -->
-</aside>
+                <li role="presentation" class="dropdown">
+                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-bell"></i>
+                    <span class="badge bg-green">6</span>
+                  </a>
+                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+                    <li>
+                      <a>
+                        <span class="image"><img src="../../../skin/images/body/pictures/img.jpg" alt="Profile Image" /></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="../../../skin/images/body/pictures/img.jpg" alt="Profile Image" /></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="../../../skin/images/body/pictures/img.jpg" alt="Profile Image" /></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <a>
+                        <span class="image"><img src="../../../skin/images/body/pictures/img.jpg" alt="Profile Image" /></span>
+                        <span>
+                          <span>John Smith</span>
+                          <span class="time">3 mins ago</span>
+                        </span>
+                        <span class="message">
+                          Film festivals used to be do-or-die moments for movie makers. They were where...
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="text-center">
+                        <a>
+                          <strong>See All Alerts</strong>
+                          <i class="fa fa-angle-right"></i>
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>

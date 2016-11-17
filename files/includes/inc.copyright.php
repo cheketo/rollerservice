@@ -1,6 +1,8 @@
-  <footer class="main-footer">
-    <div class="pull-right hidden-xs">
-      <b>Versi&oacute;n</b> 1.0
-    </div>
-    <strong>Copyright &copy; 2016 <a href="http://innovastudio.com.ar">Renovatio</a>.</strong>
-  </footer>
+  <!-- footer content -->
+    <footer>
+      <div class="pull-right">
+        ©Roller Service - <?php echo date('Y'); ?> - v0.0.1
+      </div>
+      <div class="clearfix"></div>
+    </footer>
+    <!-- /footer content -->
