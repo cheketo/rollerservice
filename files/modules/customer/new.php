@@ -5,11 +5,8 @@
     $Group  = new GroupData();
     $Head->setTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-    $Head->setStyle('../../../vendors/colorpicker/bootstrap-colorpicker.min.css'); // Color Picker
     $Head->setHead();
     include('../../includes/inc.top.php');
-
-
 ?>
   <?php echo insertElement("hidden","action",'insert'); ?>
   <?php echo insertElement("hidden","menues",""); ?>
@@ -17,61 +14,127 @@
   <?php echo insertElement("hidden","newimage",$Admin->DefaultImg); ?>
 
 
-
-
-
   <div class="box animated fadeIn">
     <div class="box-header flex-justify-center">
-      <div class="col-md-6 ">
-        <div class="innerContainer">
-          <h4 class="subTitleB"><i class="fa fa-tag"></i> Detalles del Producto</h4>
-          <form method="post">
-            <div class="form-group">
-              <input type="name" class="form-control" placeholder="Nombre del Producto">
+      <div class="col-md-8 col-sm-12">
+        <div class="innerContainer main_form">
+          <h4 class="subTitleB"><i class="fa fa-tag"></i> Datos del Cliente</h4>
+          <div class="row form-group inline-form-custom">
+            <div class="col-xs-12 col-sm-6">
+              <span class="input-group">
+                <span class="input-group-addon"><i class="fa fa-building"></i></span>
+                <input class="form-control" placeholder="Nombre de la Empresa">
+              </span>
             </div>
-            <div class="row form-group inline-form-custom">
-              <div class="col-xs-12 col-sm-4">
-                <input type="name" class="form-control" placeholder="Composici&oacute;n">
+            <div class="col-xs-12 col-sm-6">
+              <span class="input-group">
+                <span class="input-group-addon"><i class="fa fa-desktop"></i></span>
+                <input class="form-control" placeholder="Sitio Web">
+              </span>
+            </div>
+          </div>
+          <div class="row form-group inline-form-custom">
+            <div class="col-xs-12 col-sm-6">
+              <span class="input-group">
+                <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                <input class="form-control" placeholder="Tel&eacute;fonos">
+              </span>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+              <span class="input-group">
+                <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
+                <input class="form-control" placeholder="Direcci&oacute;n">
+              </span>
+            </div>
+          </div>
+          <div class="row form-group inline-form-custom">
+            <div class="col-sm-6 col-xs-12">
+              <input class="form-control" placeholder="Raz&oacute;n Social">
+            </div>
+            <div class="col-sm-6 col-xs-12">
+              <input class="form-control" placeholder="Cuit">
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-md-6 col-xs-12 simple_upload_image">
+              <div class="subtitle">
+                <span>Logo de la empresa</span>
               </div>
-              <div class="col-xs-12 col-sm-4">
-                <input type="name" class="form-control" placeholder="C&oacute;digo">
-              </div>
-              <div class="col-xs-12 col-sm-4">
-                <input type="name" class="form-control" placeholder="Precio">
+              <div class="image_sector">
+                <img src="../../../skin/images/body/pictures/logo-gen.jpg" alt="" />
+                <div class="overlay-text"><span><i class="fa fa-upload"></i> Subir Im&aacute;gen</span></div>
               </div>
             </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-md-12 info-card">
+              <div class="subtitle">
+                <span>Representantes</span>
+              </div>
+              <span class="Info-Card-Empty info-card-empty">No hay representantes ingresados</span>
+              <div class="row">
+                <!-- Representative ITEM -->
+                <div class="col-md-3">
+                  <div class="info-card-item">
+                    <div class="close-btn"><i class="fa fa-times"></i></div>
+                    <span><b><i class="fa fa-user"></i> Nombre y Apellido</b></span> <br>
+                    <span><i class="fa fa-briefcase"></i> Empleado</span> <br>
+                    <span><i class="fa fa-envelope"></i> pedro@mulo.com</span> <br>
+                    <span><i class="fa fa-phone"></i> 4545-4545</span> <br>
+                  </div>
+                </div>
+                <!-- // Representative ITEM -->
+              </div>
+              <button type="button" class="btn btnGreen Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar un representante</button>
 
-            <!-- Description (Character Counter)-->
-            <div class="form-group textWithCounter">
-              <textarea id="description" name="description" class="text-center" placeholder="Descripción" rows="4" maxlength="150"></textarea>
-              <div class="indicator-wrapper">
-                <p>Caracteres restantes</p>
-                <div class="indicator"><span class="current-length">150</span></div>
+              <!-- New representative form -->
+              <div class="Info-Card-Form Hidden">
+                
+                <div class="info-card-arrow">
+                  <div class="arrow-up"></div>
+                </div>
+                <div class="info-card-form animated fadeIn">
+                  <div class="row form-group inline-form-custom">
+                    <div class="col-xs-12 col-sm-6">
+                      <input class="form-control" placeholder="Nombre y Apellido">
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                      <input class="form-control" placeholder="Cargo">
+                    </div>
+                  </div>
+                  <div class="row form-group inline-form-custom">
+                    <div class="col-xs-12 col-sm-6">
+                      <input class="form-control" placeholder="E-Mail">
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                      <input class="form-control" placeholder="Tel&eacute;fono">
+                    </div>
+                  </div>
+                  <div class="row txC">
+                    <button type="button" class="Info-Card-Form-Done btn btnBlue"><i class="fa fa-check"></i> Agregar</button>
+                  </div>
+                </div>
               </div>
+              <!-- New representative form -->
             </div>
-            <div class="txC">
-              <button type="button" class="ProductDescBtn btn btnBlue">Continuar</button>
-            </div>
-          </form>
+          </div>
+          <hr>
+          <div class="row txC">
+            <button type="button" class="MainDoneBtn btn btnBlue"><i class="fa fa-check-circle"></i> Finalizar</button>
+          </div>
         </div>
-        <!-- Description (Character Counter) -->
       </div>
     </div><!-- box -->
   </div><!-- box -->
 
-
-
-  <!-- Help Modal -->
 <?php
 $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
-// $Foot->setScript('../../../vendors/colorpicker/bootstrap-colorpicker.min.js');
 include('../../includes/inc.bottom.php');
 ?>
 <script type="text/javascript">
 ////////////////// Bootstrap Switch ////////////
 $("[name='switchCheckbox']").bootstrapSwitch();
 
-/////////////// Color picker ///////////////////
-// Documentation > http://mjolnic.com/bootstrap-colorpicker/
-// $(".colorpicker").colorpicker();
 </script>

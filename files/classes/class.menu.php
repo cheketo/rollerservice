@@ -24,7 +24,7 @@ class Menu extends DataBase
 		}
 		// $this->SetTable('menu');
 		// $this->SetFields('*');
-		//$this->SetWhere("customer_id=".$_SESSION['customer_id']);
+		//$this->SetWhere("company_id=".$_SESSION['company_id']);
 		// $this->SetOrder('title');
 	}
 
@@ -53,38 +53,55 @@ class Menu extends DataBase
 	{
 		return count($this->fetchAssoc('menu','menu_id',"parent_id = ".$MenuID." AND status = 'A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")"))>0;
 	}
+	
+	public function GetActiveMenus($ID=0)
+	{
+		if($ID==0)
+		{
+			$Menu = $this->fetchAssoc('menu','menu_id,parent_id',"link LIKE '%".$this->getLink()."%'");
+		}else{
+			$Menu = $this->fetchAssoc('menu','menu_id,parent_id',"menu_id = ".$ID);
+		}
+		$MenuID 	= $Menu[0]['menu_id'];
+		$ParentID	= $Menu[0]['parent_id'];
+		if($ParentID==0)
+		{
+			return $MenuID;
+		}else{
+			return $MenuID.','.$this->GetActiveMenus($ParentID);
+		}
+	}
 
 	public function insertMenu($PorfileID=0,$AdminID=0)
 	{
 		$this->GetMenues($PorfileID,$AdminID);
 		$Rows	= $this->fetchAssoc('menu','*',"parent_id = 0 AND status = 'A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")","position");
-
-		echo '<ul class="nav side-menu">';
+		
+		//ACTIVE MENUS FOR NAVBAR
+		$ActiveMenus = explode(',',$this->GetActiveMenus());
+		$this->ActiveMenus = $ActiveMenus;
 		foreach($Rows as $Row)
 		{
 			if($this->hasChild($Row['menu_id']))
 			{
-					$DropDown 		= ' <span class="fa fa-chevron-down"></span>';
-					//$ParentClass 	= ' treeview ';
+					$DropDown 		= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
+					$ParentClass 	= ' treeview ';
 					$Link 				= '';
-					$Active 			= '';
 			}else{
 					$DropDown 		= '';
-					//$ParentClass 	= '';
-					$Link 				= 'href="'.$Row['link'].'"';
-					if('../'.$this->getLink() == $Row['link'])
-					{
-						$Active 		= ' active ';
-					}else{
-						$Active 		= '';
-					}
+					$ParentClass 	= '';
+					$Link 				= $Row['link'];
 			}
-			
-			echo '<li class="'.$Active.'"><a '.$Link.'  class="faa-parent animated-hover"><i class="fa '.$Row['icon'].' faa-tada"></i> '.$Row['title'].$DropDown.'</a>';
+			if(in_array($Row['menu_id'],$this->ActiveMenus))
+			{
+				$Active 		= ' active ';
+			}else{
+				$Active 		= '';
+			}
+			echo '<li class="'.$ParentClass.$Active.'"><a href="'.$Link.'" data-target="#ddmenu'.$Row['menu_id'].'" class="faa-parent animated-hover"><i class="fa '.$Row['icon'].' faa-tada"></i> <span>'.$Row['title'].'</span>'.$DropDown.'</a>';
 				$this->insertSubMenu($Row['menu_id']);
 			echo '</li>';
 		}
-		echo '</ul>';
 	}
 
 	public function insertSubMenu($Parent_id)
@@ -93,26 +110,24 @@ class Menu extends DataBase
 		$NumRows	= count($Rows);
 		if($NumRows>0)
 		{
-			echo '<ul class="nav child_menu">';
+			echo '<ul class="treeview-menu">';
 			foreach($Rows as $Row)
 			{
 				if($this->hasChild($Row['menu_id']))
 				{
-						$DropDown 		= ' <span class="fa fa-chevron-down"></span>';
-						$Link 			= '';
-						$Active 		= '';
+						$DropDown 		= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
+						$Link 				= '';
 				}else{
 						$DropDown 		= '';
-						$Link 				= 'href="'.$Row['link'].'"';
-						if('../'.$this->getLink() == $Row['link'])
-						{
-							$Active 		= ' active ';
-						}else{
-							$Active 		= '';
-						}
+						$Link 				= $Row['link'];
 				}
-				echo '<li class="'.$Active.'"><a '.$Link.' class="faa-parent animated-hover"><i class="fa '.$Row['icon'].' faa-tada"></i> '.$Row['title'].$DropDown.'</a>';
-				//echo '<li class="'.$Active.'"><a '.$Link.'>'.$Row['title'].$DropDown.'</a>';
+				if(in_array($Row['menu_id'],$this->ActiveMenus))
+				{
+					$Active 		= ' active ';
+				}else{
+					$Active 		= '';
+				}
+				echo '<li class="'.$Active.'"><a href="'.$Link.'" data-target="#ddmenu'.$Row['menu_id'].'" class="faa-parent animated-hover"><i class="fa '.$Row['icon'].' faa-tada"></i> '.$Row['title'].$DropDown.'</a>';
 					$this->insertSubMenu($Row['menu_id']);
 				echo '</li>';
 			}
@@ -279,7 +294,7 @@ class Menu extends DataBase
 	{
 		if(!$this->Groups)
 		{
-			$Rs 	= $this->fetchAssoc('admin_group','*',"status = 'A' AND group_id IN (SELECT group_id FROM relation_menu_group WHERE menu_id=".$this->MenuData['menu_id'].") AND customer_id = ".$_SESSION['customer_id'],"title");
+			$Rs 	= $this->fetchAssoc('admin_group','*',"status = 'A' AND group_id IN (SELECT group_id FROM relation_menu_group WHERE menu_id=".$this->MenuData['menu_id'].") AND company_id = ".$_SESSION['company_id'],"title");
 			$this->Groups = $Rs;
 			return $this->Groups;
 		}
@@ -289,7 +304,7 @@ class Menu extends DataBase
 	{
 		if(!$this->Profiles)
 		{
-			$Rs 	= $this->fetchAssoc('admin_profile','*',"status = 'A' AND profile_id IN (SELECT profile_id FROM relation_menu_profile WHERE menu_id=".$this->MenuData['menu_id'].") AND customer_id = ".$_SESSION['customer_id'],"title");
+			$Rs 	= $this->fetchAssoc('admin_profile','*',"status = 'A' AND profile_id IN (SELECT profile_id FROM relation_menu_profile WHERE menu_id=".$this->MenuData['menu_id'].") AND company_id = ".$_SESSION['company_id'],"title");
 			$this->Profiles = $Rs;
 			return $this->Profiles;
 		}
@@ -439,12 +454,12 @@ class Menu extends DataBase
           <!-- Profile -->
           <div class="input-group">
             <span class="input-group-addon order-arrows" order="profile" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('select','profile','','form-control','',$this->fetchAssoc('admin_profile','profile_id,title',"customer_id=".$_SESSION['customer_id']." AND status='A'"),'', 'Perfil').'
+            '.insertElement('select','profile','','form-control','',$this->fetchAssoc('admin_profile','profile_id,title',"company_id=".$_SESSION['company_id']." AND status='A'"),'', 'Perfil').'
           </div>
           <!-- Group -->
           <div class="input-group">
             <span class="input-group-addon order-arrows" order="group" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('select','group','','form-control','',$this->fetchAssoc('admin_group','group_id,title',"customer_id=".$_SESSION['customer_id']." AND status='A'","title"),'', 'Grupo').'
+            '.insertElement('select','group','','form-control','',$this->fetchAssoc('admin_group','group_id,title',"company_id=".$_SESSION['company_id']." AND status='A'","title"),'', 'Grupo').'
           </div>';
 	}
 	

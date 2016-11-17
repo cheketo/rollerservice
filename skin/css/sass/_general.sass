@@ -1,0 +1,159 @@
+html
+  font-size: 100%
+
+//////////// Custom Styles /////////////////////////////////////////
+.Hidden
+  display: none !important
+.pad0
+  padding: 0
+.mar0
+  margin: 0
+.padL0
+  padding-left: 0px
+.padR0
+  padding-right: 0px !important
+.brd
+  border: 2px solid red
+.w100
+  width: 100%
+.mw100
+  min-width: 100%
+.txC
+  text-align: center
+.txL
+  text-align: left
+.txR
+  text-align: right
+
+// Wrapper Styles Mobile
+@media (max-width: 765px)
+  .wrapper
+    padding-top: 50px
+
+
+
+//////// TITLES //////////////////
+.subTitleB
+  padding-bottom: 5px
+  background-color: rgba(240, 240, 240, 0.18)
+  border-bottom: 2px solid #e1e1e1
+  padding: 5px
+  padding-left: 10px
+  .fa
+    margin-right: 5px
+    font-size: 14px
+
+//////////////////////////////////////
+//                                  //
+//              FLEXBOX             //
+//                                  //
+//////////////////////////////////////
+
+.flex-container
+  display: -webkit-box
+  display: -ms-flexbox
+  display: flex
+  -webkit-box-align: center
+  -ms-flex-align: center
+  -ms-grid-row-align: center
+  align-items: center
+
+.flex-justify-center
+  display: -webkit-box
+  display: -ms-flexbox
+  display: flex
+  -webkit-box-align: center
+  -ms-flex-align: center
+  -ms-grid-row-align: center
+  align-items: center
+  -webkit-box-pack: center
+  -ms-flex-pack: center
+  -webkit-box-pack: center
+  -ms-flex-pack: center
+  justify-content: center
+
+
+.flexLeftVertCent
+  display: -webkit-box
+  display: -ms-flexbox
+  display: flex
+  align-items: center
+  justify-content: flex-start
+
+.flex-allCenter
+  justify-content: center
+  width: 100%
+  display: -ms-flexbox
+  display: -webkit-flex
+  display: flex
+  -ms-flex-align: center
+  -webkit-align-items: center
+  -webkit-box-align: center
+  align-items: center
+  -webkit-box-orient: vertical
+  -webkit-box-direction: normal
+  -ms-flex-direction: column
+  flex-direction: column
+
+
+.flex-SHeight
+  display: -webkit-flex
+  display: -ms-flexbox
+  display: flex
+  -webkit-flex-wrap: wrap
+  -ms-flex-wrap: wrap
+  flex-wrap: wrap
+
+.flex-SHeightInner
+  display: -webkit-flex
+  display: -ms-flexbox
+  display: flex
+
+.flex-wrap
+  -ms-flex-wrap: wrap
+  flex-wrap: wrap
+
+.flex-noWrap
+  -ms-flex-wrap: nowrap
+  flex-wrap: nowrap
+
+
+//////////////////////////////////////
+//                                  //
+//              LOGIN               //
+//                                  //
+//////////////////////////////////////
+
+.login-page
+  background: url(../images/body/backgrounds/back1.jpg) no-repeat center center fixed
+  -webkit-background-size: cover
+  -moz-background-size: cover
+  -o-background-size: cover
+  background-size: cover
+
+.login-box-body, .register-box-body
+  background: linear-gradient(to bottom, rgba(106, 153, 200, 0.34) 0, rgba(40, 55, 71, 0.8) 95%)
+  -webkit-box-shadow: 2px 2px 11px -5px rgba(0, 0, 0, 0.75)
+  -moz-box-shadow: 2px 2px 11px -5px rgba(0, 0, 0, 0.75)
+  box-shadow: 2px 2px 11px -5px rgba(0, 0, 0, 0.75)
+  color: #000
+  p
+    color: #000
+  a
+    color: rgb(232, 232, 232)
+    &:hover
+      color: rgb(255, 255, 255)
+.login-logo a
+  color: #383838
+
+.login-box-body
+  .checkbox
+    span
+      margin-left: 10px
+      color: #fff
+
+
+/// RESPONSIVITY ///
+@media (max-width: 990px)
+  .hideMobile990
+    display: none

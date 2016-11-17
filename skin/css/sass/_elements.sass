@@ -1,0 +1,1159 @@
+
+///// LINES /////
+$lightLine: 1px solid rgba(228, 228, 228, 0.8)
+
+
+//////////////////////////////////////
+//                                  //
+//            CONTAINERS            //
+//                                  //
+//////////////////////////////////////
+
+.main-wrapper
+  padding: 25px 5px
+
+.innerContainer
+  border: $lightLine
+  padding: 15px
+  padding-top: 5px
+  margin: 10px 0
+  // .bootstrap-switch
+  //   margin-bottom: 15px
+  //   margin-left: 25px
+
+@media (max-width: 990px)
+  .innerContainer
+    margin: 10px 0
+
+.lineContainer
+  border: $lightLine
+  padding: 20px
+
+.contentContainer
+  margin-top: 35px
+
+.col-centered
+  display: inline-block
+  float: none
+  text-align: center
+
+// ---------- Square Item Menu With Img ---------- //
+.squareMenuMain
+  @include flex-row-cent-wrap
+  .squareItemMenu
+    flex: 1
+    width: 220px
+    border-radius: 5px
+    text-align: center
+    margin: 20px 10px 10px
+    padding: 15px 5px 5px
+    border: 1px solid #ccc
+    max-width: 100%
+    img
+      max-width: 100%
+    span
+      @include transition(0.2)
+      color: #585858
+      font-size: 22px
+  &:hover
+    cursor: pointer
+  .squareYellow
+    @include transition(0.2s)
+    span
+      color: $MLYellow
+    &:hover
+      border: 1px solid $MLYellow
+  .squareRed
+    @include transition(0.2s)
+    span
+      color: $MLRed
+    &:hover
+      border: 1px solid $MLRed
+  .squareBlue
+    @include transition(0.2s)
+    span
+      color: $MLBlue
+    &:hover
+      border: 1px solid $MLBlue
+  .squareGreen
+    @include transition(0.2s)
+    span
+      color: $MLGreen
+    &:hover
+      border: 1px solid $MLGreen
+  .squareItemDisabled
+    opacity: 0.4
+  .squareItemActive
+    border: 1px solid rgb(157, 157, 157)
+
+  @media (max-width: 765px)
+    .squareItemMenu
+      width: 100px
+      margin: 2px
+      img
+        width: 50px
+      span
+        font-size: 16px
+
+.squareItemArrowYellow
+  @include arrowDown(10px,10px,10px,$MLYellow)
+.squareItemArrowRed
+  @include arrowDown(10px,10px,10px,$MLRed)
+.squareItemArrowBlue
+  @include arrowDown(10px,10px,10px,$MLBlue)
+.squareItemArrowGreen
+  @include arrowDown(10px,10px,10px,$MLGreen)
+
+
+//-----  Square Item Vertical List / Scroll ------//
+
+.squareItemVertList
+  height: 300px
+  width: 250px
+  border: 1px solid #ccc
+  overflow: scroll
+  overflow-x: hidden
+  padding: 0
+  ul li
+    padding: 2px 5px
+    &:hover
+      cursor: pointer
+      background-color: #ccc
+  ul
+    li.slActive
+      background-color: rgb(173, 177, 136)
+      color: #fff
+//////////////////////////////////////
+//                                  //
+//              BUTTONS             //
+//                                  //
+//////////////////////////////////////
+
+.btn
+  border: 0
+  @include transition(0.3s)
+
+.btnGreen
+  background-color: rgb(73, 164, 98)
+  margin: 2px 2px
+  color: #fff
+  &:hover,&:active,&:focus
+    background-color: rgb(92, 200, 122)
+    color: #fff
+.btnBlue
+  background-color: rgb(76, 126, 185)
+  margin: 2px 2px
+  color: #fff
+  &:hover,&:active,&:focus
+    background-color: rgb(130, 162, 201)
+    color: #fff
+.btnRed
+  background-color: rgb(207, 86, 83)
+  margin: 2px 2px
+  color: #fff
+  &:hover,&:active,&:focus
+    background-color: rgb(205, 115, 113)
+    color: #fff
+
+.btnGrey
+  background-color: rgb(223, 223, 223)
+  margin: 2px 2px
+  color: #000
+  &:hover,&:active,&:focus
+    background-color: rgb(200, 200, 200)
+    color: #000
+
+.btnYellow
+  background-color: rgb(196, 199, 70)
+  margin: 2px 2px
+  color: #fff
+  &:hover,&:active,&:focus
+    background-color: rgb(203, 205, 111)
+    color: #fff
+
+.ButtonLogin
+  border: 0
+  margin-top: 8px
+
+.categorySelectBtn
+  padding: 10px 30px
+
+
+// Button Container
+.btnGrey
+  background-color: rgb(214, 214, 214)
+  color: #000
+  &:hover,&:active,&:focus
+    background-color: rgb(164, 164, 164)
+    color: #fff
+
+.btnRightMobCent
+  text-align: right
+
+@media (max-width: 765px)
+  .btnRightMobCent
+    text-align: center
+
+.smallBtn
+  padding: 1px 10px
+
+.roundBtnIconGreen
+  width: 35px
+  height: 35px
+  padding: 5px
+  padding-top: 7px
+  border-radius: 100%
+  background-color: rgb(28, 152, 77)
+
+.action-btn
+  border-radius: 2px
+  padding: 2px 8px
+  margin: 2px 4px
+
+
+.disabled-btn
+  background-color: rgb(231, 231, 231)
+  color: rgb(177, 177, 177)
+  &:hover,&:active,&:focus
+    background-color: rgb(231, 231, 231)
+    color: rgb(177, 177, 177)
+    cursor: not-allowed
+
+
+.close-btn
+  position: absolute
+  right: 1px
+  top: 1px
+  background-color: #e7e7e7
+  padding: 2px 2px
+  padding-left: 5px
+  z-index: 999
+  @include transition(0.2s)
+  &:hover
+    cursor: pointer
+    color: red
+    background-color: #c2c2c2
+    
+
+    
+//////////////////////////////////////
+//                                  //
+//           FORMS                  //
+//                                  //
+//////////////////////////////////////
+
+// Tags //
+
+.select2-selection
+  width: auto !important
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice
+  background-color: rgb(76, 126, 185)
+  border: 0
+
+.inline-form-custom
+  div
+    padding-right: 0
+  div:last-child
+    padding-right: 15px
+@media (max-width: 765px)
+  .inline-form-custom
+    div
+      padding-left: 15px
+      padding-right: 15px
+    input
+      margin-bottom: 15px
+    select
+      margin-bottom: 15px
+
+.inline-form-custom-2
+  .inner
+    margin-bottom: 10px
+
+.custom-input-box
+  border: $greyLine
+  text-align: center
+  padding: 10px
+  padding-top: 0
+
+//////////////////////////////////////
+//                                  //
+//           CHECKBOXES             //
+//                                  //
+//////////////////////////////////////
+.treeCheckBoxDiv
+  margin: 20px 0
+  padding: 5px 20px
+  border: $lightLine
+  input
+    margin-right: 10px
+
+
+//////////////////////////////////////
+//                                  //
+//           SUBTITLE               //
+//                                  //
+//////////////////////////////////////
+
+
+.subtitle
+  display: block
+  padding: 15px 0
+  span
+    font-size: 1.2rem
+    border-bottom: 1px solid rgb(217, 217, 217)
+
+
+//////////////////////////////////////
+//                                  //
+//             IMAGES               //
+//                                  //
+//////////////////////////////////////
+.imagesMain
+  margin-top: 20px
+
+@media (max-width: 1200px)
+  .imagesMain
+    margin-top: 0
+  .imagesMain >div
+    margin: 10px 0
+
+.imagesContainer
+  border: $lightLine
+  padding: 5px 15px 20px
+  text-align: center
+  min-height: 339px
+  vertical-align: text-bottom
+
+// Round Image Selector With Overlay
+.imgSelector
+  padding-top: 15px
+  padding-bottom: 15px
+  margin: 0 auto
+  img
+    position: absolute
+    display: block
+    z-index: 1
+    width: 190px
+    height: 190px
+    border-radius: 100%
+    margin: 0 auto
+
+.imgSelectorInner
+  width: 190px
+  height: 190px
+  margin: 0 auto
+
+.imgSelectorContent
+  position: absolute
+  display: table
+  z-index: 2
+  opacity: 0
+  width: 190px
+  height: 190px
+  border-radius: 100%
+  vertical-align: middle
+  text-align: center
+  margin: auto
+  transition: all 0.3s ease 0s
+  &:hover
+    opacity: 1
+    background: rgba(34, 34, 34, 0.62) center no-repeat
+    @include box-shadowDown
+    filter: brightness(1.3)
+  .fa
+    font-size: 35px
+    color: #fff
+  div
+    display: table-cell
+    vertical-align: middle
+    cursor: pointer
+    color: #fff
+
+.imgSelectorClicked
+  opacity: 1
+  background: rgba(34, 34, 34, 0.62) center no-repeat
+  @include box-shadowDown
+  filter: brightness(1.3)
+
+@media (max-width: 290px)
+  .imgSelectorInner, .imgSelectorContent
+    width: 120px
+    height: 120px
+  .imgSelector
+    img
+      width: 120px
+      height: 120px
+
+
+// Small Thumbs
+.smallThumbsList
+  ul
+    padding: 0
+    margin: 0
+    margin-top: 20px
+    li
+      position: relative
+      list-style: none
+      display: inline-block
+      margin-bottom: 15px
+      margin-left: 3px
+      margin-right: 3px
+      img
+        width: 90px
+        max-width: 100%
+        @include border-radius(100%)
+        @include transition(0.3s)
+        &:hover
+          cursor: pointer
+          @include box-shadowDown
+
+
+//////////////////////////////////////
+//                                  //
+//              MODALS             //
+//                                  //
+//////////////////////////////////////
+.modal
+  .modal-header
+    background-color: $mainblue
+    color: #fff
+    .close
+      color: #fff
+      opacity: 1
+      top: 2px
+      &:hover
+        color: $mainred
+        text-shadow: none
+        background-color: #fff
+        top: 2px
+  .modal-footer
+    border-top: 0
+
+
+
+//////////////////////////////////////
+//                                  //
+//              LISTS               //
+//                                  //
+//////////////////////////////////////
+///// Vertical List ///
+.verical-list
+  ul
+    padding-left: 0
+    padding: 0
+    margin: 0
+    li
+      list-style: none
+
+//// Grid View /////
+.horizontal-list
+  ul
+    padding-left: 0
+    padding: 0
+    margin: 0
+    li
+      display: inline-block
+      list-style: none
+
+
+
+
+////// Round Item (Grid) //////
+
+.roundItemBig
+  margin: 15px
+  // li
+  .roundItemText
+    text-align: center
+    margin-top: 10px
+    p
+      margin: 0
+  .fa
+    font-size: 22px !important
+
+.roundItemBigSelected img
+  @include box-shadowDown
+
+.roundItemBigActions
+  position: relative
+  .roundItemCheckDiv
+    position: absolute
+    top: 5px
+    left: 5px
+  .roundItemActionsGroup
+    position: absolute
+    bottom: -10px
+    left: 0
+    width: 100%
+    text-align: center
+
+
+///// List Row /////
+.listRow
+  background-color: #f8f8f8
+  padding: 10px
+  margin: 5px 0
+  position: relative
+  @include transition(0.1s)
+  &:hover
+    background-color: #C9C3C3
+    color: #000
+    cursor: pointer
+    span.smallDetails,.smallTitle
+      color: #fff !important
+  .listRowInner
+    span.smallTitle
+      display: block
+      color: #999
+      font-size: 13px
+
+    .listTextStrong
+      font-size: 14px
+  .listActions
+    position: absolute
+    right: 0
+    top: 0
+    height: 100%
+    padding: 5px
+    background-color: rgba(255, 255, 255, 0.64)
+
+
+.listRow2
+  background-color: #e7e7e7
+
+.listRowSelected
+  background-color: #a3ccb1
+  border: 1px solid rgb(185, 185, 185)
+  border-left: 5px solid green
+  color: #fff
+  span.smallDetails
+    color: #fff !important
+  @include box-shadowSoft
+  .listRowInner
+    .smallDetails
+      color: #000
+    .smallTitle
+      color: #000
+
+.post .listRowInner
+  margin-bottom: 15px
+
+.listRowInner
+  &:before
+    content: " "
+    display: table
+  &:after
+    content: " "
+    display: table
+    clear: both
+  img
+    width: 40px
+    height: 40px
+    float: left
+  .listTextStrong, .smallDetails
+    display: block
+    // margin-left: 50px
+  .listTextStrong
+    font-size: 16px
+    font-weight: 600
+  .emailTextResp
+    font-weight: 600
+  .smallDetails
+    color: #999
+    font-size: 13px
+  &.listRowInner-sm
+    .listTextStrong, .smallDetails
+      margin-left: 40px
+    .listTextStrong
+      font-size: 14px
+
+@media (max-width: 1150px)
+  .listRowInner .emailTextResp
+    max-width: 140px
+    font-size: 12px
+    display: block
+    white-space: nowrap
+    overflow: hidden !important
+    text-overflow: ellipsis
+
+.listRowInner.listRowInner-sm img
+  float: left
+
+.listRowInner.listRowInner-sm img
+  width: 30px !important
+  height: 30px !important
+
+// ListRow Mobile
+/////////////
+
+@media (max-width: 400px)
+  .listRow
+    padding: 2px
+    .listActions
+      padding-top: 4px
+    .listRowInner
+      span
+        font-size: 14px
+
+@media (max-width: 370px)
+  .smallDetails
+    display: none !important
+  .deleteSelectedAbs
+    padding: 5px
+    font-size: 15px
+
+// Change View
+.changeView
+  position: absolute
+  padding: 5px
+  color: #fff
+  top: 0
+  right: 0
+  @include transition(0.2s)
+  a
+    color: #fff
+  &:hover
+    a
+      color: rgb(224, 224, 224)
+  .btn
+    background-color: rgb(219, 219, 219)
+    margin: 7px 2px
+    color: #000
+    &:hover
+      background-color: rgb(203, 203, 203)
+
+
+
+/// Sheet List
+.listRowSheet
+  padding: 10px
+  display: block
+  // white-space: nowrap
+  // overflow: hidden !important
+  // text-overflow: ellipsis
+  .listRowInner
+    display: block
+    white-space: nowrap
+    overflow: hidden !important
+    text-overflow: ellipsis
+  .sheet-column
+    padding: 2px
+  .sheet-notes
+    hr
+      margin: 8px 0 5px
+
+.list-sheet-title
+  background-color: #e9e9e9
+  border-bottom: 3px solid #d8d8d8
+  padding: 10px
+  margin: 5px 0
+  span
+    font-weight: 600
+    font-size: 1rem
+
+.list-sheet-resuls
+  background-color: #e9e9e9
+  border-bottom: 3px solid #d8d8d8
+  padding: 10px
+  margin: 5px 0
+  text-align: right
+  >div
+    float: right
+  .result-title
+    margin-right: 10px
+  .result-number
+    padding: 5px
+    border-radius: 5px
+    color: #fff
+    background-color: rgb(153, 180, 131)
+  .result-debt
+    padding: 3px 6px
+    border-radius: 5px
+    color: #fff
+    background-color: rgb(177, 102, 102)
+
+@media (max-width: 765px)
+  .list-sheet-resuls
+    text-align: right
+    padding: 4px
+    >div
+      margin: 5px 0
+
+
+
+
+
+// Icon Menu //
+.iconMenu
+  border: 1px solid #ccc
+  padding-left: 10px
+  padding-top: 2px
+  height: 34px
+  span.iconMenuText
+    margin-right: 10px
+  span.iconMenuIcon
+    font-size: 20px
+  .btn
+    padding: 4px 12px
+
+.iconModalContent
+  i
+    &:hover
+      cursor: pointer
+  .fa
+    font-size: 16px
+    margin: 5px
+
+.iconSelected
+  border: 3px solid #c6ac6b
+  width: 40px
+  height: 30px
+  padding: 5px
+  .fa
+    font-size: 25px !important
+
+
+
+
+// Absolute Positioned DeleteAll Button
+.deleteSelectedAbs
+  position: fixed
+  border-radius: 5px
+  padding: 15px
+  font-size: 20px
+  bottom: 15px
+  right: 15px
+  z-index: 500
+  background-color: $mainred
+  color: #fff
+  @include box-shadowDown
+  @include transition(0.2s)
+  a
+    color: #fff
+  &:hover
+    background-color: $mainredHover
+    cursor: pointer
+    a
+      color: rgb(224, 224, 224)
+
+.activateSelectedAbs
+  position: fixed
+  border-radius: 5px
+  padding: 15px
+  font-size: 20px
+  bottom: 15px
+  right: 15px
+  z-index: 500
+  background-color: $mainGreen
+  color: #fff
+  @include box-shadowDown
+  @include transition(0.2s)
+  a
+    color: #fff
+  &:hover
+    background-color: $mainGreenHover
+    cursor: pointer
+    a
+      color: rgb(224, 224, 224)
+
+//////////////////////////////////////
+//                                  //
+//         CHECKBOXES               //
+//                                  //
+//////////////////////////////////////
+
+/*------- BOXED CHECKBOXES  SIZES (XS, S, SM, L, etc.) ------- /
+
+.boxed-horiz-list
+  text-align: center
+  margin: 0
+  margin-top: 15px
+  ul
+    padding: 2px
+    li
+      text-align: center
+      display: inline-block
+      width: 39px
+      margin-top: 2px
+      margin-bottom: 2px
+      padding-top: 4px
+      background-color: rgba(226, 226, 226, 0.5)
+
+/*------- Square CheckBoxes   ------- /
+
+.checkbox-custom, .radio-custom
+  opacity: 0
+  position: absolute
+
+.checkbox-custom, .checkbox-custom-label, .radio-custom, .radio-custom-label
+  display: inline-block
+  vertical-align: middle
+  margin: 1px 5px
+  cursor: pointer
+
+.checkbox-custom-label, .radio-custom-label
+  position: relative
+
+.checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before
+  content: ''
+  background: #fff
+  border: 2px solid #ddd
+  display: inline-block
+  vertical-align: middle
+  width: 20px
+  height: 20px
+  padding: 2px
+  margin-right: 2px
+  text-align: center
+
+.checkbox-custom:checked + .checkbox-custom-label:before
+  background: #056e90
+  box-shadow: inset 0px 0px 0px 4px #fff
+
+//////////////////////////////////////
+//                                  //
+//         COLOR PICKER             //
+//                                  //
+//////////////////////////////////////
+
+.colorPickerContainer
+  display: -webkit-box
+  display: -ms-flexbox
+  display: flex
+  -webkit-box-align: center
+  -ms-flex-align: center
+  -ms-grid-row-align: center
+  align-items: center
+  -webkit-box-pack: center
+  -ms-flex-pack: center
+  justify-content: center
+  position: relative
+
+.colorPicker
+  padding: 20px 10px 0
+  max-width: 500px
+  ul
+    border: 1px solid red
+    padding-left: 0
+    border: 0
+    li
+      position: relative
+      border: 1px solid rgb(217, 217, 217)
+      margin: 0
+      margin-left: 1px
+      margin-right: 0px
+      background-color: rgb(172, 72, 116)
+      list-style: none
+      display: inline-block
+      width: 25px
+      height: 25px
+      &:hover
+        cursor: pointer
+    .cpIcon
+      position: absolute
+      padding-top: 3px
+      padding-left: 3px
+      color: #fff
+      .fa
+        font-size: 16px
+        display: none
+        @include txShadow
+    li.liSelected
+      border: 1px solid rgb(0, 0, 0)
+    .cpSelected
+      .fa
+        display: block
+  .cpBoxLibrary
+    // float: left
+  .cpBoxSelected
+    position: relative
+    width: 150px
+    height: 90px
+    margin-bottom: 15px
+    background-color: rgb(246, 246, 246)
+    @include flexColumn
+    .cpBoxSelectedItem
+      @include box-shadowSoft
+      width: 40px
+      height: 40px
+      background-color: rgb(189, 85, 85)
+      border-radius: 100%
+    .cpBoxSelectedItemOk
+      background-color: rgb(33, 84, 89)
+    .closeColorPicker
+      position: absolute
+      right: -20px
+      top: 0
+      background-color: #f6f6f6
+      padding: 2px 6px
+      &:hover
+        cursor: pointer
+
+@media (max-width:1296px) and (min-width:1197px)
+  .cpBoxLibrary
+    padding: 0
+    max-width: 250px
+
+
+@media (max-width: 991px)
+  .colorPicker
+    padding: 0
+    @include flexColumn
+    .cpBoxSelected
+      width: 95%
+
+
+//////////////////////////////////////
+//                                  //
+//              LOADER              //
+//                                  //
+//////////////////////////////////////
+.loader
+  background: rgba(0, 0, 0, 0.83)
+  width: 100%
+  height: 100%
+  max-height: 100%
+  position: fixed
+  top: 0
+  left: 0
+  z-index: 10000
+  @include flexColumn
+  img.loaderLogo
+    width: 250px
+    max-width: 100%
+
+
+//////////////////////////////////////
+//                                  //
+//         SEARCH FILTER            //
+//                                  //
+//////////////////////////////////////
+
+.searchFiltersHorizontal
+  position: relative
+  padding: 5px 0
+  width: 90%
+  background-color: rgba(225, 225, 225, 0.47)
+  @include box-shadowSoft
+  @include flex-inline-centered
+  text-align: center
+  form
+    width: 95%
+    .form-group
+      margin-bottom: 0
+    select
+      min-width: 130px
+    input
+      max-width: 100%
+    label
+      margin-right: 15px
+  .arrow-right-border
+    position: absolute
+    height: 100%
+    width: 15px
+    right: 0
+    top: 0
+    background-color: rgb(230, 230, 230)
+    @include box-shadowSoft
+    .arrow-right-sf
+      position: absolute
+      right: -10px
+      top: 5px
+      @include box-shadowSoft
+      @include arrowRight(10px,10px,10px,rgb(230, 230, 230))
+  .order-arrows
+    &:hover
+      cursor: pointer
+  .sort-activated
+    color: rgb(86, 190, 115)
+
+
+@media (max-width: 765px)
+  .searchFiltersHorizontal
+    margin-top: 37px
+    width: 100%
+    padding: 15px 5px
+    form
+      max-width: 350px
+      button
+        margin-top: 15px
+    .arrow-right-border
+      display: none
+
+//////////////////////////////////////
+//                                  //
+//         CSS ARROWS               //
+//                                  //
+//////////////////////////////////////
+
+// Dont Delete This - Is Documentation for implementation
+// Html
+// <div class="arrowCss">
+//   <div class="arrow-right"></div>
+// </div>
+// <div class="arrowCss">
+//   <div class="arrow-up"></div>
+// </div>
+// <div class="arrowCss">
+//   <div class="arrow-down"></div>
+// </div>
+// <div class="arrowCss">
+//   <div class="arrow-left"></div>
+// </div>
+
+// .arrow-up
+//   @include arrowUp(10px,10px,10px,rgb(230, 230, 230))
+//
+// .arrow-down
+//   @include arrowDown(10px,10px,10px,rgb(230, 230, 230))
+//
+// .arrow-right
+//   @include arrowRight(10px,10px,10px,rgb(230, 230, 230))
+//
+// .arrow-left
+//   @include arrowRight(10px,10px,10px,rgb(230, 230, 230))
+
+
+
+
+//////////////////////////////////////
+//                                  //
+//           OTHERS                 //
+//                                  //
+//////////////////////////////////////
+
+//// MINI TAGS /////
+.mini-tag
+  @include border-radius(5px)
+  padding: 1px 2px
+  margin: 1px
+
+
+//// BOOTSTRAP SWITCH ////
+.bootstrap-switch
+  border: 2px solid #ededed !important
+
+
+///// Textarea With Character Counter /////
+.textWithCounter
+  border: $lightLine
+  input
+    padding: 10px
+    width: 100%
+    max-width: 100%
+    border: 0
+    border-radius: 0
+  textarea
+    width: 100%
+    max-width: 100%
+    padding: 10px
+    border: 0
+    border-radius: 0
+    text-align: left
+  .indicator-wrapper
+    padding-left: 10px
+    padding-top: 10px
+    background-color: rgba(238, 238, 238, 0.5)
+    padding: 0
+    padding-top: 5px
+    p
+      margin-bottom: -25px
+      margin-left: 40px
+      color: #000
+  .indicator
+    display: block
+    height: 30px
+    width: 0
+    background-color: #dedede
+    transition: 0.2s
+    -webkit-transition: 0.2s
+    span.current-length
+      position: absolute
+      display: block
+      font-weight: bold
+      color: #444
+      padding: 5px 0 0 10px
+      font-size: 14px
+  // Different States
+  .indicator.empty
+    background-color:  rgba(175, 175, 175, 0.2)
+  .indicator.low
+    background-color: rgba(38, 166, 91, .4)
+  .indicator.med
+    background-color: rgba(38, 166, 91, .5)
+  .indicator.high
+    background-color: rgba(38, 166, 91, .7)
+  .indicator.full
+    background-color: rgba(196, 78, 66, 0.7)
+    span
+      color: #fff
+
+// CURSOR //
+
+.cursor-pointer:hover
+  cursor: pointer
+
+//////////////////////////////////////
+//                                  //
+//          PAGINATOR               //
+//                                  //
+//////////////////////////////////////
+
+@media (max-width: 765px)
+  .paginationLeft
+    label
+      display: none
+
+@media (max-width: 400px)
+  .paginationLeft
+    margin-bottom: 10px
+
+
+.pagination > li:first-child > a, .pagination > li:first-child > span
+  border-top-left-radius: 0
+  border-bottom-left-radius: 0
+  border-top-right-radius: 0
+  border-bottom-right-radius: 0
+
+.pagination > li > a:focus, .pagination > li > a:hover, .pagination > li > span:focus, .pagination > li > span:hover
+  background-color: rgb(99, 193, 117)
+  color: #fff
+
+.pagination > .active > a, .pagination > .active > a:focus, .pagination > .active > a:hover, .pagination > .active > span, .pagination > .active > span:focus, .pagination > .active > span:hover
+  background-color: rgb(93, 175, 108)
+  border: 1px solid rgb(213, 213, 213)
+
+.paginationPages
+  float: right !important
+
+.paginationSelect
+  float: left !important
+
+@media (max-width: 450px)
+  .pagination > li > a, .pagination > li > span
+    padding: 6px 8px
+
+@media (max-width: 765px)
+  .paginationSelect
+    margin-bottom: 5px
+    text-align: center
+
+//////////////////////////////////////
+//                                  //
+//             ERRORS               //
+//                                  //
+//////////////////////////////////////
+
+#undefinedErrorDiv
+  background-color: rgba(195, 113, 113, 1)
+  color: #fff
+  position: absolute
+  z-index: 9500
+
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove
+  color: #fff !important
+.select2-selection__choice
+  border: 0 !important
+  background-color: $mainblue !important

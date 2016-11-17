@@ -3,7 +3,7 @@
 
 function welcomeMessage()
 {
-  notifyInfo('<img src="' + $("#UserImgCircle").attr("src") + '" width="90" height="90" class="img-circle">' + "<br>" + "<br>" + utf8_decode('¡Bienvenido '+ $("#userfullname").html()) +'!');
+  notifyInfo('<img src="' + $(".img-circle").attr("src") + '" width="90" height="90" class="img-circle">' + "<br>" + "<br>" + utf8_decode('¡Bienvenido '+ $("#userfullname").html()) +'!');
 }
 
 $(document).ready(function() {
@@ -12,6 +12,8 @@ $(document).ready(function() {
   {
       welcomeMessage();
   }
+
+  $('#meli_status').iCheck('disable');
 
 });
 
@@ -29,16 +31,20 @@ $(function(){
 /// Alert Demo ///
 $('#alertDemoError').click(function(){
   notifyError();
-})
+});
 
 $('#alertDemoSuccess').click(function(){
   notifySuccess();
-})
+});
 
 $('#alertDemoInfo').click(function(){
   notifyInfo();
-})
+});
 
 $('#alertDemoWarning').click(function(){
   notifyWarning();
-})
+});
+
+$('.activateLoader').click(function(){
+  toggleLoader();
+});

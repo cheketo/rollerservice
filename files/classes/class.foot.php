@@ -2,13 +2,13 @@
 
 class Foot
 {
-	var $HTML		= '</body></html>';
+	var $HTML		= '<body><html>';
 	var $Link		= array();
 	var $Script		= array();
 	var $Meta		= array();
 	var $Includes	= array();
 
-	const INCFOOT = "../../includes/inc.footer.php";
+	const INCFOOT = "../../includes/inc.foot.php";
 
 	function __construct()
 	{

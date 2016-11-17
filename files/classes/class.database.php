@@ -1,9 +1,9 @@
 <?php
 class DataBase
 {
-	var $UserDB		= 'roller';
-	var $PasswordDB	= 'Oraprod1810';
-	var $DataBase	= 'roller';
+	var $UserDB		= 'root';
+	var $PasswordDB	= 'root';
+	var $DataBase	= 'renovatio';
 	var $ServerDB	= '127.0.0.1';
 	var $TypeDB 	= 'Mysql';
 	var $SchemaDB	= 'testing,public';
@@ -22,7 +22,7 @@ class DataBase
 	var $Table;
 	var $Fields = '*';
 	
-	public function __construct($UserDB='roller', $PasswordDB='Oraprod1810', $DataBase='roller', $ServerDB='127.0.0.1',$TypeDB='Mysql'){
+	public function __construct($UserDB='root', $PasswordDB='root', $DataBase='renovatio', $ServerDB='127.0.0.1',$TypeDB='Mysql'){
 		$this->UserDB 		= $UserDB;
 		$this->PasswordDB	= $PasswordDB;
 		$this->DataBase		= $DataBase;

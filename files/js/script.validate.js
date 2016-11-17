@@ -51,11 +51,9 @@ VALIDATION ATRIBUTES:
 	var checkboxGroups		= new Array();
 
 	function ValidateFields() {
-		validateErrorClass 	= "ErrorText";
-		validateElements	= "input, select, textarea";
+		validateErrorClass 	= "ErrorText Red";
+		validateElements	= "input[type!='hidden'], select, textarea";
 		validateTag			= "div";
-		validateParentClass = "bad";
-		validateInputClass	= "RedInput"; 
 		validateValid;
 	}
 
@@ -327,7 +325,8 @@ VALIDATION ATRIBUTES:
 			validateObject	= $(validateElements);
 		else
 			validateObject	= $('#'+Form+' '+validateElements);
-
+		//console.log($('#'+Form+' '+validateElements));
+		//validateObject	= $('#'+Form).find(validateElements);
 		if(!validateObject.attr('id')) validateValid	= false;
 
 
@@ -366,14 +365,14 @@ VALIDATION ATRIBUTES:
 			if(valid && ValidateFields.prototype.minLength(object))
 			{
 				valid	= false;
-				var text	= $(object).attr("validateMinLength").substring($(object).attr("validateMinLength").indexOf(validateDelimiter)+1);
+				var text	= $(object).attr("validateMinLength").substring($(object).attr("validateMinLength").indexOf(validateDelimiter)+validateDelimiter.length);
 				$("#"+$(object).attr("id")+"ErrorDiv").html(text);
 			}
 
 			if(valid && ValidateFields.prototype.maxLength(object))
 			{
 				valid	= false;
-				var text	= $(object).attr("validateMaxLength").substring($(object).attr("validateMaxLength").indexOf(validateDelimiter)+1);
+				var text	= $(object).attr("validateMaxLength").substring($(object).attr("validateMaxLength").indexOf(validateDelimiter)+validateDelimiter.length);
 				$("#"+$(object).attr("id")+"ErrorDiv").html(text);
 			}
 
@@ -448,10 +447,6 @@ VALIDATION ATRIBUTES:
 		}else{
 			$("#"+$(object).attr("id")+"ErrorDiv").hide();
 		}
-		if(validateInputClass)
-			$("#"+$(object).attr("id")).removeClass(validateInputClass);
-		if(validateParentClass)
-			$("#"+$(object).attr("id")).parent().removeClass(validateParentClass);
 	}
 
 	ValidateFields.prototype.showDiv	= function(object)
@@ -475,10 +470,6 @@ VALIDATION ATRIBUTES:
 		}else{
 			$("#"+$(object).attr("id")+"ErrorDiv").show();
 		}
-		if(validateInputClass)
-			$("#"+$(object).attr("id")).addClass(validateInputClass);
-		if(validateParentClass)
-			$("#"+$(object).attr("id")).parent().addClass(validateParentClass);
 	}
 
 	// Auxiliar Function: Pause

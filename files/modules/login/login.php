@@ -7,36 +7,42 @@
       $Checked = 'checked="checked"';
   }
 ?>
-  <body class="login">
-    <div>
-      <div class="login_wrapper">
-        <div class="animate form login_form">
-          <div class="text-center"><h1><i class="fa fa-cog"></i> Roller Service</h1></div>
-          <section class="login_content">
-            <form>
-              <h1>Iniciar Sesión</h1>
-              <div class="">
-                <input type="text" name="user" id="user" class="form-control" placeholder="Usuario o Email" validateEmpty="Ingrese su usuario o email." value="<?php echo $_COOKIE['rememberuser'];?>" />
-              </div>
-              <div>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" validateEmpty="Ingrese su contraseña." value="<?php echo $_COOKIE['rememberpassword'];?>" />
-              </div>
-              <div>
-                <p><input type="checkbox" <?php echo $Checked ?> class="iCheckbox" name="rememberuser" id="rememberuser" value="1" > Recordar mi usuario</p>
-              </div>
-              <div>
-                <a class="btn btn-primary ButtonLogin">Ingresar</a>
-                <a class="reset_pass">Olvidé mi contraseña</a>
-              </div>
-              
-              <div class="clearfix"></div>
-            </form>
-          </section>
-        </div>
-
-        
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <a href=""><b>Re</b>novatio</a>
+  </div>
+  <!-- /.login-logo -->
+  <div class="login-box-body">
+    <p class="login-box-msg">INICIAR SESI&Oacute;N</p>
+      <div class="form-group has-feedback">
+        <input type="email" class="form-control" name="user" id="user" placeholder="Email o Usuario" value="<?php echo $_COOKIE['rememberuser'];?>">
+        <span class="fa fa-envelope form-control-feedback"></span>
       </div>
-    </div>
-  </body>
+      <div class="form-group has-feedback">
+        <input type="password" class="form-control" name="password" id="password" placeholder="Contrase&ntilde;a" value="<?php echo $_COOKIE['rememberpassword'];?>">
+        <span class="fa fa-lock form-control-feedback"></span>
+      </div>
+      <div class="row">
+        <div class="col-xs-8">
+          <div class="checkbox icheck">
+            <label>
+              <input type="checkbox" <?php echo $Checked ?> class="iCheckbox" name="rememberuser" id="rememberuser" value="1" > <span>Recordarme</span>
+            </label>
+          </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-xs-4">
+          <button type="button" class="btn btn-primary btn-block btn-flat ButtonLogin">Ingresar</button>
+        </div>
+        <!-- /.col -->
+      </div>
+    <a href="forgotuser.php">Olvid&eacute; mi contrase&ntilde;a</a><br>
+  </div>
+  <!-- /.login-box-body -->
+</div>
+<!-- /.login-box -->
 
-<?php $Foot->setFoot(); ?>
+<?php
+$Foot->setFoot();
+?>
