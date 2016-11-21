@@ -382,7 +382,7 @@ public function MakeRegs($Mode="List")
 	{
 		$Image 		= $_POST['newimage'];
 		$User		= htmlentities(strtolower($_POST['user']));
-		$Password	= md5(htmlentities($_POST['password']));
+		$Password	= sha1(htmlentities($_POST['password']));
 		$FirstName	= htmlentities(ucfirst($_POST['first_name']));
 		$LastName	= htmlentities(ucfirst($_POST['last_name']));
 		$Email 		= htmlentities(strtolower($_POST['email']));
@@ -390,7 +390,7 @@ public function MakeRegs($Mode="List")
 		$Groups		= $_POST['groups'] ? explode(",",$_POST['groups']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
 		$Insert		= $this->execQuery('insert','admin_user','user,password,first_name,last_name,email,profile_id,img,creation_date,creator_id,company_id',"'".$User."','".$Password."','".$FirstName."','".$LastName."','".$Email."','".$ProfileID."','".$Image."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
-		echo $this->lastQuery();
+		//echo $this->lastQuery();
 		$NewID 		= $this->GetInsertId();
 		$New 	= new AdminData($NewID);
 		$Dir 	= array_reverse(explode("/",$Image));
@@ -422,7 +422,7 @@ public function MakeRegs($Mode="List")
 		$Edit	= new AdminData($ID);
 		if($_POST['password'])
 		{
-			$Password	= md5(htmlentities($_POST['password']));
+			$Password	= sha1(htmlentities($_POST['password']));
 			$PasswordFilter	= ",password='".$Password."'";
 		}
 		$Image 		= $_POST['newimage'];

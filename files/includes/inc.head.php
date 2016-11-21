@@ -2,7 +2,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="description" content="">
-<meta name="author" content="Innova Studio">
+<meta name="author" content="Alejandro Romero">
 <!-- Bootstrap 3.3.6 -->
 <link rel="stylesheet" href="../../../vendors/bootstrap/bootstrap.min.css">
 <!-- Font Awesome -->

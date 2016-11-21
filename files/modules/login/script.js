@@ -17,34 +17,31 @@ $(document).ready(function() {
 // });
 
 function sumbitLogin(){
-	var rememberuser = $("#rememberuser:checked").val();
-	var password 		= $("#password").val();
-	var user			= $("#user").val();
-	var target			= '../main/main.php?msg=logok';
-	var errorLogin		= 'Verifique los datos ingresados.';
-	var errorCustomer	= 'El cliente se encuentra deshabilitado por falta de pago.';
-	var values			= 'user='+ user + '&password=' + password + '&action=startlogin&object=login' +  '&rememberuser=' + rememberuser ;
-	var	process			= "../../library/processes/proc.common.php";
-	$.ajax({
-			type: "POST",
-			url: process,
-			data: values,
-			cache: false,
-			async: false,
-			success: function(data){
-				if(!data){
-					document.location = target;
-				}else{
-					if(data=="4")
-					{
-						notifyError(errorCustomer);
+	
+		var rememberuser = $("#rememberuser:checked").val();
+		var password 		= $("#password").val();
+		var user			= $("#user").val();
+		var target			= '../main/main.php?msg=logok';
+		var errorLogin		= 'Verifique los datos ingresados.';
+		var errorCustomer	= 'El cliente se encuentra deshabilitado por falta de pago.';
+		var values			= 'user='+ user + '&password=' + password + '&action=startlogin&object=login' +  '&rememberuser=' + rememberuser ;
+		var	process			= "../../library/processes/proc.common.php";
+		$.ajax({
+				type: "POST",
+				url: process,
+				data: values,
+				cache: false,
+				async: false,
+				success: function(data){
+					if(!data){
+						document.location = target;
 					}else{
 						notifyError(errorLogin);
 						console.log(data);
 					}
 				}
-			}
-	});
+		});
+	
 }
 
 $(function(){

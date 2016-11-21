@@ -4,9 +4,9 @@
   <!-- Logo -->
   <a href="../main/main.php" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
-    <span class="logo-mini"><img src="../../../skin/images/body/logos/mini-logo-white.png" alt="" /></span>
+    <span class="logo-mini"><b>R<i class="fa fa-cog"></i>S</b></span>
     <!-- logo for regular state and mobile devices -->
-    <span class="logo-lg"><img src="../../../skin/images/body/logos/renovatio-logo-white.png" alt="" /></span>
+    <span class="logo-lg">Roller<i class="fa fa-cog"></i>Service</span>
   </a>
 
   <!-- Header Navbar: style can be found in header.less -->

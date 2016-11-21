@@ -1,6 +1,7 @@
 <!-- Loader  -->
 <div class="loader animated fadeIn Hidden">
-  <img class="loaderLogo" src="../../../skin/images/body/logos/innovalogo.png" alt="" />
+  <span style="font-size:3em;color:#CCC;">Roller<i class="fa fa-cog"></i>Service</span>
+  <!--<img class="loaderLogo" src="../../../skin/images/body/logos/innovalogo.png" alt="" />-->
   <img class="loaderGif" src="../../../skin/images/body/icons/loader.gif" alt="" />
 </div>
 <!-- /Loader  -->

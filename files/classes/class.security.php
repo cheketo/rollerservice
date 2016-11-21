@@ -8,12 +8,12 @@ class Security extends dataBase
 	var $Link;
 	var $File;
 	//var $ErrorMsg			= "Debe estar logueado para ingresar al sistema";
-	var $IsLogged			= false;
+	var $IsLogged		= false;
 	var $MenuData 		= array();
 	var $ProfileData 	= array();
 
-	const PROFILE			= 333;
-	const LOGIN				= 'login/login.php';
+	const PROFILE		= 333;
+	const LOGIN			= 'login/login.php';
 	const DESTINATION	= '../main/main.php';
 
 	function __construct($User='',$Password='')
@@ -21,11 +21,11 @@ class Security extends dataBase
 		$this->Connect();
 		// $User 				= !$User && isset($_COOKIE['rememberuser'])? $_COOKIE['rememberuser'] : $User;
 		// $User 				= !$User && isset($_COOKIE['rememberpassword'])? md5($_COOKIE['rememberpassword']) : $User;
-		$this->User			= isset($_COOKIE['user'])? 			$_COOKIE['user'] 		: $User;
+		$this->User		= isset($_COOKIE['user'])? 			$_COOKIE['user'] 		: $User;
 		$this->Password	= isset($_COOKIE['password'])? 		$_COOKIE['password'] 	: $Password;
-		$this->File			= basename($_SERVER['PHP_SELF']);
+		$this->File		= basename($_SERVER['PHP_SELF']);
 		$this->getLink();
-		$MenuData				= $this->fetchAssoc("menu","menu_id,public","link LIKE '%".$this->Link."%'");
+		$MenuData		= $this->fetchAssoc("menu","menu_id,public","link LIKE '%".$this->Link."%'");
 		$this->MenuData	= $MenuData[0];
 	}
 
@@ -50,7 +50,10 @@ class Security extends dataBase
 				$Exceptions 	= $this->numRows("relation_admin_menu","*","menu_id = ".$this->MenuData['menu_id']." AND admin_id = ".$AdminID);
 				$GroupsAllowed 	= $this->numRows("relation_menu_group","*","menu_id = ".$this->MenuData['menu_id']." AND group_id IN (".$MenuGroups.")");
 
-				if($Rows<1 && $Exceptions<1 && $GroupsAllowed<1){header("Location: ".$_SERVER['HTTP_REFERER']); echo '<script>window.history.go(-1)</script>';}
+				if($Rows<1 && $Exceptions<1 && $GroupsAllowed<1){
+					header("Location: ".$_SERVER['HTTP_REFERER']); echo '<script>window.history.go(-1)</script>';
+					
+				}
 			}elseif($this->Link==self::LOGIN){
 				header("Location: ".self::DESTINATION);
 			}
@@ -83,13 +86,13 @@ class Security extends dataBase
 		}
 	}
 
-	public function checkCustomer($CustomerID)
-	{
-		$Data 		= $this->fetchAssoc("admin_company","status","company_id=".$CustomerID);
-		$Customer = $Data[0];
-		$Result 	= Login::isValidCustomerStatus($Customer['status']);
-		return $Result;
-	}
+	// public function checkCustomer($CustomerID)
+	// {
+	// 	$Data 		= $this->fetchAssoc("admin_company","status","company_id=".$CustomerID);
+	// 	$Customer = $Data[0];
+	// 	$Result 	= Login::isValidCustomerStatus($Customer['status']);
+	// 	return $Result;
+	// }
 
 
 }

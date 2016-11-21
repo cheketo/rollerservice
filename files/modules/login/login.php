@@ -9,12 +9,13 @@
 ?>
 <body class="hold-transition login-page">
 <div class="login-box">
-  <div class="login-logo">
-    <a href=""><b>Re</b>novatio</a>
+  
+  <div class="login-box-body">
+    <div class="login-logo">
+    <span style="color:#FFF;font-size:1em;">Roller <i class="fa fa-cog"></i> Service</span>
   </div>
   <!-- /.login-logo -->
-  <div class="login-box-body">
-    <p class="login-box-msg">INICIAR SESI&Oacute;N</p>
+    <p class="login-box-msg" style="color:#CCC;">INICIAR SESI&Oacute;N</p>
       <div class="form-group has-feedback">
         <input type="email" class="form-control" name="user" id="user" placeholder="Email o Usuario" value="<?php echo $_COOKIE['rememberuser'];?>">
         <span class="fa fa-envelope form-control-feedback"></span>
