@@ -1,7 +1,7 @@
 <?php
   include('../../includes/inc.main.php');
-  $New = new Category();
-  $Head->setTitle("L&iacute;neas");
+  $New = new Brand();
+  $Head->setTitle("Marcas");
   $Head->setIcon($Menu->GetHTMLicon());
   $Head->setSubTitle($Menu->GetTitle());
   $Head->setHead();

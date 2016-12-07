@@ -1,301 +1,45 @@
 <?php
     include("../../includes/inc.main.php");
-    //$Head->setTitle("Nuevo Usuario");
-    $Menu   = new Menu();
-    $Group  = new GroupData();
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-    $Head->setStyle('../../../vendors/colorpicker/bootstrap-colorpicker.min.css'); // Color Picker
+    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
     $Head->setHead();
     include('../../includes/inc.top.php');
-
-
+    $New = new Category();
 ?>
   <?php echo insertElement("hidden","action",'insert'); ?>
-  <?php echo insertElement("hidden","menues",""); ?>
-  <?php echo insertElement("hidden","groups",""); ?>
-  <?php echo insertElement("hidden","newimage",$Admin->DefaultImg); ?>
-
-  <!-- ///////// FIRST SCREEN ////////// -->
-  <div class="CategoryMain box">
-    <!--box-success-->
-    <!-- <div class="box-header with-border">
-      <h3 class="box-title">Complete el formulario</h3>
+  <?php echo insertElement("hidden","parent"); ?>
+  <div class="box animated fadeIn">
+    <div class="box-header flex-justify-center">
+      <div class="col-lg-8 col-sm-12">
+        <div class="innerContainer">
+          <h4 class="subTitleB"><i class="fa fa-plus-circle"></i> Complete los campos para agregar una nueva l&iacute;nea</h4>
+            <div class="row form-group inline-form-custom-2">
+              <div class="col-xs-12 inner">
+                <label>Nombre</label>
+                <?php echo insertElement('text','title','','form-control','placeholder="Ingrese un Nombre" validateEmpty="Ingrese un nombre." validateFromFile="../../library/processes/proc.common.php///El nombre ya existe///action:=validate///object:=Category"'); ?>
+              </div>
+            </div><!-- inline-form -->
+            <div class="row form-group inline-form-custom-2">
+              <div class="col-xs-12 col-sm-6 inner">
+                <label>Nombre Corto</label>
+                <?php echo insertElement('text','short_title','','form-control','placeholder="Ingrese un Nombre Corto" validateEmpty="Ingrese un nombre."'); ?>
+              </div>
+              <div class="col-xs-12 col-sm-6 inner">
+                <label>Ubicaci&oacute;n</label>
+                <?php echo insertElement('select','parent_select','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"',Utf8EncodeArray($DB->fetchAssoc("product_category","category_id,title","status='A' AND company_id=".$_SESSION['company_id'])),'0','L&iacute;nea Principal'); ?>
+              </div>
+            </div><!-- inline-form -->
+            <hr>
+            <div class="txC">
+              <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-plus"></i> Crear L&iacute;nea</button>
+              <button type="button" class="btn btn-success btnBlue" id="BtnCreateNext"><i class="fa fa-plus"></i> Crear y Agregar Otra</button>
+              <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
+            </div>
+        </div>
+      </div>
     </div>
-    <! .box-header -->
-    <div class="box-body categoryBoxBody">
-      <div class="row"><!-- First Screen Row -->
-        <!-- CONTENT -->
-        <!-- Categories Menu -->
-        <div class="container productCategory1">
-          <h4>Seleccione una categor&iacute;a (Seccion en desarrollo)</h4>
-          <div class="squareMenuMain">
-            <div class="CategoryVehicleTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareYellow">
-              <span>Veh&iacute;culos</span>
-              <img src="../../../skin/images/body/pictures/category-vehicles.jpg" alt="" />
-              <span class="arrow-css Hidden"><div class="squareItemArrowYellow"></div></span>
-            </div>
-            <div class="CategoryRealStateTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareRed">
-              <span>Inmuebles</span>
-              <img src="../../../skin/images/body/pictures/category-real-estate.jpg" alt="" />
-              <span class="arrow-css Hidden"><div class="squareItemArrowRed"></div></span>
-            </div>
-            <div class="CategoryServicesTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareBlue">
-              <span>Servicios</span>
-              <img src="../../../skin/images/body/pictures/category-services.jpg" alt="" />
-              <span class="arrow-css Hidden"><div class="squareItemArrowBlue"></div></span>
-            </div>
-            <div class="CategoryProductsTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareGreen">
-              <span>Productos</span>
-              <img src="../../../skin/images/body/pictures/category-products.jpg" alt="" />
-              <span class="arrow-css Hidden"><div class="squareItemArrowGreen"></div></span>
-            </div>
-          </div>
-        </div>
-        <!-- / Categories Menu -->
-        <!-- Categories Vehicles -->
-        <div class="CategoryVehicles container productCategory2 animated fadeIn Hidden">
-          <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>Veh&iacute;culos</b> | Seleccione una opci&oacute;n</span></div>
-            <ul>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <span>
-                  <i class="fa fa-check"></i>
-                  <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                </span>
-              </li>
-            </ul>
-          </div>
-          <!-- / Item -->
-        </div>
-        <!-- Categories Vehicles -->
-        <!-- Categories Real State -->
-        <div class="CategoryRealState container productCategory2 animated fadeIn Hidden">
-          <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>Inmuebles</b> | Seleccione una opci&oacute;n</span></div>
-            <ul>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <span>
-                  <i class="fa fa-check"></i>
-                  <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                </span>
-              </li>
-            </ul>
-          </div>
-          <!-- / Item -->
-        </div>
-        <!-- /Categories Real State -->
-        <!-- Categories Services -->
-        <div class="CategoryServices container productCategory2 animated fadeIn Hidden">
-          <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>Servicios</b> | Seleccione una opci&oacute;n</span></div>
-            <ul>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <span>
-                  <i class="fa fa-check"></i>
-                  <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                </span>
-              </li>
-            </ul>
-          </div>
-          <!-- / Item -->
-        </div>
-        <!-- /Services -->
-        <!-- Products -->
-        <div class="CategoryProducts container productCategory2 animated fadeIn Hidden">
-          <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>Productos</b> | Seleccione una opci&oacute;n</span></div>
-            <div class="form-group">
-              <ul>
-                <li>
-                  <select name="" size='20' title="Elige una categor&iacute;a">
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                  </select>
-                </li>
-
-                <li>
-                  <span>
-                    <i class="fa fa-check"></i>
-                    <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <!-- / Item -->
-        </div>
-        <!-- /Products -->
-      </div><!-- Firs Screen Row -->
-    </div><!-- /.box-body -->
-  </div><!-- /.box -->
-
-
-
+  </div>
 <?php
-$Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
-// $Foot->setScript('../../../vendors/colorpicker/bootstrap-colorpicker.min.js');
-include('../../includes/inc.bottom.php');
+  $Foot->setScript('../../../vendors/select2/select2.min.js');
+  include('../../includes/inc.bottom.php');
 ?>
-<script type="text/javascript">
-////////////////// Bootstrap Switch ////////////
-$("[name='switchCheckbox']").bootstrapSwitch();
-
-/////////////// Color picker ///////////////////
-// Documentation > http://mjolnic.com/bootstrap-colorpicker/
-// $(".colorpicker").colorpicker();
-</script>

@@ -1,42 +1,36 @@
 <?php
 
-class Product extends DataBase
+class Brand extends DataBase
 {
 	var	$ID;
 	var $Data;
 	var $Products = array();
-	var $DefaultImgURL = '../../../skin/images/products/default/default.jpg';
-	var $Table = 'product';
-	var $TableID = 'product_id';
+	var $DefaultImgURL = '../../../skin/images/brands/default/default.png';
 
 	public function __construct($ID=0)
 	{
 		$this->Connect();
 		if($ID!=0)
 		{
-			$Data = $this->fetchAssoc($this->Table,"*",$this->TableID."=".$ID);
+			$Data = $this->fetchAssoc("product_brand","*","brand_id=".$ID);
 			$this->Data = $Data[0];
 			$this->ID = $ID;
-			$Data = $this->fetchAssoc($this->Table.'_category',"title","category_id=".$this->Data['category_id']);
-			$this->Data['category'] = utf8_encode($Data[0]['title']);
-			$Data = $this->fetchAssoc($this->Table.'_brand',"name","brand_id=".$this->Data['brand_id']);
-			$this->Data['brand'] = utf8_encode($Data[0]['name']);
+			$this->Data['name'] = utf8_encode($this->Data['name']);
+			if($this->Data['country_id'])
+			{
+				$Country = $this->fetchAssoc('admin_country','*','country_id='.$this->Data['country_id']);
+				$this->Data['country'] = utf8_encode($Country[0]['title']);
+			}
 		}
 	}
 	
-	public function GetProviders()
+	public function GetProducts()
 	{
-		if(!$this->Providers)
+		if(!$this->Products)
 		{
-			$Providers = $this->fetchAssoc("relation_product_provider",'provider_id',$this->TableID." =".$this->ID);
-			foreach($Providers as $Provider)
-			{
-				if($ProvidersID) $ProvidersID .= ',';
-				$ProvidersID .= $Provider['provider_id'];
-			}
-			$this->providers = $this->fetchAssoc('provider','*',"status='A' AND provider_id IN ('.$ProvidersID.')");
+			$this->Prodcuts = $this->fetchAssoc("relation_product_brand",'product_id',"brand_id =".$this->ID);
 		}
-		return $this->Providers;
+		return $this->Products;
 		
 	}
 	
@@ -54,9 +48,8 @@ public function MakeRegs($Mode="List")
 		//echo $this->lastQuery();
 		for($i=0;$i<count($Rows);$i++)
 		{
-			$Row	=	new Product($Rows[$i][$this->TableID]);
+			$Row	=	new Brand($Rows[$i]['brand_id']);
 			$Actions= '';
-			//$Row->Data['code'] = $Row->Data['code'];
 			//var_dump($Row);
 			// $UserGroups = $Row->GetGroups();
 			// $Groups='';
@@ -74,21 +67,28 @@ public function MakeRegs($Mode="List")
 				$Actions	.= '<a class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
 			}
 			$Actions	.= '</span>';
+			
+			if($Row->Data['country'])
+			{
+				$Row->Data['country'] = '<span class="label label-primary">'.ucfirst($Row->Data['country']).'</span>';
+			}else{
+				$Row->Data['country'] = 'Indeterminado';
+			}
 			switch(strtolower($Mode))
 			{
 				case "list":
 					$RowBackground = $i % 2 == 0? '':' listRow2 ';
-					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="'.$Row->Data['title'].'">
-									<div class="col-lg-3 col-md-3 col-sm-10 col-xs-10">
+					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="'.$Row->Data['name'].'">
+									<div class="col-lg-7 col-md-6 col-sm-10 col-xs-10">
 										<div class="listRowInner" style="text-align:left!important;">
-											<img class="img-circle hideMobile990" style="margin-right:1em!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['title'].'">
-											<span class="listTextStrong" style="margin-top:0.7em;">'.$Row->Data['code'].'</span>
+											<img class="img-circle hideMobile990" style="margin-right:1em!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['name'].'">
+											<span class="listTextStrong" style="margin-top:0.7em;">'.$Row->Data['name'].'</span>
 										</div>
 									</div>
 									<div class="col-lg-3 col-md-3 col-sm-3 hideMobile990">
 										<div class="listRowInner">
-											<span class="smallTitle">Ubicaci&oacute;n</span>
-											<span class="listTextStrong"><span class="label label-primary">'.ucfirst($Row->Data['category']).'</span></span>
+											<span class="smallTitle">Origen</span>
+											<span class="listTextStrong">'.ucfirst($Row->Data['country']).'</span>
 										</div>
 									</div>
 									<div class="col-lg-1 col-md-2 col-sm-1 hideMobile990"></div>
@@ -99,10 +99,10 @@ public function MakeRegs($Mode="List")
 								</div>';
 				break;
 				case "grid":
-				$Regs	.= '<li id="grid_'.$Row->ID.'" class="RoundItemSelect roundItemBig'.$Restrict.'" title="'.$Row->Data['code'].'">
+				$Regs	.= '<li id="grid_'.$Row->ID.'" class="RoundItemSelect roundItemBig'.$Restrict.'" title="'.$Row->Data['name'].'">
 						            <div class="flex-allCenter imgSelector">
 						              <div class="imgSelectorInner">
-						                <img src="'.$Row->GetImg().'" alt="'.$Row->Data['code'].'" class="img-responsive">
+						                <img src="'.$Row->GetImg().'" alt="'.$Row->Data['name'].'" class="img-responsive">
 						                <div class="imgSelectorContent">
 						                  <div class="roundItemBigActions">
 						                    '.$Actions.'
@@ -111,15 +111,15 @@ public function MakeRegs($Mode="List")
 						                </div>
 						              </div>
 						              <div class="roundItemText">
-						                <p><b>'.$Row->Data['title'].'</b></p>
-						                <p><span class="label label-primary">'.ucfirst($Row->Data['category']).'</span></p>
+						                <p><b>'.$Row->Data['name'].'</b></p>
+						                <p><span class="label label-primary">'.ucfirst($Row->Data['country']).'</span></p>
 						              </div>
 						            </div>
 						          </li>';
 				break;
 			}
         }
-        if(!$Regs) $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron art&iacute;culos.</h4><p>Puede crear un art&iacute;culo haciendo click <a href="new.php">aqui</a>.</p></div>';
+        if(!$Regs) $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron marcas.</h4><p>Puede crear una marca haciendo click <a href="new.php">aqui</a>.</p></div>';
 		return $Regs;
 	}
 	
@@ -127,13 +127,13 @@ public function MakeRegs($Mode="List")
 	{
 		return '<!-- Name -->
           <div class="input-group">
-            <span class="input-group-addon order-arrows sort-activated" order="title" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('text','title','','form-control','placeholder="L&iacute;nea"').'
+            <span class="input-group-addon order-arrows sort-activated" order="name" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+            '.insertElement('text','name','','form-control','placeholder="Marca"').'
           </div>
-          <!-- Categories -->
+          <!-- Corporate Name -->
           <div class="input-group">
-            <span class="input-group-addon order-arrows" order="category" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('select','group','','form-control','',$this->fetchAssoc('product_category a, relation_product_category b','a.*',"a.category_id = b.category_id AND a.status = 'A' AND a.company_id = ".$_SESSION['company_id']),"title"),'', 'Grupo').'
+            <span class="input-group-addon order-arrows" order="country" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+            '.insertElement('text','country','','form-control','placeholder="Origen"').'
           </div>
           ';
 	}
@@ -141,43 +141,29 @@ public function MakeRegs($Mode="List")
 	protected function InsertSearchButtons()
 	{
 		return '<!-- New Button -->
-		    	<a href="new.php"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-user-plus"></i> Nueva L&iacute;nea</button></a>
+		    	<a href="new.php"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-user-plus"></i> Nueva Marca</button></a>
 		    	<!-- /New Button -->';
 	}
 	
 	public function ConfigureSearchRequest()
 	{
-		$this->SetTable($this->Table.' b');
-		$this->SetFields('b.*');
+		$this->SetTable('product_brand b, admin_country c');
+		$this->SetFields('b.*,c.title');
 		$this->SetWhere("b.company_id = ".$_SESSION['company_id']);
 		//$this->AddWhereString(" AND c.company_id = a.company_id");
-		$this->SetOrder('title');
-		$this->SetGroupBy("b.".$this->TableID);
+		$this->SetOrder('name');
+		$this->SetGroupBy("b.brand_id");
 		
 		foreach($_POST as $Key => $Value)
 		{
 			$_POST[$Key] = $Value;
 		}
 			
-		if($_POST['title']) $this->SetWhereCondition("b.title","LIKE","%".$_POST['title']."%");
-		if(!is_null($_POST['parent']))
-		{
-			switch($_POST['parent'])
-			{
-				case "0": $this->SetWhereCondition("b.parent_id","=",0); break;
-				case '': break;
-				default:
-					$this->SetWhereCondition("b.parent_id","=",$_POST['parent']);
-				break;
-			}
-			
-			
-			
+		if($_POST['name']) $this->SetWhereCondition("b.name","LIKE","%".$_POST['name']."%");
+		if($_POST['country']){
+			$this->SetWhereCondition("c.title","LIKE","%".$_POST['country']."%");
+			$this->AddWhereString(" AND b.country_id = c.country_id");
 		}
-		// if($_POST['country']){
-		// 	$this->SetWhereCondition("c.title","LIKE","%".$_POST['country']."%");
-		// 	$this->AddWhereString(" AND b.country_id = c.country_id");
-		// }
 		
 		//if($_POST['agent_email']) $this->SetWhereCondition("a.email","LIKE","%".$_POST['agent_email']."%");
 		//if($_POST['agent_charge']) $this->SetWhereCondition("a.charge","LIKE", "%".$_POST['agent_charge']."%");
@@ -204,11 +190,11 @@ public function MakeRegs($Mode="List")
 			$Order = strtolower($_POST['view_order_field']);
 			switch($Order)
 			{
-				// case "agent_name": 
-				// 	$this->AddWhereString(" AND b.country_id = c.country_id");
-				// 	$Order = 'title';
-				// 	$Prefix = "c.";
-				// break;
+				case "agent_name": 
+					$this->AddWhereString(" AND b.country_id = c.country_id");
+					$Order = 'title';
+					$Prefix = "c.";
+				break;
 				default:
 					$Prefix = "b.";
 				break;
@@ -244,33 +230,34 @@ public function MakeRegs($Mode="List")
 	
 	public function Insert()
 	{
-		$Code		= $_POST['code'];
-		if(!$Parent) $Parent = 0;
-		$Insert			= $this->execQuery('insert',$this->Table,'code,parent_id,creation_date,company_id,created_by',"'".$Code."',".$Parent.",NOW(),".$_SESSION['company_id'].",".$_SESSION['admin_id']);
+		$Name			= $_POST['name'];
+		$Country		= $_POST['country'];
+		if(!$Country) $Country = 0;
+		$Insert			= $this->execQuery('insert','product_brand','name,country_id,creation_date,company_id',"'".$Name."',".$Country.",NOW(),".$_SESSION['company_id']);
 		//echo $this->lastQuery();
 	}	
 	
 	public function Update()
 	{
 		$ID 		= $_POST['id'];
-		$Edit		= new Category($ID);
-		$Code		= $_POST['code'];
-		if(!$Parent) $Parent = 0;
+		$Edit		= new Brand($ID);
+		$Name		= $_POST['name'];
+		$Country	= $_POST['country'];
 		
-		$Update		= $this->execQuery('update',$this->Table,"title='".$Title."',parent_id=".$Parent.",updated_by=".$_SESSION['admin_id'],$this->TableID."=".$ID);
+		$Update		= $this->execQuery('update','product_brand',"name='".$Name."',country_id=".$Country,"brand_id=".$ID);
 		//echo $this->lastQuery();
 	}
 	
 	public function Activate()
 	{
 		$ID	= $_POST['id'];
-		$this->execQuery('update',$this->Table,"status = 'A'",$this->TableID."=".$ID);
+		$this->execQuery('update','product_brand',"status = 'A'","brand_id=".$ID);
 	}
 	
 	public function Delete()
 	{
 		$ID	= $_POST['id'];
-		$this->execQuery('update',$this->Table,"status = 'I'",$this->TableID."=".$ID);
+		$this->execQuery('update','product_brand',"status = 'I'","brand_id=".$ID);
 		//echo $this->lastQuery();
 	}
 	
@@ -295,13 +282,13 @@ public function MakeRegs($Mode="List")
 	
 	public function Validate()
 	{
-		$Name 			= strtolower($_POST['title']);
-		$ActualName 	= strtolower($_POST['titlename']);
+		$Name 			= strtolower($_POST['name']);
+		$ActualName 	= strtolower($_POST['actualname']);
 
 	    if($ActualName)
-	    	$TotalRegs  = $this->numRows($this->Table,'*',"title = '".$Name."' AND title<> '".$ActualName."'");
+	    	$TotalRegs  = $this->numRows('product_brand','*',"name = '".$Name."' AND name<> '".$ActualName."'");
     	else
-		    $TotalRegs  = $this->numRows($this->Table,'*',"title = '".$Name."'");
+		    $TotalRegs  = $this->numRows('product_brand','*',"name = '".$Name."'");
 		if($TotalRegs>0) echo $TotalRegs;
 	}
 }

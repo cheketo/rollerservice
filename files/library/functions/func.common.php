@@ -107,7 +107,27 @@
 	{
 		foreach($Array as $Key => $Value)
 		{
-			$Array[$Key]	= addslashes($Value);
+				if(is_array($Value))
+			{
+				$Array[$Key]	= AddSlashesArray($Value);
+			}else{
+				$Array[$Key]	= addslashes($Value);
+			}
+		}
+		
+		return $Array;
+	}
+	
+	function Utf8EncodeArray($Array)
+	{
+		foreach($Array as $Key => $Value)
+		{
+			if(is_array($Value))
+			{
+				$Array[$Key]	= Utf8EncodeArray($Value);
+			}else{
+				$Array[$Key]	= utf8_encode($Value);
+			}
 		}
 		
 		return $Array;

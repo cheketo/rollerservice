@@ -5,7 +5,7 @@
     $Edit         = new Company($ID);
     $Data         = $Edit->GetData();
     ValidateID($Data);
-    
+    $Edit->Data = Utf8EncodeArray($Edit->Data);
     $Agents = $DB->fetchAssoc('admin_company_agent','*','company_id='.$ID);
     $I=0;
     foreach($Agents as $Agent)

@@ -1,21 +1,19 @@
 <?php
     include("../../includes/inc.main.php");
-    //$Head->setTitle("Nuevo Usuario");
-    $Menu   = new Menu();
-    $Group  = new GroupData();
     $Head->setTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-    $Head->setStyle('../../../vendors/colorpicker/bootstrap-colorpicker.min.css'); // Color Picker
+    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
     $Head->setHead();
+    
+    $Category = new Category();
     include('../../includes/inc.top.php');
-
+    
+    // HIDDEN ELEMENTS
+    echo insertElement("hidden","action",'insert');
+    echo insertElement("hidden","category");
+    echo insertElement("hidden","brand");
 
 ?>
-  <?php echo insertElement("hidden","action",'insert'); ?>
-  <?php echo insertElement("hidden","menues",""); ?>
-  <?php echo insertElement("hidden","groups",""); ?>
-  <?php echo insertElement("hidden","newimage",$Admin->DefaultImg); ?>
-
   <!-- ///////// FIRST SCREEN ////////// -->
   <div class="CategoryMain box">
     <!--box-success-->
@@ -27,259 +25,71 @@
       <div class="row"><!-- First Screen Row -->
         <!-- CONTENT -->
         <!-- Categories Menu -->
-        <div class="container productCategory1">
-          <h4>Seleccione una categor&iacute;a</h4>
-          <div class="squareMenuMain">
-            <div class="CategoryVehicleTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareYellow">
-              <span>Veh&iacute;culos</span>
-              <img src="../../../skin/images/body/pictures/category-vehicles.jpg" alt="" />
-              <span class="arrow-css Hidden"><div class="squareItemArrowYellow"></div></span>
-            </div>
-            <div class="CategoryRealStateTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareRed">
-              <span>Inmuebles</span>
-              <img src="../../../skin/images/body/pictures/category-real-estate.jpg" alt="" />
-              <span class="arrow-css Hidden"><div class="squareItemArrowRed"></div></span>
-            </div>
-            <div class="CategoryServicesTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareBlue">
-              <span>Servicios</span>
-              <img src="../../../skin/images/body/pictures/category-services.jpg" alt="" />
-              <span class="arrow-css Hidden"><div class="squareItemArrowBlue"></div></span>
-            </div>
-            <div class="CategoryProductsTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareGreen">
-              <span>Productos</span>
-              <img src="../../../skin/images/body/pictures/category-products.jpg" alt="" />
-              <span class="arrow-css Hidden"><div class="squareItemArrowGreen"></div></span>
-            </div>
-          </div>
-        </div>
+        <!--<div class="container productCategory1">-->
+        <!--  <h4>Seleccione una categor&iacute;a</h4>-->
+        <!--  <div class="squareMenuMain">-->
+        <!--    <div class="CategoryVehicleTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareYellow">-->
+        <!--      <span>Veh&iacute;culos</span>-->
+        <!--      <img src="../../../skin/images/body/pictures/category-vehicles.jpg" alt="" />-->
+        <!--      <span class="arrow-css Hidden"><div class="squareItemArrowYellow"></div></span>-->
+        <!--    </div>-->
+        <!--    <div class="CategoryRealStateTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareRed">-->
+        <!--      <span>Inmuebles</span>-->
+        <!--      <img src="../../../skin/images/body/pictures/category-real-estate.jpg" alt="" />-->
+        <!--      <span class="arrow-css Hidden"><div class="squareItemArrowRed"></div></span>-->
+        <!--    </div>-->
+        <!--    <div class="CategoryServicesTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareBlue">-->
+        <!--      <span>Servicios</span>-->
+        <!--      <img src="../../../skin/images/body/pictures/category-services.jpg" alt="" />-->
+        <!--      <span class="arrow-css Hidden"><div class="squareItemArrowBlue"></div></span>-->
+        <!--    </div>-->
+        <!--    <div class="CategoryProductsTrigger col-lg-3 col-md-6 col-xs-12 squareItemMenu squareGreen">-->
+        <!--      <span>Productos</span>-->
+        <!--      <img src="../../../skin/images/body/pictures/category-products.jpg" alt="" />-->
+        <!--      <span class="arrow-css Hidden"><div class="squareItemArrowGreen"></div></span>-->
+        <!--    </div>-->
+        <!--  </div>-->
+        <!--</div>-->
         <!-- / Categories Menu -->
-        <!-- Categories Vehicles -->
-        <div class="CategoryVehicles container productCategory2 animated fadeIn Hidden">
+        <!-- Categories -->
+        <div class="container productCategory2 animated fadeIn">
           <!-- Item -->
           <div class="categoryList">
-            <div class="categoryTitle"><span><b>Veh&iacute;culos</b> | Seleccione una opci&oacute;n</span></div>
+            <div class="categoryTitle"><span><b>L&iacute;neas</b> | Seleccione una L&iacute;nea</span></div>
             <ul>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
+              <?php 
+                $Categories = $Category->GetAllCategories();
+                
+                foreach($Categories as $Cat)
+                {
+                  if($Parent!=$Cat['parent_id'])
+                  {
+                    $Level = $Category->CalculateCategoryLevel($Cat['category_id']);
+                    if($Level>$MaxLevel) $MaxLevel = $Level;
+                    $Parent = $Cat['parent_id'];
+                    if($Parent!=0)
+                    {
+                      $Class = 'Hidden';
+                      echo '</select></li>';
+                    }
+                    echo '<li class="'.$Class.'" level="'.$Level.'" category="'.$Parent.'"><select class="category_selector" name="category_'.$Parent.'" id="category_'.$Parent.'" size="20">';
+                  }
+                  echo '<option value="'.$Cat['category_id'].'">'.$Cat['title'].'</option>';
+                }
+                echo '</select></li>';
+              ?>
+              <li id="CountinueBtn" class="Hidden">
                 <span>
                   <i class="fa fa-check"></i>
                   <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
                 </span>
               </li>
             </ul>
+            <?php echo insertElement('hidden','maxlevel',$MaxLevel); ?>
           </div>
           <!-- / Item -->
         </div>
-        <!-- Categories Vehicles -->
-        <!-- Categories Real State -->
-        <div class="CategoryRealState container productCategory2 animated fadeIn Hidden">
-          <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>Inmuebles</b> | Seleccione una opci&oacute;n</span></div>
-            <ul>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <span>
-                  <i class="fa fa-check"></i>
-                  <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                </span>
-              </li>
-            </ul>
-          </div>
-          <!-- / Item -->
-        </div>
-        <!-- /Categories Real State -->
-        <!-- Categories Services -->
-        <div class="CategoryServices container productCategory2 animated fadeIn Hidden">
-          <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>Servicios</b> | Seleccione una opci&oacute;n</span></div>
-            <ul>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <select name="" size='20' title="Elige una categor&iacute;a">
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                  <option value="">Item 1</option>
-                </select>
-              </li>
-              <li>
-                <span>
-                  <i class="fa fa-check"></i>
-                  <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                </span>
-              </li>
-            </ul>
-          </div>
-          <!-- / Item -->
-        </div>
-        <!-- /Services -->
-        <!-- Products -->
-        <div class="CategoryProducts container productCategory2 animated fadeIn Hidden">
-          <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>Productos</b> | Seleccione una opci&oacute;n</span></div>
-            <div class="form-group">
-              <ul>
-                <li>
-                  <select name="" size='20' title="Elige una categor&iacute;a">
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                    <option value="">Item 1</option>
-                  </select>
-                </li>
-
-                <li>
-                  <span>
-                    <i class="fa fa-check"></i>
-                    <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <!-- / Item -->
-        </div>
-        <!-- /Products -->
+        <!-- Categories -->
       </div><!-- Firs Screen Row -->
     </div><!-- /.box-body -->
   </div><!-- /.box -->
@@ -291,23 +101,64 @@
     <div class="box-header flex-justify-center">
       <div class="col-md-6 ">
         <div class="innerContainer">
-          <h4 class="subTitleB"><i class="fa fa-tag"></i> Detalles del Producto</h4>
-          <form method="post">
+          <h4 class="subTitleB"><i class="fa fa-cube"></i> Detalles del Art&iacute;culo</h4>
+          
             <div class="form-group">
-              <input type="name" class="form-control" placeholder="Nombre del Producto">
+              L&iacute;nea: <b><span id="category_selected"></span></b>
+            </div>
+            <!--<div class="form-group">-->
+            <!--  <?php //echo insertElement('text','title','','form-control','placeholder="Nombre del Art&iacute;culo"') ?>-->
+            <!--</div>-->
+            <div class="row form-group inline-form-custom">
+              <div class="col-xs-12 col-sm-4">
+                <?php //echo insertElement('text','short_title','','form-control','placeholder="Nombre Corto"') ?>
+                <?php echo insertElement('text','code','','form-control','placeholder="C&oacute;digo"') ?>
+              </div>
+              <div class="col-xs-12 col-sm-4">
+                <?php echo insertElement('text','price','','form-control','placeholder="Precio"') ?>
+              </div>
+              <div class="col-xs-12 col-sm-4">
+                <?php echo insertElement('text','rack','','form-control','placeholder="Estanter&iacute;a"') ?>
+              </div>
+            </div>
+            <div class="row form-group inline-form-custom">
+              <!--<div class="col-xs-12 col-sm-4">-->
+              <!--  <?php //echo insertElement('text','rack','','form-control','placeholder="Estanter&iacute;a"') ?>-->
+              <!--</div>-->
+              <div class="col-xs-12 col-sm-12">
+                <?php echo insertElement('select','brand_select','','form-control  select2 selectTags','style="width:100%;height:auto!important;"',Utf8EncodeArray($DB->fetchAssoc("product_brand","brand_id,name","status='A' AND company_id=".$_SESSION['company_id'])),'0','Seleccionar Marca') ?>
+              </div>
+            </div>
+            <div class="form-group">
+              <?php echo insertElement('text','size','','form-control','placeholder="Medidas"') ?>
             </div>
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12 col-sm-4">
-                <input type="name" class="form-control" placeholder="Composici&oacute;n">
+                <?php echo insertElement('text','stock','','form-control','placeholder="Stock Incial"') ?>
               </div>
               <div class="col-xs-12 col-sm-4">
-                <input type="name" class="form-control" placeholder="C&oacute;digo">
+                <?php echo insertElement('text','stock_min','','form-control','placeholder="Stock M&iacute;nimo"') ?>
               </div>
               <div class="col-xs-12 col-sm-4">
-                <input type="name" class="form-control" placeholder="Precio">
+                <?php echo insertElement('text','stock_max','','form-control','placeholder="Stock M&aacute;ximo"') ?>
               </div>
             </div>
-
+            <div class="form-group">
+              <?php echo insertElement('button','dispatch_data','Agregar datos de &uacute;ltima importaci&oacute;n','btn btn-warning','style="width:100%;"') ?>
+            </div>
+            <div class="row form-group inline-form-custom Hidden Dispatch animated fadeIn">
+              <div class="col-md-12">
+                <?php echo insertElement('text','dispatch','','form-control','placeholder="Desp. Aduana"') ?>
+              </div>
+            </div>
+            <div class="row form-group inline-form-custom Hidden Dispatch animated fadeIn">
+              <div class="col-xs-12 col-sm-6">
+                <?php echo insertElement('text','price_fob','','form-control','placeholder="Costo Fob"') ?>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <?php echo insertElement('text','price_dispatch','','form-control','placeholder="Costo Desp."') ?>
+              </div>
+            </div>
             <!-- Description (Character Counter)-->
             <div class="form-group textWithCounter">
               <textarea id="description" name="description" class="text-center" placeholder="Descripción" rows="4" maxlength="150"></textarea>
@@ -318,8 +169,8 @@
             </div>
             <div class="txC">
               <button type="button" class="ProductDescBtn btn btnBlue">Continuar</button>
+              <button type="button" class="BackToCategory btn btnRed">Regresar</button>
             </div>
-          </form>
         </div>
         <!-- Description (Character Counter) -->
       </div>
@@ -499,14 +350,7 @@
   <!-- Help Modal -->
 <?php
 $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
-// $Foot->setScript('../../../vendors/colorpicker/bootstrap-colorpicker.min.js');
+$Foot->setScript('../../../vendors/jquery-mask/src/jquery.mask.js');
+$Foot->setScript('../../../vendors/select2/select2.min.js');
 include('../../includes/inc.bottom.php');
 ?>
-<script type="text/javascript">
-////////////////// Bootstrap Switch ////////////
-$("[name='switchCheckbox']").bootstrapSwitch();
-
-/////////////// Color picker ///////////////////
-// Documentation > http://mjolnic.com/bootstrap-colorpicker/
-// $(".colorpicker").colorpicker();
-</script>

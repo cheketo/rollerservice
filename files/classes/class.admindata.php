@@ -30,9 +30,9 @@ class AdminData extends DataBase
 		$this->AdminID 		= $AdminID==''? $_SESSION['admin_id'] : $AdminID;
 		$this->AdminData 	= $this->fetchAssoc('admin_user','*',"admin_id = '".$this->AdminID."'");
 		$this->AdminData	= $this->AdminData[0];
-		$this->FirstName	= $this->AdminData['first_name'];
-		$this->LastName		= $this->AdminData['last_name'];
-		$this->User			= $this->AdminData['user'];
+		$this->FirstName	= utf8_encode($this->AdminData['first_name']);
+		$this->LastName		= utf8_encode($this->AdminData['last_name']);
+		$this->User			= utf8_encode($this->AdminData['user']);
 		$this->Email		= $this->AdminData['email'];
 		$this->ProfileID	= $this->AdminData['profile_id'];
 		$this->Img			= file_exists($this->AdminData['img'])? $this->AdminData['img'] : $this->DefaultImg;
@@ -295,12 +295,12 @@ public function MakeRegs($Mode="List")
 		$this->SetGroupBy("a.admin_id");
 		if($_SESSION['profile_id']!=333)
 		{
-			$this->SetWhereCondition("a.profile_id",">",$this->ProfileID);
+			$this->SetWhereCondition("a.profile_id",">=",$this->ProfileID);
 		}
 		
 		foreach($_POST as $Key => $Value)
 		{
-			$_POST[$Key] = htmlentities($Value);
+			$_POST[$Key] = $Value;
 		}
 		
 		// if($_REQUEST['status'])
@@ -381,11 +381,11 @@ public function MakeRegs($Mode="List")
 	public function Insert()
 	{
 		$Image 		= $_POST['newimage'];
-		$User		= htmlentities(strtolower($_POST['user']));
-		$Password	= sha1(htmlentities($_POST['password']));
-		$FirstName	= htmlentities(ucfirst($_POST['first_name']));
-		$LastName	= htmlentities(ucfirst($_POST['last_name']));
-		$Email 		= htmlentities(strtolower($_POST['email']));
+		$User		= strtolower($_POST['user']);
+		$Password	= sha1($_POST['password']);
+		$FirstName	= ucfirst($_POST['first_name']);
+		$LastName	= ucfirst($_POST['last_name']);
+		$Email 		= strtolower($_POST['email']);
 		$ProfileID	= $_POST['profile'];
 		$Groups		= $_POST['groups'] ? explode(",",$_POST['groups']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
@@ -422,14 +422,14 @@ public function MakeRegs($Mode="List")
 		$Edit	= new AdminData($ID);
 		if($_POST['password'])
 		{
-			$Password	= sha1(htmlentities($_POST['password']));
+			$Password	= sha1($_POST['password']);
 			$PasswordFilter	= ",password='".$Password."'";
 		}
 		$Image 		= $_POST['newimage'];
-		$User		= htmlentities(strtolower($_POST['user']));
-		$FirstName	= htmlentities($_POST['first_name']);
-		$LastName	= htmlentities($_POST['last_name']);
-		$Email 		= htmlentities($_POST['email']);
+		$User		= strtolower($_POST['user']);
+		$FirstName	= $_POST['first_name'];
+		$LastName	= $_POST['last_name'];
+		$Email 		= $_POST['email'];
 		$ProfileID	= $_POST['profile'];
 		$Groups		= $_POST['groups'] ? explode(",",$_POST['groups']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
@@ -498,8 +498,8 @@ public function MakeRegs($Mode="List")
 	
 	public function Validate()
 	{
-		$User 			= strtolower(utf8_encode($_POST['user']));
-		$ActualUser 	= strtolower(utf8_encode($_POST['actualuser']));
+		$User 			= strtolower($_POST['user']);
+		$ActualUser 	= strtolower($_POST['actualuser']);
 
 	    if($ActualUser)
 	    	$TotalRegs  = $this->numRows('admin_user','*',"user = '".$User."' AND user<> '".$ActualUser."'");
@@ -510,8 +510,8 @@ public function MakeRegs($Mode="List")
 	
 	public function Validate_email()
 	{
-		$Email 			= strtolower(utf8_encode($_POST['email']));
-		$ActualEmail 	= strtolower(utf8_encode($_POST['actualemail']));
+		$Email 			= strtolower($_POST['email']);
+		$ActualEmail 	= strtolower($_POST['actualemail']);
 
 	    if($ActualEmail)
 	    	$TotalRegs  = $this->numRows('admin_user','*',"email = '".$Email."' AND email<> '".$ActualEmail."'");

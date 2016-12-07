@@ -13,7 +13,7 @@ $(function(){
 				procText = "creaci&oacute;n"
 			}
 
-			confirmText += " el menú '"+utf8_encode($("#title").val())+"'";
+			confirmText += " el menu '"+utf8_encode($("#title").val())+"'";
 
 			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
 				if(e)

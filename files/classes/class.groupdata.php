@@ -129,6 +129,7 @@ public function MakeRegs($Mode="List")
 		foreach($Rows as $Row)
 		{
 			$Row			= new GroupData($Row['group_id']);
+			$Row->Data['title'] = utf8_encode($Row->Data['title']);
 			$ID 			= $Row->ID;
 			$AllProfiles	= $Row->GetProfiles();
 			$Profiles		= '';
@@ -227,7 +228,7 @@ public function MakeRegs($Mode="List")
 		
 		foreach($_POST as $Key => $Value)
 		{
-			$_POST[$Key] = htmlentities($Value);
+			$_POST[$Key] = $Value;
 		}
 			
 		if($_POST['title']) $this->SetWhereCondition("g.title","LIKE","%".$_POST['title']."%");
@@ -299,7 +300,7 @@ public function MakeRegs($Mode="List")
 	public function Insert()
 	{
 		$Image 		= $_POST['newimage'];	
-		$Title		= htmlentities(ucfirst($_POST['title']));
+		$Title		= ucfirst($_POST['title']);
 		$Profiles	= $_POST['profiles'] ? explode(",",$_POST['profiles']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
 		//$Users		= $_POST['users'] ? explode(",",$_POST['users']) : array();
@@ -356,7 +357,7 @@ public function MakeRegs($Mode="List")
 			$Image 	= $Edit->ImgGalDir.$Dir[0];
 			copy($Temp,$Image);
 		}
-		$Title		= htmlentities(ucfirst($_POST['title']));
+		$Title		= ucfirst($_POST['title']);
 		$Profiles	= $_POST['profiles'] ? explode(",",$_POST['profiles']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
 		//$Users		= $_POST['users'] ? explode(",",$_POST['users']) : array();
@@ -427,8 +428,8 @@ public function MakeRegs($Mode="List")
 	
 	public function Validate()
 	{
-		$Title 			= strtolower(utf8_encode($_POST['title']));
-		$ActualTitle 	= strtolower(utf8_encode($_POST['actualtitle']));
+		$Title 			= strtolower($_POST['title']);
+		$ActualTitle 	= strtolower($_POST['actualtitle']);
 
 	    if($ActualTitle)
 	    	$TotalRegs  = $this->numRows('admin_group','*',"title = '".$Title."' AND title <> '".$ActualTitle."' AND company_id = ".$_SESSION['company_id']);

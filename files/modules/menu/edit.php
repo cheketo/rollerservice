@@ -41,7 +41,7 @@
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Ubicaci&oacute;n</label>
-                <?php echo insertElement('select','parent',$Data['parent_id'],'form-control','',$DB->fetchAssoc('menu','menu_id,title',"status<>'I' AND menu_id <>".$ID),'0','Men&uacute; Principal'); ?>
+                <?php echo insertElement('select','parent',$Data['parent_id'],'form-control','',Utf8EncodeArray($DB->fetchAssoc('menu','menu_id,title',"status<>'I' AND menu_id <>".$ID)),'0','Men&uacute; Principal'); ?>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label>Link</label>
@@ -50,13 +50,13 @@
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Perfiles</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo insertElement('multiple','profile',$Profiles,'form-control select2 selectProfileTags','data-placeholder="Seleccione Perfiles" style="width: 100%;"',$DB->fetchAssoc('admin_profile','profile_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
+                  <?php echo insertElement('multiple','profile',$Profiles,'form-control select2 selectProfileTags','data-placeholder="Seleccione Perfiles" style="width: 100%;"',Utf8EncodeArray($DB->fetchAssoc('admin_profile','profile_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id']))); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Grupos</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo insertElement('multiple','group',$Groups,'form-control select2 selectGroupTags','data-placeholder="Seleccione Grupos" style="width: 100%;"',$DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
+                  <?php echo insertElement('multiple','group',$Groups,'form-control select2 selectGroupTags','data-placeholder="Seleccione Grupos" style="width: 100%;"',Utf8EncodeArray($DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id']))); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 inner">

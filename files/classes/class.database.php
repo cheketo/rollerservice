@@ -16,7 +16,7 @@ class DataBase
 	var $Regs = array();
 	var $TotalRegs;
 	var $Page = 1;
-	var $RegsPerView = 5;
+	var $RegsPerView = 25;
 	var $Order;
 	//var $GroupBy;
 	var $Table;
@@ -450,7 +450,7 @@ class DataBase
 			      <!-- Paginator -->
 			      <div class="pull-left form-inline paginationLeft">
 			          <label for="RegsPerView" class="control-label">Mostrar </label>
-			          '.insertElement('select','regsperview','','form-control','',array("5"=>"5","10"=>"10","25"=>"25","50"=>"50","100"=>"100")).'
+			          '.insertElement('select','regsperview',$this->GetRegsPerView(),'form-control','',array("5"=>"5","10"=>"10","25"=>"25","50"=>"50","100"=>"100")).'
 			          de <b><span id="TotalRegs">'.$this->GetTotalRegs().'</span></b>
 			      </div>
 			      <ul class="paginationRight pagination no-margin pull-right">

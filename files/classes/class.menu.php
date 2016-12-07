@@ -22,6 +22,7 @@ class Menu extends DataBase
 		}else{
 			$this->MenuData	= $this->GetLinkData();
 		}
+		$this->MenuData['title'] = utf8_encode($this->MenuData['title']);
 		// $this->SetTable('menu');
 		// $this->SetFields('*');
 		//$this->SetWhere("company_id=".$_SESSION['company_id']);
@@ -82,6 +83,7 @@ class Menu extends DataBase
 		$this->ActiveMenus = $ActiveMenus;
 		foreach($Rows as $Row)
 		{
+			$Row['title'] = utf8_encode($Row['title']);
 			if($this->hasChild($Row['menu_id']))
 			{
 					$DropDown 		= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
@@ -113,6 +115,7 @@ class Menu extends DataBase
 			echo '<ul class="treeview-menu">';
 			foreach($Rows as $Row)
 			{
+				$Row['title'] = utf8_encode($Row['title']);
 				if($this->hasChild($Row['menu_id']))
 				{
 						$DropDown 		= '<span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
@@ -159,7 +162,7 @@ class Menu extends DataBase
 		if($Parent!=0) $this->insertBreadCrumbs($Parent);
 		//
 		// echo ' <i class="fa fa-angle-right"></i>';
-
+		$Menu[0]['title'] = utf8_encode($Menu[0]['title']);
 		if($ID==0)
 		{
 			$Title = '<i class="fa '.$Menu[0]['icon'].'"></i> '.$Menu[0]['title'];
@@ -261,8 +264,10 @@ class Menu extends DataBase
 		$HTML		= '<ul>';
 		$Menues 	= $this->fetchAssoc('menu','*',"parent_id = ".$Parent." AND status <> 'I'","position");
 		$Parents	= $this->GetParents();
+		
 		foreach($Menues as $Menu)
 		{
+			$Menu['title'] = utf8_encode($Menu['title']);
 			$HTML .= '<li data-value="'.$Menu['menu_id'].'"> <i class="fa '.$Menu['icon'].'"></i> '.$Menu['title'];
 			if(in_array($Menu['menu_id'],$Parents))
 			{
@@ -321,6 +326,7 @@ class Menu extends DataBase
 			$Groups = '';
 			foreach($MenuGroups as $Group)
 			{
+				$Group['title'] = utf8_encode($Group['title']);
 				$Groups .= '<span class="label label-warning">'.$Group['title'].'</span> ';
 			}
 			if(!$Groups) $Groups = 'Ninguno';
@@ -328,6 +334,7 @@ class Menu extends DataBase
 			$Profiles = '';
 			foreach($MenuProfiles as $Profile)
 			{
+				$Profile['title'] = utf8_encode($Profile['title']);
 				$Profiles .= '<span class="label label-primary">'.$Profile['title'].'</span> ';
 			}
 			if(!$Profiles) $Profiles = 'Ninguno';
@@ -439,7 +446,7 @@ class Menu extends DataBase
           <!-- Parent -->
           <div class="input-group">
             <span class="input-group-addon order-arrows" order="parent" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('select','parent','','form-control','',$Parent,'', 'Ubicaci&oacute;n').'
+            '.insertElement('select','parent','','form-control','',$Parents,'', 'Ubicaci&oacute;n').'
           </div>
           <!-- Public -->
           <div class="input-group">
@@ -485,7 +492,7 @@ class Menu extends DataBase
 		
 		foreach($_POST as $Key => $Value)
 		{
-			$_POST[$Key] = htmlentities($Value);
+			$_POST[$Key] = $Value;
 		}
 			
 		if($_POST['title']) $this->SetWhereCondition("m.title","LIKE","%".$_POST['title']."%");
@@ -564,7 +571,7 @@ class Menu extends DataBase
 	
 	public function Insert()
 	{
-		$Title		= htmlentities($_POST['title']);
+		$Title		= $_POST['title'];
 		$Link		= $_POST['link'];
 		$Position	= $_POST['position']? intval($_POST['position']) : 0;
 		$Parent		= $_POST['parent'];
@@ -595,7 +602,7 @@ class Menu extends DataBase
 	{
 		$ID	= $_POST['id'];
 		
-		$Title		= htmlentities($_POST['title']);
+		$Title		= $_POST['title'];
 		$Link		= $_POST['link']==""? "#" : $_POST['link'];
 		$Position	= $_POST['position']? intval($_POST['position']) : 0;
 		$ParentID	= $_POST['parent'];

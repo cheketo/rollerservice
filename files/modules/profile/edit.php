@@ -38,12 +38,12 @@
             <div class="row form-group inline-form-custom-2">
               <div class="col-xs-12 col-sm-6 inner">
                 <label>T&iacute;tulo</label>
-                <?php echo insertElement('text','title',$Data['title'],'form-control','placeholder="Ingrese un T&iacute;tulo" validateEmpty="Ingrese un t&iacute;tulo." validateFromFile="../../library/processes/proc.common.php///El perfil ya existe///action:=validate///actualtitle:='.$Data['title'].'///object:=ProfileData"'); ?>
+                <?php echo insertElement('text','title',utf8_encode($Data['title']),'form-control','placeholder="Ingrese un T&iacute;tulo" validateEmpty="Ingrese un t&iacute;tulo." validateFromFile="../../library/processes/proc.common.php///El perfil ya existe///action:=validate///actualtitle:='.utf8_encode($Data['title']).'///object:=ProfileData"'); ?>
               </div>
               <div class="col-xs-12 col-sm-6 inner">
                 <label for="">Grupos</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo insertElement('multiple','group',$Groups,'form-control select2 selectGroupTags','data-placeholder="Seleccione Grupos" style="width: 100%;"',$DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
+                  <?php echo insertElement('multiple','group',$Groups,'form-control select2 selectGroupTags','data-placeholder="Seleccione Grupos" style="width: 100%;"',Utf8EncodeArray($DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id']))); ?>
                 </div>
               </div>
               <!--<div class="col-xs-12 col-sm-12 inner">-->

@@ -24,7 +24,7 @@
               <div class="col-xs-12 col-sm-6 inner">
                 <label for="">Grupos</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo insertElement('multiple','group','','form-control select2 selectGroupTags','data-placeholder="Seleccione Grupos" style="width: 100%;"',$DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
+                  <?php echo insertElement('multiple','group','','form-control select2 selectGroupTags','data-placeholder="Seleccione Grupos" style="width: 100%;"',Utf8EncodeArray($DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id']))); ?>
                 </div>
               </div>
               <!--<div class="col-xs-12 col-sm-12 inner">-->

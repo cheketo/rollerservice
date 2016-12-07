@@ -181,7 +181,7 @@ function deleteListElement()
 		var id			= elementID[1];
 		var row			= $("#row_"+id);
 		var title		= utf8_encode(row.attr("title"));
-		alertify.confirm(utf8_decode('Está a punto de eliminar a '+title+' ¿Desea continuar?'), function(e){
+		alertify.confirm(utf8_decode('Est&aacute; a punto de eliminar a '+title+' ¿Desea continuar?'), function(e){
 			if(e)
 			{
 				var result;

@@ -46,7 +46,7 @@
             <div class="mw100">
               <h4 class="subTitleB"><i class="fa fa-pencil"></i> Datos Principales</h4>
               <div class="form-group">
-                <?php echo insertElement('text','user',$Data['user'],'form-control','placeholder="Usuario" tabindex="1" validateEmpty="El usuario es obligatorio." validateMinLength="3///El usuario debe contener 3 caracteres como m&iacute;nimo." validateFromFile="../../library/processes/proc.common.php///El usuario ya existe///actualuser:='.$Data['user'].'///action:=validate///object:=AdminData"'); ?>
+                <?php echo insertElement('text','user',utf8_encode($Data['user']),'form-control','placeholder="Usuario" tabindex="1" validateEmpty="El usuario es obligatorio." validateMinLength="3///El usuario debe contener 3 caracteres como m&iacute;nimo." validateFromFile="../../library/processes/proc.common.php///El usuario ya existe///actualuser:='.utf8_encode($Data['user']).'///action:=validate///object:=AdminData"'); ?>
               </div>
               <div class="form-group">
                 <?php echo insertElement('password','password','','form-control','placeholder="Contrase&ntilde;a" validateMinLength="4///La contrase&ntilde;a debe contener 4 caracteres como m&iacute;nimo." tabindex="2"'); ?>
@@ -58,10 +58,10 @@
                 <?php echo insertElement('text','email',$Data['email'],'form-control','placeholder="Email" validateEmail="Ingrese un email v&aacute;lido." validateMinLength="4///El email debe contener 4 caracteres como m&iacute;nimo." tabindex="4" validateFromFile="../../library/processes/proc.common.php///El email ya existe///actualemail:='.$Data['email'].'///action:=validate_email///object:=AdminData"'); ?>
               </div>
               <div class="form-group">
-                <?php echo insertElement('text','first_name',$Data['first_name'],'form-control','placeholder="Nombre" validateEmpty="El nombre es obligatorio." validateMinLength="2///El nombre debe contener 2 caracteres como m&iacute;nimo." tabindex="5"'); ?>
+                <?php echo insertElement('text','first_name',utf8_encode($Data['first_name']),'form-control','placeholder="Nombre" validateEmpty="El nombre es obligatorio." validateMinLength="2///El nombre debe contener 2 caracteres como m&iacute;nimo." tabindex="5"'); ?>
               </div>
               <div class="form-group">
-                <?php echo insertElement('text','last_name',$Data['last_name'],'form-control','placeholder="Apellido" validateEmpty="El apellido es obligatorio." validateMinLength="2///El apellido debe contener 2 caracteres como m&iacute;nimo." tabindex="6"'); ?>
+                <?php echo insertElement('text','last_name',utf8_encode($Data['last_name']),'form-control','placeholder="Apellido" validateEmpty="El apellido es obligatorio." validateMinLength="2///El apellido debe contener 2 caracteres como m&iacute;nimo." tabindex="6"'); ?>
               </div>
             </div>
           </div>
@@ -73,7 +73,7 @@
               <div class="col-lg-6 col-md-12">
                 <div class="form-group">
                   <h4 class="subTitleB"><i class="fa fa-eye"></i> Perfiles</h4>
-                  <?php echo insertElement('select','profile',$Data['profile_id'],'form-control','validateEmpty="El perfil es obligatorio." tabindex="7"',$DB->fetchAssoc('admin_profile','profile_id,title',"status='A' AND company_id=".$_SESSION['company_id']),'',"Seleccione un perfil.."); ?>
+                  <?php echo insertElement('select','profile',$Data['profile_id'],'form-control','validateEmpty="El perfil es obligatorio." tabindex="7"',Utf8EncodeArray($DB->fetchAssoc('admin_profile','profile_id,title',"status='A' AND company_id=".$_SESSION['company_id'])),'',"Seleccione un perfil.."); ?>
                 </div>
               </div>
               <!-- Groups -->

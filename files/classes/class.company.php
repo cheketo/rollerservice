@@ -71,6 +71,7 @@ public function MakeRegs($Mode="List")
 		for($i=0;$i<count($Rows);$i++)
 		{
 			$Row	=	new Company($Rows[$i]['company_id']);
+			$Row->Data['name'] = utf8_encode($Row->Data['name']);
 			//var_dump($Row);
 			// $UserGroups = $Row->GetGroups();
 			// $Groups='';
@@ -218,7 +219,7 @@ public function MakeRegs($Mode="List")
 		
 		foreach($_POST as $Key => $Value)
 		{
-			$_POST[$Key] = htmlentities($Value);
+			$_POST[$Key] = $Value;
 		}
 			
 		if($_POST['name']) $this->SetWhereCondition("c.name","LIKE","%".$_POST['name']."%");
@@ -296,16 +297,16 @@ public function MakeRegs($Mode="List")
 		for($i=1;$i<=$_POST['total_agents'];$i++)
 		{
 			if($_POST['agent_name_'.$i])
-				$Agents[] = array('name'=>htmlentities(ucfirst($_POST['agent_name_'.$i])),'charge'=>htmlentities(ucfirst($_POST['agent_charge_'.$i])),'email'=>$_POST['agent_email_'.$i],'phone'=>$_POST['agent_phone_'.$i]);
+				$Agents[] = array('name'=>ucfirst($_POST['agent_name_'.$i]),'charge'=>ucfirst($_POST['agent_charge_'.$i]),'email'=>$_POST['agent_email_'.$i],'phone'=>$_POST['agent_phone_'.$i]);
 		}
 		$Image 			= $_POST['newimage'];
-		$Name			= htmlentities(ucfirst($_POST['name']));
-		$CorporateName	= htmlentities(ucfirst($_POST['corporate_name']));
-		$Address		= htmlentities(ucfirst($_POST['address']));
+		$Name			= ucfirst($_POST['name']);
+		$CorporateName	= ucfirst($_POST['corporate_name']);
+		$Address		= ucfirst($_POST['address']);
 		//$Email 			= htmlentities(strtolower($_POST['email']));
-		$Website 		= htmlentities($_POST['website']);
-		$Phone			= htmlentities($_POST['phone']);
-		$CUIT			= htmlentities($_POST['cuit']);
+		$Website 		= $_POST['website'];
+		$Phone			= $_POST['phone'];
+		$CUIT			= $_POST['cuit'];
 		$Insert			= $this->execQuery('insert','admin_company','name,corporate_name,address,website,phone,cuit,creation_date,creator_id,parent_id',"'".$Name."','".$CorporateName."','".$Address."','".$Website."','".$Phone."','".$CUIT."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
 		//echo $this->lastQuery();
 		$NewID 		= $this->GetInsertId();
@@ -335,14 +336,14 @@ public function MakeRegs($Mode="List")
 		$Edit	= new AdminData($ID);
 		if($_POST['password'])
 		{
-			$Password	= md5(htmlentities($_POST['password']));
+			$Password	= md5($_POST['password']);
 			$PasswordFilter	= ",password='".$Password."'";
 		}
 		$Image 		= $_POST['newimage'];
-		$User		= htmlentities(strtolower($_POST['user']));
-		$FirstName	= htmlentities($_POST['first_name']);
-		$LastName	= htmlentities($_POST['last_name']);
-		$Email 		= htmlentities($_POST['email']);
+		$User		= strtolower($_POST['user']);
+		$FirstName	= $_POST['first_name'];
+		$LastName	= $_POST['last_name'];
+		$Email 		= $_POST['email'];
 		$ProfileID	= $_POST['profile'];
 		$Groups		= $_POST['groups'] ? explode(",",$_POST['groups']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
@@ -406,8 +407,8 @@ public function MakeRegs($Mode="List")
 	
 	public function Validate()
 	{
-		$User 			= strtolower(utf8_encode($_POST['user']));
-		$ActualUser 	= strtolower(utf8_encode($_POST['actualuser']));
+		$User 			= strtolower($_POST['user']);
+		$ActualUser 	= strtolower($_POST['actualuser']);
 
 	    if($ActualUser)
 	    	$TotalRegs  = $this->numRows('admin_user','*',"user = '".$User."' AND user<> '".$ActualUser."'");

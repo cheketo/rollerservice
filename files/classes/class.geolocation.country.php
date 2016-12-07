@@ -70,6 +70,7 @@ public function MakeRegs($Mode="List")
 		foreach($Rows as $Row)
 		{
 			$Row			= new GeolocationCountry($Row['country_id']);
+			$Row->Data['title'] = utf8_encode($Row->Data['title']);
 			$ID 			= $Row->ID;
 			$Provinces		= $Row->GetProvinces();
 			$ProvincesHTML	= '';
@@ -89,7 +90,6 @@ public function MakeRegs($Mode="List")
 			switch(strtolower($Mode))
 			{
 				case "list":
-					$Row->Data['title'] = $Row->Data['title'];
 					$RowBackground = $i % 2 == 0? '':' listRow2 ';
 					$Regs	.= '<div class="row listRow'.$RowBackground.'" id="row_'.$ID.'" title="'.$Row->Data['title'].'">
 									<div class="col-lg-4 col-md-4 col-sm-10 col-xs-10">
@@ -163,7 +163,7 @@ public function MakeRegs($Mode="List")
 		
 		foreach($_POST as $Key => $Value)
 		{
-			$_POST[$Key] = htmlentities($Value);
+			$_POST[$Key] = $Value;
 		}
 			
 		if($_POST['title']) $this->SetWhereCondition("c.title","LIKE","%".$_POST['title']."%");
@@ -232,7 +232,7 @@ public function MakeRegs($Mode="List")
 	
 	public function Insert()
 	{	
-		$Title		= htmlentities(ucfirst($_POST['title']));
+		$Title		= ucfirst($_POST['title']);
 		$Insert		= $this->execQuery('insert','admin_country','title,creation_date',"'".$Title."',NOW()");
 	}
 	
@@ -240,7 +240,7 @@ public function MakeRegs($Mode="List")
 	{
 		$ID 	= $_POST['id'];
 		$Edit	= new GeolocationCountry($ID);
-		$Title		= htmlentities(ucfirst($_POST['title']));
+		$Title		= ucfirst($_POST['title']);
 		$Update		= $this->execQuery('update','admin_country',"title='".$Title."'","country_id=".$ID);
 		//echo $this->lastQuery();
 		
@@ -285,8 +285,8 @@ public function MakeRegs($Mode="List")
 	
 	public function Validate()
 	{
-		$Title 			= strtolower(utf8_encode($_POST['title']));
-		$ActualTitle 	= strtolower(utf8_encode($_POST['actualtitle']));
+		$Title 			= strtolower($_POST['title']);
+		$ActualTitle 	= strtolower($_POST['actualtitle']);
 
 	    if($ActualTitle)
 	    	$TotalRegs  = $this->numRows('admin_country','*',"title = '".$Title."' AND title <> '".$ActualTitle."'");

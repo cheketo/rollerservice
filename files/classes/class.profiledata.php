@@ -89,11 +89,13 @@ public function MakeRegs($Mode="List")
 		foreach($Rows as $Row)
 		{
 			$Row		= new ProfileData($Row['profile_id']);
+			$Row->Data['title'] = utf8_encode($Row->Data['title']);
 			$ID 		= $Row->ID;
 			$AllGroups	= $Row->GetGroups();
 			$Groups		= '';
 			foreach($AllGroups as $Group)
 			{
+				$Group['title'] = utf8_encode($Group['title']);
 				$Groups .= '<span class="label label-warning">'.$Group['title'].'</span> ';
 			}
 			if(!$Groups) $Groups = 'Ninguno';
@@ -197,7 +199,7 @@ public function MakeRegs($Mode="List")
 		
 		foreach($_POST as $Key => $Value)
 		{
-			$_POST[$Key] = htmlentities($Value);
+			$_POST[$Key] = $Value;
 		}
 			
 		if($_POST['title']) $this->SetWhereCondition("p.title","LIKE","%".$_POST['title']."%");
@@ -264,7 +266,7 @@ public function MakeRegs($Mode="List")
 	public function Insert()
 	{
 		$Image 		= $_POST['newimage'];	
-		$Title		= htmlentities(ucfirst($_POST['title']));
+		$Title		= ucfirst($_POST['title']);
 		$Groups		= $_POST['groups'] ? explode(",",$_POST['groups']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
 		$Insert		= $this->execQuery('insert','admin_profile','company_id,title,creation_date',$_SESSION['company_id'].",'".$Title."',NOW()");
@@ -313,7 +315,7 @@ public function MakeRegs($Mode="List")
 			$Image 	= $Edit->ImgGalDir().$Dir[0];
 			copy($Temp,$Image);
 		}
-		$Title		= htmlentities(ucfirst($_POST['title']));
+		$Title		= ucfirst($_POST['title']);
 		$Groups		= $_POST['groups'] ? explode(",",$_POST['groups']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
 		
@@ -374,8 +376,8 @@ public function MakeRegs($Mode="List")
 	
 	public function Validate()
 	{
-		$Title 			= strtolower(utf8_encode($_POST['title']));
-		$ActualTitle 	= strtolower(utf8_encode($_POST['actualtitle']));
+		$Title 			= strtolower($_POST['title']);
+		$ActualTitle 	= strtolower($_POST['actualtitle']);
 
 	    if($ActualTitle)
 	    	$TotalRegs  = $this->numRows('admin_profile','*',"title = '".$Title."' AND title <> '".$ActualTitle."' AND company_id = ".$_SESSION['company_id']);
