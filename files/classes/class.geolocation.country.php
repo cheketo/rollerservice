@@ -70,7 +70,6 @@ public function MakeRegs($Mode="List")
 		foreach($Rows as $Row)
 		{
 			$Row			= new GeolocationCountry($Row['country_id']);
-			$Row->Data['title'] = utf8_encode($Row->Data['title']);
 			$ID 			= $Row->ID;
 			$Provinces		= $Row->GetProvinces();
 			$ProvincesHTML	= '';

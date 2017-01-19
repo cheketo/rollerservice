@@ -55,7 +55,7 @@ class Category extends DataBase
 	
 	public function GetAllCategories($Order='parent_id,title')
 	{
-		return Utf8EncodeArray($this->fetchAssoc($this->Table,'*',"status='A' AND company_id = ".$_SESSION['company_id'],$Order));
+		return $this->fetchAssoc($this->Table,'*',"status='A' AND company_id = ".$_SESSION['company_id'],$Order);
 		
 	}
 	
@@ -111,13 +111,13 @@ public function MakeRegs($Mode="List")
 									<div class="col-lg-7 col-md-5 col-sm-6 col-xs-10">
 										<div class="listRowInner" style="text-align:left!important;">
 											<img class="img-circle hideMobile990" style="margin-right:1em!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['title'].'">
-											<span class="listTextStrong" style="margin-top:0.7em;">'.utf8_encode($Row->Data['title']).'</span>
+											<span class="listTextStrong" style="margin-top:0.7em;">'.$Row->Data['title'].'</span>
 										</div>
 									</div>
 									<div class="col-lg-2 col-md-3 col-sm-3 hideMobile990">
 										<div class="listRowInner">
 											<span class="smallTitle">Nombre corto</span>
-											<span class="listTextStrong">'.ucfirst(utf8_encode($Row->Data['short_title'])).'</span>
+											<span class="listTextStrong">'.ucfirst($Row->Data['short_title']).'</span>
 										</div>
 									</div>
 									<div class="col-lg-2 col-md-2 col-sm-2 hideMobile990">

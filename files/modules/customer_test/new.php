@@ -23,7 +23,7 @@
             <div class="col-xs-12 col-sm-6">
               <span class="input-group">
                 <span class="input-group-addon"><i class="fa fa-building"></i></span>
-                <input class="form-control" placeholder="Nombre de la Empresa">
+                <input class="form-control" placeholder="Nombre de la Empresa" autofocus>
               </span>
             </div>
             <div class="col-xs-12 col-sm-6">

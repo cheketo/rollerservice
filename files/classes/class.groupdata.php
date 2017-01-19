@@ -129,7 +129,6 @@ public function MakeRegs($Mode="List")
 		foreach($Rows as $Row)
 		{
 			$Row			= new GroupData($Row['group_id']);
-			$Row->Data['title'] = utf8_encode($Row->Data['title']);
 			$ID 			= $Row->ID;
 			$AllProfiles	= $Row->GetProfiles();
 			$Profiles		= '';

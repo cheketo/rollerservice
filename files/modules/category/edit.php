@@ -20,10 +20,17 @@
       <div class="col-lg-8 col-sm-12">
         <div class="innerContainer">
           <h4 class="subTitleB"><i class="fa fa-plus-circle"></i> Complete los campos para modificar la l&iacute;nea</h4>
+            
+            <div class="row form-group inline-form-custom-2">
+              <div class="col-xs-12 inner">
+                <label>Nombre</label>
+                <?php echo insertElement('text','title',$Data['title'],'form-control','placeholder="Ingrese un Nombre" validateEmpty="Ingrese un nombre." validateFromFile="../../library/processes/proc.common.php///El nombre ya existe///action:=validate///actualtitle:='.utf8_encode($Data['title']).'///object:=Category"'); ?>
+              </div>
+            </div><!-- inline-form -->
             <div class="row form-group inline-form-custom-2">
               <div class="col-xs-12 col-sm-6 inner">
-                <label>Nombre</label>
-                <?php echo insertElement('text','title',$Data['title'],'form-control','placeholder="Ingrese un Nombre" validateEmpty="Ingrese un nombre." validateFromFile="../../library/processes/proc.common.php///El nombre ya existe///action:=validate///object:=Category"'); ?>
+                <label>Nombre Corto</label>
+                <?php echo insertElement('text','short_title',$Data['short_title'],'form-control','placeholder="Ingrese un Nombre Corto" validateEmpty="Ingrese un nombre."'); ?>
               </div>
               <div class="col-xs-12 col-sm-6 inner">
                 <label>Ubicaci&oacute;n</label>

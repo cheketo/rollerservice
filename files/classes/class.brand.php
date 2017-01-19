@@ -15,11 +15,10 @@ class Brand extends DataBase
 			$Data = $this->fetchAssoc("product_brand","*","brand_id=".$ID);
 			$this->Data = $Data[0];
 			$this->ID = $ID;
-			$this->Data['name'] = utf8_encode($this->Data['name']);
 			if($this->Data['country_id'])
 			{
 				$Country = $this->fetchAssoc('admin_country','*','country_id='.$this->Data['country_id']);
-				$this->Data['country'] = utf8_encode($Country[0]['title']);
+				$this->Data['country'] = $Country[0]['title'];
 			}
 		}
 	}

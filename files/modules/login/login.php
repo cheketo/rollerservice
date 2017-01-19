@@ -17,7 +17,7 @@
   <!-- /.login-logo -->
     <p class="login-box-msg" style="color:#CCC;">INICIAR SESI&Oacute;N</p>
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" name="user" id="user" placeholder="Email o Usuario" value="<?php echo $_COOKIE['rememberuser'];?>">
+        <input type="email" class="form-control" name="user" id="user" placeholder="Email o Usuario" value="<?php echo $_COOKIE['rememberuser'];?>" autofocus>
         <span class="fa fa-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">

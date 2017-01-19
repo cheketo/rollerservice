@@ -71,7 +71,6 @@ public function MakeRegs($Mode="List")
 		for($i=0;$i<count($Rows);$i++)
 		{
 			$Row	=	new Company($Rows[$i]['company_id']);
-			$Row->Data['name'] = utf8_encode($Row->Data['name']);
 			//var_dump($Row);
 			// $UserGroups = $Row->GetGroups();
 			// $Groups='';
@@ -401,7 +400,7 @@ public function MakeRegs($Mode="List")
 			$TempDir = $this->ImgGalDir;
 			$Name	= "company".intval(rand()*rand()/rand());
 			$Img	= new FileData($_FILES['image'],$TempDir,$Name);
-			echo $Img	-> BuildImage(365,110);
+			echo $Img	-> BuildImage(100,100);
 		}
 	}
 	

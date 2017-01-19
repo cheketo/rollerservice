@@ -51,7 +51,6 @@
                 <div class="form-group">
                   <h4 class="subTitleB"><i class="fa fa-eye"></i> Perfiles</h4>
                   <?php echo insertElement('select','profile','','form-control','validateEmpty="El perfil es obligatorio." tabindex="7"',Utf8EncodeArray($DB->fetchAssoc('admin_profile','profile_id,title',"status='A' AND company_id=".$_SESSION['company_id'])),'',"Seleccione un perfil.."); ?>
-
                 </div>
               </div>
               <!-- Groups -->
@@ -78,9 +77,6 @@
           </div><!-- treeview-checkbox -->
         </div><!-- User Data -->
       </div><!-- row -->
-
-
-
       <!-- IMAGES -->
       <!-- Actual Image -->
       <div class="row imagesMain">

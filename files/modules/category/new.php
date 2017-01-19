@@ -16,7 +16,7 @@
             <div class="row form-group inline-form-custom-2">
               <div class="col-xs-12 inner">
                 <label>Nombre</label>
-                <?php echo insertElement('text','title','','form-control','placeholder="Ingrese un Nombre" validateEmpty="Ingrese un nombre." validateFromFile="../../library/processes/proc.common.php///El nombre ya existe///action:=validate///object:=Category"'); ?>
+                <?php echo insertElement('text','title','','form-control','placeholder="Ingrese un Nombre" validateEmpty="Ingrese un nombre." validateFromFile="../../library/processes/proc.common.php///El nombre ya existe///action:=validate///object:=Category" autofocus'); ?>
               </div>
             </div><!-- inline-form -->
             <div class="row form-group inline-form-custom-2">

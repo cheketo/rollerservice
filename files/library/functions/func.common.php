@@ -445,10 +445,31 @@
 	function ValidateID($Data)
 	{
 		if(!$_GET['id'] || empty($Data))
-	    {
-	      header('Location: list.php?error=user');
-	      die();
-	    }
+		{
+			header('Location: list.php?error=user');
+			die();
+		}
+	}
+	
+	function InsertAutolocationMap($ID=1,$Data=array())
+	{
+		echo '<iframe name="map'.$ID.'" id="map'.$ID.'" map="'.$ID.'" src="../../library/frames/frame.map.autolocation.php" framepadding="0" frameborder="0" style="width:100%;height:25em;overflow:expand;"></iframe>';
+		echo '<div id="map'.$ID.'_ErrorMsg" class="ErrorText Red Hidden">Seleccione una ubicaci&oacute;n</div>';
+		
+		echo insertElement('hidden','map'.$ID.'_lat',$Data['lat']);
+		echo insertElement('hidden','map'.$ID.'_lng',$Data['lng']);
+		echo insertElement('hidden','map'.$ID.'_address',$Data['address']);
+		echo insertElement('hidden','map'.$ID.'_address_short',$Data['address_short']);
+		echo insertElement('hidden','map'.$ID.'_zone',$Data['zone']);
+		echo insertElement('hidden','map'.$ID.'_zone_short',$Data['zone_short']);
+		echo insertElement('hidden','map'.$ID.'_region',$Data['region']);
+		echo insertElement('hidden','map'.$ID.'_region_short',$Data['region_short']);
+		echo insertElement('hidden','map'.$ID.'_province',$Data['province']);
+		echo insertElement('hidden','map'.$ID.'_province_short',$Data['province_short']);
+		echo insertElement('hidden','map'.$ID.'_country',$Data['country']);
+		echo insertElement('hidden','map'.$ID.'_country_short',$Data['country_short']);
+		echo insertElement('hidden','map'.$ID.'_postal_code',$Data['postal_code']);
+		echo insertElement('hidden','map'.$ID.'_postal_code_suffix',$Data['postal_code_suffix']);  
 	}
 	
 ?>

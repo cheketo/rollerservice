@@ -16,11 +16,11 @@
             <div class="row form-group inline-form-custom-2">
               <div class="col-xs-12 col-sm-6 inner">
                 <label>Nombre</label>
-                <?php echo insertElement('text','name','','form-control','placeholder="Ingrese un Nombre" validateEmpty="Ingrese un nombre." validateFromFile="../../library/processes/proc.common.php///El nombre ya existe///action:=validate///object:=Brand"'); ?>
+                <?php echo insertElement('text','name','','form-control','placeholder="Ingrese un Nombre" validateEmpty="Ingrese un nombre." validateFromFile="../../library/processes/proc.common.php///El nombre ya existe///action:=validate///object:=Brand" autofocus'); ?>
               </div>
               <div class="col-xs-12 col-sm-6 inner">
                 <label>Origen</label>
-                <?php echo insertElement('select','country_select','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"',Utf8EncodeArray($DB->fetchAssoc('admin_country','country_id,title',"status<>'I'")),'0','Seleccione un pa&iacute;s'); ?>
+                <?php echo insertElement('select','country_select','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"',$DB->fetchAssoc('admin_country','country_id,title',"status<>'I'"),'0','Seleccione un pa&iacute;s'); ?>
                 <!--<select id="country" class="form-control select2 selectTags select2-hidden-accessible" ></select>-->
               </div>
             </div><!-- inline-form -->

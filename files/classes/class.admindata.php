@@ -30,9 +30,9 @@ class AdminData extends DataBase
 		$this->AdminID 		= $AdminID==''? $_SESSION['admin_id'] : $AdminID;
 		$this->AdminData 	= $this->fetchAssoc('admin_user','*',"admin_id = '".$this->AdminID."'");
 		$this->AdminData	= $this->AdminData[0];
-		$this->FirstName	= utf8_encode($this->AdminData['first_name']);
-		$this->LastName		= utf8_encode($this->AdminData['last_name']);
-		$this->User			= utf8_encode($this->AdminData['user']);
+		$this->FirstName	= $this->AdminData['first_name'];
+		$this->LastName		= $this->AdminData['last_name'];
+		$this->User			= $this->AdminData['user'];
 		$this->Email		= $this->AdminData['email'];
 		$this->ProfileID	= $this->AdminData['profile_id'];
 		$this->Img			= file_exists($this->AdminData['img'])? $this->AdminData['img'] : $this->DefaultImg;

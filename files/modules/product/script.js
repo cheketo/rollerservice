@@ -1,22 +1,94 @@
+///////////////////////// CREATE/EDIT ////////////////////////////////////
+$(function(){
+	$("#BtnCreate,#BtnCreateNext").click(function(){
+		if(validate.validateFields(''))
+		{
+			var BtnID = $(this).attr("id")
+			if(get['id']>0)
+			{
+				confirmText = "modificar";
+				procText = "modificaci&oacute;n"
+			}else{
+				confirmText = "crear";
+				procText = "creaci&oacute;n"
+			}
+
+			confirmText += " el art&iacute;culo '"+utf8_encode($("#code").val())+"'";
+
+			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
+				if(e)
+				{
+					var process		= '../../library/processes/proc.common.php?object=Product';
+					if(BtnID=="BtnCreate")
+					{
+						var target		= 'list.php?element='+utf8_encode($('#code').val())+'&msg='+ $("#action").val();
+					}else{
+						var target		= 'new.php?element='+utf8_encode($('#code').val())+'&msg='+ $("#action").val();
+					}
+					var haveData	= function(returningData)
+					{
+						$("input,select").blur();
+						notifyError("Ha ocurrido un error durante el proceso de "+procText+".");
+						console.log(returningData);
+					}
+					var noData		= function()
+					{
+						document.location = target;
+					}
+					sumbitFields(process,haveData,noData);
+				}
+			});
+		}
+	});
+
+	$("input").keypress(function(e){
+		if(e.which==13){
+			$("#BtnCreate").click();
+		}
+	});
+});
+
+function ShowCategoriesList(id)
+{
+    $('option[value="'+id+'"]').parent().parent().removeClass("Hidden");
+    id = $('option[value="'+id+'"]').parent().parent().attr("category");
+    if(id>0)
+    {
+        ShowCategoriesList(id);
+    }
+}
+
 $(document).ready(function(){
+    ////////////////////////// SET VALUES TO SELECT FIELDS ////////////
+    if($('option[selected="selected"]').length>0)
+    {
+        var category = $('option[selected="selected"]');
+        var categoryID = category.attr("value");
+        var html = category.html();
+        $("#category_selected").html(html);
+        ShowCategoriesList(categoryID);
+    }
+    
+    ///////////////////////// SELECT2 /////////////////////////////////
 	if($('.selectTags').length>0)
 	{
-		$('.selectTags').select2({placeholder: {id: '0',text: 'Seleccionar Marca'},allowClear: true});
+		$('.selectTags').select2({placeholder: {id: '',text: 'Seleccionar Marca'},allowClear: true});
 		$('.selectTags').on("select2:select", function (e) { $("#brand").val(e.params.data.id); });
 		$('.selectTags').on("select2:unselect", function (e) { $("#brand").val(''); });
 	}
 });
 /////////// Show or Hide Icons On subtop //////////////////////
 $(document).ready(function() {
-    // $('#showitemfilters').click(function() {
-    //     $('#filteritem').toggle("slide");
-    // });
     $('#viewlistbt').removeClass('Hidden');
     $('#newprod').removeClass('Hidden');
     $('#showitemfilters').removeClass('Hidden');
-    
-    $('#price').mask('00000000.00',{reverse: true});
-    $('#stock,#stock_min,#stock_max').mask('000000000000',{reverse: true});
+
+////////////////////// NUMBERS MASKS ////////////////////////////
+    // $('#price,#price_fob,#price_dispatch').mask('00000000.00',{reverse: true});
+    if($('#stock').length>0)
+      $('#stock,#stock_min,#stock_max').mask('000000000000',{reverse: true});
+    if($('#price').length>0)
+      $('#price').inputmask();
 });
 
 ///////// Select Product/Item ////////////////////////
@@ -46,13 +118,6 @@ $(function(){
       $('.Dispatch').removeClass('Hidden');
     });
   
-    // $('.overlayDetails').click(function(){
-    //   $('.selectedItem').removeClass('Hidden');
-    // });
-
-    // $('.selectedItem').click(function(){
-    //   $('.selectedItem').addClass('Hidden');
-    // });
 });
 
 function HideLevels(level)
@@ -63,69 +128,8 @@ function HideLevels(level)
   if(level<=$("#maxlevel").val())
     HideLevels(level);
 }
-
-////////////////// Select Products / Items/////////////////////////////////////////
-
-  $(function () {
-    // $('#selectItemProd').click(function(){
-    //   $('#itemProdDiv').toggleClass('selectItemProd');
-    // });
-
-    // $('#selectItemProd').click(function() {
-    //   if($('#itemProdDiv').hasClass('selectItemProd1')) {
-    //       $('#itemProdDiv').removeClass('selectItemProd1').addClass('selectItemProd2');
-    //   }
-    //   else{
-    //       $('#itemProdDiv').removeClass('selectItemProd2').addClass('selectItemProd1');
-    //   };
-    //   // Select Button Styles
-    //   if($('#itemProdDiv').hasClass('selectItemProd2')) {
-    //       $('#selectItemProd').removeClass('notSelectedBtn').addClass('itemProdSelectedBtn');
-    //   }
-    //   else{
-    //       $('#selectItemProd').removeClass('itemProdSelectedBtn').addClass('notSelectedBtn');
-    //   };
-    // });
-  });
   
-/// Bootstrap Switch ///
-// $("[name='status']").bootstrapSwitch();
 
-///////////// Color picker ///////////////////
-
-//Select Primary Color
-// $('#cpLibrary1 ul li').click(function(){
-//   $('#cpLibrary1 ul li').removeClass('cpSelected liSelected');
-//   $(this).toggleClass('cpSelected liSelected');
-// });
-
-// Select Secondary Color
-// $('#cpLibrary2 ul li').click(function(){
-//   $('#cpLibrary2 ul li').removeClass('cpSelected liSelected');
-//   $(this).toggleClass('cpSelected liSelected');
-// });
-
-// Show Selected Primary Color
-// $('#cpLibrary1 ul li').click(function(){
-//   var colorPC = $(this).data('hex');
-//   $('#selectedColor1').css("background-color", colorPC);
-// });
-
-// Show Selectes Secondary Color
-// $('#cpLibrary2 ul li').click(function(){
-//   var colorPC = $(this).data('hex');
-//   $('#selectedColor2').css("background-color", colorPC);
-// });
-
-// $('.ShowCP2').click(function(){
-//   $(this).addClass('Hidden');
-//   $('.ColorPicker2').removeClass('Hidden');
-// });
-
-// $('.CloseColorPicker').click(function(){
-//   $('.ColorPicker2').addClass('Hidden');
-//   $('.ShowCP2').removeClass('Hidden');
-// });
 
 
 
@@ -140,7 +144,7 @@ $('input, textarea').keyup(function() {
   indicator.children('.current-length').html(max - curr);
 
   // Change colors
-  if (percent > 30 && percent <= 50) { indicator.attr('class', 'indicator low'); }
+  if (percent > 10 && percent <= 50) { indicator.attr('class', 'indicator low'); }
   else if (percent > 50 && percent <= 70) { indicator.attr('class', 'indicator med'); }
   else if (percent > 70 && percent < 100) { indicator.attr('class', 'indicator high'); }
   else if (percent == 100) { indicator.attr('class', 'indicator full'); }
@@ -153,66 +157,26 @@ $('input, textarea').keyup(function() {
 
 
 //-----  Highlight Selected MAIN Category----- //
-$(".squareMenuMain").children().click(function() {
-  $('.squareItemMenu').addClass('squareItemDisabled');
-  $('.squareItemMenu').removeClass('squareItemActive');
-  $('.squareItemMenu .arrow-css').addClass('Hidden');
+// $(".squareMenuMain").children().click(function() {
+//   $('.squareItemMenu').addClass('squareItemDisabled');
+//   $('.squareItemMenu').removeClass('squareItemActive');
+//   $('.squareItemMenu .arrow-css').addClass('Hidden');
 
-  $(this).removeClass('squareItemDisabled');
-  $(this).addClass('squareItemActive');
-  $('.arrow-css', this).removeClass('Hidden');
-})
-
-
-// $('.CategoryVehicleTrigger').click(function(){
-//   $('.CategoryVehicles').removeClass('Hidden');
-//   $('.CategoryRealState').addClass('Hidden');
-//   $('.CategoryServices').addClass('Hidden');
-//   $('.CategoryProducts').addClass('Hidden');
-// })
-// $('.CategoryRealStateTrigger').click(function(){
-//   $('.CategoryVehicles').addClass('Hidden');
-//   $('.CategoryRealState').removeClass('Hidden');
-//   $('.CategoryServices').addClass('Hidden');
-//   $('.CategoryProducts').addClass('Hidden');
-// })
-// $('.CategoryServicesTrigger').click(function(){
-//   $('.CategoryVehicles').addClass('Hidden');
-//   $('.CategoryRealState').addClass('Hidden');
-//   $('.CategoryServices').removeClass('Hidden');
-//   $('.CategoryProducts').addClass('Hidden');
-// })
-// $('.CategoryProductsTrigger').click(function(){
-//   $('.CategoryVehicles').addClass('Hidden');
-//   $('.CategoryRealState').addClass('Hidden');
-//   $('.CategoryServices').addClass('Hidden');
-//   $('.CategoryProducts').removeClass('Hidden');
+//   $(this).removeClass('squareItemDisabled');
+//   $(this).addClass('squareItemActive');
+//   $('.arrow-css', this).removeClass('Hidden');
 // })
 
-$(".BackToCategory").on('click',function(){
-  $('.ProductDetails').addClass('Hidden');
-  $('.CategoryMain').removeClass('Hidden');
+
+
+$(function(){
+    $(".BackToCategory").on('click',function(){
+      $('.ProductDetails').addClass('Hidden');
+      $('.CategoryMain').removeClass('Hidden');
+    });
+    
+    $('.SelectCategory').click(function(){
+      $('.CategoryMain').addClass('Hidden');
+      $('.ProductDetails').removeClass('Hidden');
+    });
 });
-
-$('.SelectCategory').click(function(){
-  $('.CategoryMain').addClass('Hidden');
-  $('.ProductDetails').removeClass('Hidden');
-})
-
-$('.ProductDescBtn').click(function(){
-  $('.ProductDetails').addClass('Hidden');
-  $('.ColorSizeStockMain').removeClass('Hidden');
-})
-
-
-/////////  DATE MASK ////////////
-
-// $(function () {
-//   //Datemask dd/mm/yyyy
-//   $(".Datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
-// });
-
-// //Date picker
-// $('.Datepicker').datepicker({
-//   autoclose: true
-// });

@@ -40,9 +40,9 @@ class Foot
 		$this->Link[]	= '<link href="'.$href.'" rel="'.$rel.'" type="'.$type.'" />';
 	}
 
-	function setScript($src)
+	function setScript($src,$extra='')
 	{
-		$this->Script[]	= '<script src="'.$src.'" ></script>';
+		$this->Script[]	= '<script src="'.$src.'" '.$extra.' ></script>';
 	}
 
 	function setMeta($param1,$param2,$param3)

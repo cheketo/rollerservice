@@ -139,6 +139,7 @@ class DataBase
 				$Data	= array();
 				while($Data[]=mysqli_fetch_assoc($Query)){}
 				array_pop($Data);
+				$Data = Utf8EncodeArray($Data);
 				return $Data;
 			break;
 		}
@@ -153,6 +154,7 @@ class DataBase
 				if(!$Result) $this->Error = mysqli_error($this->StreamConnection);
 				while($Data[]=mysqli_fetch_row($Query)){}
 				array_pop($Data);
+				$Data = Utf8EncodeArray($Data);
 				return $Data;
 			break;
 		}

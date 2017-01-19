@@ -89,13 +89,12 @@ public function MakeRegs($Mode="List")
 		foreach($Rows as $Row)
 		{
 			$Row		= new ProfileData($Row['profile_id']);
-			$Row->Data['title'] = utf8_encode($Row->Data['title']);
 			$ID 		= $Row->ID;
 			$AllGroups	= $Row->GetGroups();
 			$Groups		= '';
 			foreach($AllGroups as $Group)
 			{
-				$Group['title'] = utf8_encode($Group['title']);
+				
 				$Groups .= '<span class="label label-warning">'.$Group['title'].'</span> ';
 			}
 			if(!$Groups) $Groups = 'Ninguno';
