@@ -331,13 +331,15 @@ $(function(){
 //////////////////////////////////////////////////// Validation ///////////////////////////////////////////////////////////////
 var validate    = new ValidateFields();
 $(function(){
-    validate.createErrorDivs();
-    $(validateElements).change(function(){
+    validateDivChange();
+});
+function validateDivChange()
+{
+  validate.createErrorDivs();
+  $(validateElements).change(function(){
         validate.validateOneField(this);
     });
-});
-
-
+}
 //////////////////////////////////////////////////// Logout ////////////////////////////////////////////////////
 $(function(){
   $("#Logout").click(function(){
@@ -605,3 +607,29 @@ $(function(){
 		window.history.back();
 	});
 });
+
+
+///////////////////////// Select2 //////////////////////////////////////////////
+function select2Focus()
+{
+	$('.select2').on(
+        'select2:select',(
+            function(){
+                $(this).focus();
+            }
+        )
+    );
+}
+
+/////////////////////// MONEY FORMAT /////////////////
+Number.prototype.formatMoney = function(c, d, t){
+var n = this, 
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = String(parseInt(n = Math.abs(Number(n) || 0).toFixed(c))), 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
+ ///(123456789.12345).formatMoney(2);

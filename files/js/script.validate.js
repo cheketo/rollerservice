@@ -1,6 +1,8 @@
 // JavaScript Document
 
 /****************************************************************\
+Validate Fields V 1.2.28
+Develped by Alejandro Romero (romero.m.alejandro@gmail.com)
 
 VALIDATION ATRIBUTES:
 
@@ -47,12 +49,13 @@ VALIDATION ATRIBUTES:
 	var validateTag;
 	var validateValid;
 	var validateElements;
+	var validateErrorElements = "";
 	var validateDelimiter	= '///';
-	var checkboxGroups		= new Array();
+	var validateCheckboxGroups		= new Array();
 
 	function ValidateFields() {
 		validateErrorClass 	= "ErrorText Red";
-		validateElements	= "input[type!='hidden'], select, textarea";
+		validateElements	= "input[type!='hidden'],select,textarea";
 		validateTag			= "div";
 		validateValid;
 	}
@@ -89,6 +92,8 @@ VALIDATION ATRIBUTES:
 
 	ValidateFields.prototype.createErrorDivs = function()
 	{
+		$(validateTag+'[id$="ErrorDiv"]').remove();
+		
 		$(validateElements).each( function(){
 			$(this).parent().append('<'+validateTag+' id="'+$(this).attr("id")+'ErrorDiv" class="'+validateErrorClass+'"></'+validateTag+'>');
 		});
@@ -286,9 +291,9 @@ VALIDATION ATRIBUTES:
 		var disabled	= $(object).attr("disabled");
 		var display		= isVisible(object);
 
-		if($(object).attr("mustBeChecked") && disabled!="disabled" && display && !inArray(name,checkboxGroups))
+		if($(object).attr("mustBeChecked") && disabled!="disabled" && display && !inArray(name,validateCheckboxGroups))
 		{
-			checkboxGroups.push(name);
+			validateCheckboxGroups.push(name);
 			//$('input[type="checkbox"][name="'+name+'"]').each(function(){if(this!=object)$(this).attr('mustBeChecked','')});
 			var properties	= $(object).attr("mustBeChecked").split(validateDelimiter);
 			var checks 		= properties[0];
@@ -313,18 +318,29 @@ VALIDATION ATRIBUTES:
 			return false;
 		}
 	}
+	
+	ValidateFields.prototype.getLastValidation = function()
+	{
+		return validateErrorElements;
+	}
 
 
 	ValidateFields.prototype.validateFields	= function(Form)
 	{
 		validateValid		= true;
-		checkboxGroups		= new Array();
+		validateCheckboxGroups		= new Array();
 		var validateObject;
 
 		if(!Form || Form=='*')
+		{
 			validateObject	= $(validateElements);
-		else
-			validateObject	= $('#'+Form+' '+validateElements);
+		}else{
+			var elements = validateElements.split(',');
+			validateObject	= $('#'+Form+' '+elements.join(',#'+Form+' '));
+			//alert('#'+Form+' '+elements.join(',#'+Form+' '));
+			//validateObject	= $('#'+Form+' '+validateElements);
+		}
+			
 		//console.log($('#'+Form+' '+validateElements));
 		//validateObject	= $('#'+Form).find(validateElements);
 		if(!validateObject.attr('id')) validateValid	= false;
@@ -344,7 +360,7 @@ VALIDATION ATRIBUTES:
 
 	ValidateFields.prototype.validateOneField	= function(object)
 	{
-		checkboxGroups		= new Array();
+		validateCheckboxGroups		= new Array();
 		ValidateFields.prototype.validateField(object);
 
 	}
@@ -352,7 +368,6 @@ VALIDATION ATRIBUTES:
 	ValidateFields.prototype.validateField	= function(object)
 	{
 			var valid			= true
-
 			if(!ValidateFields.prototype.isClearDiv(object)) ValidateFields.prototype.hideDiv(object);
 
 			if(ValidateFields.prototype.empty(object))
@@ -451,6 +466,7 @@ VALIDATION ATRIBUTES:
 
 	ValidateFields.prototype.showDiv	= function(object)
 	{
+		validateErrorElements = validateErrorElements + $(object).attr("id") + " ";
 		if(!validateValid){
 			switch(validateShowEffect)
 			{

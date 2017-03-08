@@ -71,7 +71,7 @@
             <i class="fa fa-fw fa-caret-square-o-down"></i>
             <i class="fa fa-fw fa-caret-square-o-left"></i>
             <i class="fa fa-fw fa-caret-square-o-right"></i>
-            <i class="fa fa-fw fa-caret-square-o-up"></i
+            <i class="fa fa-fw fa-caret-square-o-up"></i>
             <i class="fa fa-fw fa-cart-arrow-down"></i>
             <i class="fa fa-fw fa-cart-plus"></i>
             <i class="fa fa-fw fa-cc"></i>

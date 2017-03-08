@@ -1,7 +1,7 @@
 <?php
   include('../../includes/inc.main.php');
-  $Company = new Provider();
-  $Head->setTitle("Proveedores");
+  $Company = new Customer();
+  $Head->setTitle("Clientes");
   $Head->setIcon($Menu->GetHTMLicon());
   $Head->setSubTitle($Menu->GetTitle());
   $Head->setHead();

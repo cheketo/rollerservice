@@ -3,7 +3,7 @@
     $New = new Provider();
     $Head->setTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
-    //$Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
+    $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
     include('../../includes/inc.top.php');
     
@@ -66,10 +66,10 @@
               </div>
             </div>
             <div class="row form-group inline-form-custom">
-              <div class="col-xs-12 col-sm-12">
-                <!--- GOOGLE MAPS FRAME --->
-                <?php InsertAutolocationMap(1); ?>
-                <?php $Foot->setScript('../../js/script.map.autolocation.js'); ?>
+              <div class="col-xs-12 col-sm-12 MapWrapper">
+                <!--- GOOGLE MAPS --->
+                <?php echo InsertAutolocationMap(1); ?>
+                
               </div>
             </div>
             <br>
@@ -188,10 +188,10 @@
       </div>
     </div><!-- box -->
   </div><!-- box -->
-
 <?php
 // $Foot->setScript('../../../vendors/inputmask3/inputmask.min.js');
-// $Foot->setScript('../../../vendors/inputmask3/inputmask.numeric.extensions.min.js');
+$Foot->setScript('../../js/script.map.autolocation.js');
+$Foot->setScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCuMB_Fpcn6USQEoumEHZB_s31XSQeKQc0&libraries=places&callback=initMaps&language=es','async defer');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
 $Foot->setScript('../../../vendors/select2/select2.min.js');
 include('../../includes/inc.bottom.php');

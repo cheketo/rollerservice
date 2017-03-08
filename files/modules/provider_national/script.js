@@ -30,17 +30,6 @@ $(document).ready(function(){
 // 	$('#zone_select').on("select2:select", function (e) { $("#zone").val(e.params.data.id); });
 // 	$('#zone_select').on("select2:unselect", function (e) { $("#zone").val(''); });
 // }
-
-function select2Focus()
-{
-	$('.select2').on(
-        'select2:select',(
-            function(){
-                $(this).focus();
-            }
-        )
-    );
-}
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
 	$("#BtnCreate,#BtnCreateNext").on("click",function(e){

@@ -210,7 +210,7 @@ function activateListElement()
 		var id			= elementID[1];
 		var row			= $("#row_"+id);
 		var title		= utf8_encode(row.attr("title"));
-		alertify.confirm(utf8_decode('Está a punto de activar a '+title+' ¿Desea continuar?'), function(e){
+		alertify.confirm(utf8_decode('Est&aacute; a punto de activar a '+title+' ¿Desea continuar?'), function(e){
 			if(e)
 			{
 				var result;
@@ -338,6 +338,7 @@ function submitSearch()
 			deleteListElement();
 			massiveElementDelete();
 			activateListElement();
+			toggleRowDetailedInformation();
 			$("#TotalRegs").html($("#totalregs").val());
 			var page = $("#view_page").val();
 			appendPager();

@@ -3,10 +3,9 @@
     $New = new Customer();
     $Head->setTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
-    //$Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
+    $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
     include('../../includes/inc.top.php');
-    
     
 ?>
   <div class="box animated fadeIn">
@@ -32,13 +31,13 @@
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-industry"></i></span>
-                  <?php echo insertElement('select','type','','form-control','validateEmpty="El tipo de cliente es obligatorio."',$DB->fetchAssoc('customer_type','type_id,name',"status='A'",'name'),'0','Seleccione un Tipo de Cliente'); ?>
+                  <?php echo insertElement('select','type','','form-control','validateEmpty="El tipo de cliente es obligatorio."',$DB->fetchAssoc('customer_type','type_id,name',"status='A'",'name'),'','Seleccione un Tipo de Cliente'); ?>
                 </span>
               </div>
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-book"></i></span>
-                  <?php echo insertElement('select','iva_select','','form-control select2 selectTags','',$DB->fetchAssoc('config_iva_type','type_id,name',"status='A'",'name'),'0','Seleccione una Opci&oacute;n'); ?>
+                  <?php echo insertElement('select','iva_select','','form-control select2 selectTags','',$DB->fetchAssoc('config_iva_type','type_id,name',"status='A'",'name'),'','Seleccione una Opci&oacute;n'); ?>
                   <?php echo insertElement("hidden","iva"); ?>
                 </span>
               </div>
@@ -71,6 +70,7 @@
             </div>
             <hr>
           <h4 class="subTitleB"><i class="fa fa-map-pin"></i> Sucursales</h4>
+          <div id="MapsErrorMessage" class="Hidden ErrorText Red">Complete los datos de la sucursal central.</div>
           <div id="branches_container">
             
             <div class="row branch_row listRow2 bg-gray" style="margin:0px!important;">
@@ -79,166 +79,16 @@
 										<img class="img" style="margin-top:5px!important;" src="../../../skin/images/body/pictures/coal_power_plant.png" alt="Sucursal" title="Sucursal">
 									</div>
 								</div>
-								<div class="col-lg-9 col-md-7 col-sm-5 flex-justify-center hideMobile990">
+								<div class="col-lg-9 col-md-7 col-sm-5 flex-justify-center">
 										<span class="listTextStrong" style="margin-top:15px!important;">Sucursal Central</span>
 								</div>
 								<div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center">
-									  <button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button>
-									  <!--&nbsp;-->
-									  <!--<button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button>-->
+									  <button type="button" class="btn btnBlue EditBranch LoadedMap" branch="1"><i class="fa fa-pencil"></i></button>
 								</div>
 							</div>
-							
-							<!--<div class="row branch_row listRow2" style="margin:0px!important;">-->
-       <!--       <div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center hideMobile990">-->
-							<!--		<div class="listRowInner">-->
-							<!--			<img class="img" style="margin-top:5px!important;" src="../../../skin/images/body/pictures/main_branch.png" alt="Sucursal" title="Sucursal">-->
-							<!--		</div>-->
-							<!--	</div>-->
-							<!--	<div class="col-lg-9 col-md-7 col-sm-5 flex-justify-center hideMobile990">-->
-							<!--			<span class="listTextStrong" style="margin-top:15px!important;">Sucursal Central</span>-->
-							<!--	</div>-->
-							<!--	<div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center">-->
-							<!--		  <button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button>-->
-							<!--		  &nbsp;-->
-							<!--		  <button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button>-->
-							<!--	</div>-->
-							<!--</div>-->
 								
             </div>
-<!------------------------------------------ MAIN BRANCH ---------------------------------------------------->
-        <!--  <div id="branch_1">-->
-        <!--    <h4 class="subTitleB"><i class="fa fa-globe"></i> Geolocalizaci&oacute;n</h4>-->
-        <!--    <div class="row form-group inline-form-custom">-->
-        <!--      <div class="col-xs-12 col-sm-6">-->
-        <!--        <span class="input-group">-->
-        <!--          <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>-->
-        <!--          <?php echo insertElement('text','address_1','','form-control','disabled="disabled" placeholder="Direcci&oacute;n" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."'); ?>-->
-        <!--        </span>-->
-        <!--      </div>-->
-        <!--      <div class="col-xs-12 col-sm-6">-->
-        <!--        <span class="input-group">-->
-        <!--          <span class="input-group-addon"><i class="fa fa-bookmark"></i></span>-->
-        <!--          <?php echo insertElement('text','postal_code_1','','form-control','disabled="disabled" placeholder="C&oacute;digo Postal" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."'); ?>-->
-        <!--        </span>-->
-        <!--      </div>-->
-        <!--    </div>-->
-        <!--    <div class="row form-group inline-form-custom">-->
-        <!--      <div class="col-xs-12 col-sm-12">-->
-                <!--- GOOGLE MAPS FRAME --->
-        <!--        <?php InsertAutolocationMap(1); ?>-->
-        <!--      </div>-->
-        <!--    </div>-->
 
-        <!--    <br>-->
-        <!--    <h4 class="subTitleB"><i class="fa fa-globe"></i> Datos de contacto</h4>-->
-        <!--    <div class="row form-group inline-form-custom">-->
-        <!--      <div class="col-sm-6 col-xs-12">-->
-        <!--        <span class="input-group">-->
-        <!--          <span class="input-group-addon"><i class="fa fa-envelope"></i></span>-->
-        <!--          <?php echo insertElement('text','email_1','','form-control',' placeholder="Email"'); ?>-->
-        <!--        </span>-->
-        <!--      </div>-->
-        <!--      <div class="col-sm-6 col-xs-12">-->
-        <!--        <span class="input-group">-->
-        <!--          <span class="input-group-addon"><i class="fa fa-phone"></i></span>-->
-        <!--          <?php echo insertElement('text','phone_1','','form-control',' placeholder="Tel&eacute;fono"'); ?>-->
-        <!--        </span>-->
-        <!--      </div>-->
-        <!--    </div>-->
-        <!--    <div class="row form-group inline-form-custom">-->
-        <!--      <div class="col-sm-6 col-xs-12">-->
-        <!--        <span class="input-group">-->
-        <!--          <span class="input-group-addon"><i class="fa fa-desktop"></i></span>-->
-        <!--          <?php echo insertElement('text','website_1','','form-control',' placeholder="Sitio Web"'); ?>-->
-        <!--        </span>-->
-        <!--      </div>-->
-        <!--      <div class="col-sm-6 col-xs-12">-->
-        <!--        <span class="input-group">-->
-        <!--          <span class="input-group-addon"><i class="fa fa-fax"></i></span>-->
-        <!--          <?php echo insertElement('text','fax_1','','form-control',' placeholder="Fax"'); ?>-->
-        <!--        </span>-->
-        <!--      </div>-->
-        <!--    </div>-->
-        <!--  <br>-->
-        <!--  <div class="row">-->
-        <!--    <div class="col-md-12 info-card">-->
-        <!--      <h4 class="subTitleB"><i class="fa fa-male"></i> Representantes</h4>-->
-              <!--<span id="empty_agent" class="Info-Card-Empty info-card-empty">No hay representantes ingresados</span>-->
-        <!--      <div id="agent_list" class="row">-->
-        <!--      </div>-->
-        <!--      <div class="row txC">-->
-        <!--        <button id="agent_new" type="button" class="btn btn-warning Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar un representante</button>-->
-        <!--      </div>-->
-        <!--      <?php echo insertElement("hidden","total_agents_1","0",'','branch="1"'); ?>-->
-        <!--      <?php echo insertElement("hidden","branch_name_1",'central','','branch="1"'); ?>-->
-              <!-- New representative form -->
-        <!--      <div id="agent_form" class="Info-Card-Form Hidden">-->
-        <!--        <form id="new_agent_form">-->
-        <!--          <div class="info-card-arrow">-->
-        <!--            <div class="arrow-up"></div>-->
-        <!--          </div>-->
-        <!--          <div class="info-card-form animated fadeIn">-->
-        <!--            <div class="row form-group inline-form-custom">-->
-        <!--              <div class="col-xs-12 col-sm-6">-->
-        <!--                <span class="input-group">-->
-        <!--                  <span class="input-group-addon"><i class="fa fa-user"></i></span>-->
-        <!--                  <?php echo insertElement('text','agentname_1','','form-control',' placeholder="Nombre y Apellido" validateEmpty="Ingrese un nombre"'); ?>-->
-        <!--                  </span>-->
-        <!--              </div>-->
-        <!--              <div class="col-xs-12 col-sm-6">-->
-        <!--                <span class="input-group">-->
-        <!--                  <span class="input-group-addon"><i class="fa fa-briefcase"></i></span>-->
-        <!--                  <?php echo insertElement('text','agentcharge_1','','form-control',' placeholder="Cargo"'); ?>-->
-        <!--                </span>-->
-        <!--              </div>-->
-        <!--            </div>-->
-        <!--            <div class="row form-group inline-form-custom">-->
-        <!--              <div class="col-xs-12 col-sm-6">-->
-        <!--                <span class="input-group">-->
-        <!--                  <span class="input-group-addon"><i class="fa fa-envelope"></i></span>-->
-        <!--                  <?php echo insertElement('text','agentemail_1','','form-control',' placeholder="Email" validateEmail="Ingrese un email v&aacute;lido."'); ?>-->
-        <!--                </span>-->
-        <!--              </div>-->
-        <!--              <div class="col-xs-12 col-sm-6">-->
-        <!--                <span class="input-group">-->
-        <!--                  <span class="input-group-addon"><i class="fa fa-phone"></i></span>-->
-        <!--                  <?php echo insertElement('text','agentphone_1','','form-control',' placeholder="Tel&eacute;fono"'); ?>-->
-        <!--                </span>-->
-        <!--              </div>-->
-        <!--            </div>-->
-        <!--            <div class="row form-group inline-form-custom">-->
-        <!--              <div class="col-xs-12 col-sm-12">-->
-        <!--                <span class="input-group">-->
-        <!--                  <span class="input-group-addon"><i class="fa fa-info-circle"></i></span>-->
-        <!--                  <?php echo insertElement('textarea','agentextra_1','','form-control','rows="1" placeholder="Informaci&oacute;n Extra"'); ?>-->
-        <!--                </span>-->
-        <!--              </div>-->
-        <!--            </div>-->
-        <!--            <div class="row txC">-->
-        <!--              <button id="agent_add_1" branch="1" type="button" class="Info-Card-Form-Done btn btnGreen"><i class="fa fa-check"></i> Agregar</button>-->
-        <!--              <button id="agent_cancel_1" branch="1" type="button" class="Info-Card-Form-Done btn btnRed"><i class="fa fa-times"></i> Cancelar</button>-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </form>-->
-        <!--      </div>-->
-              <!-- New representative form -->
-        <!--    </div>-->
-        <!--  </div>-->
-        <!--  <br>-->
-        <!--  <h4 class="subTitleB"><i class="fa fa-briefcase"></i> Corredores</h4>-->
-        <!--  <div id="agent_list_1" branch="1" class="row">-->
-        <!--    <div class="col-xs-12 col-sm-6">-->
-        <!--      <?php echo insertElement('select','select_broker_1','','form-control select2 selectTags BrokerSelect','',$DB->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),'0','Seleccione una Opci&oacute;n'); ?>-->
-        <!--      <?php echo insertElement('hidden','brokers_1',''); ?>-->
-        <!--    </div>-->
-        <!--    <div class="col-xs-12 col-sm-6">-->
-        <!--      <button id="add_broker" branch="1" style="margin:0px!important;" type="button" class="btn btn-success Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar Corredor</button>-->
-        <!--    </div>-->
-        <!--  </div>-->
-        <!--  <hr>-->
-        <!--</div>-->
-<!------------------------------------------ END MAIN BRANCH ---------------------------------------------------->
       </div>
           <div class="row txC" id="add_branch_button_container">
             <button id="add_branch" type="button" class="btn btn-primary Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar una sucursal</button>
@@ -253,11 +103,14 @@
       </div>
     </div><!-- box -->
   </div><!-- box -->
-<?php $Foot->setScript('../../js/script.map.autolocation.js'); ?>
+  <div id="ModalBranchesContainer">
+  <?php $New->Getbranchmodal();  ?>
+  </div>
 <?php
-// $Foot->setScript('../../../vendors/inputmask3/inputmask.min.js');
-// $Foot->setScript('../../../vendors/inputmask3/inputmask.numeric.extensions.min.js');
+$Foot->setScript('../../js/script.map.autolocation.js');
+$Foot->setScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCuMB_Fpcn6USQEoumEHZB_s31XSQeKQc0&libraries=places&language=es','async defer');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
 $Foot->setScript('../../../vendors/select2/select2.min.js');
+
 include('../../includes/inc.bottom.php');
 ?>

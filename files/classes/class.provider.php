@@ -435,6 +435,8 @@ public function MakeRegs($Mode="List")
 		$Province		= $_POST['map1_province'];
 		$Country		= $_POST['map1_country'];
 		
+		//echo $Address." asdasd";
+		
 		// INSERT LOCATIONS
 		
 		// COUNTRY
@@ -508,7 +510,7 @@ public function MakeRegs($Mode="List")
 			}
 		}
 		
-		$Update		= $this->execQuery('update','product_provider',"name='".$Name."',postal_code='".$PostalCode."',address='".$Address."',cuit=".$CUIT.",iva='".$IVA."',gross_income_tax='".$GrossIncome."',email='".$Email."',fax='".$Fax."',phone='".$Phone."',website='".$Website."',country_id=".$CountryID.",province_id='".$ProvinceID."',region_id=".$RegionID.",zone_id='".$ZoneID."',lat=".$Lat.",lng=".$Lng.",logo='".$Image."'","provider_id=".$ID);
+		$Update		= $this->execQuery('update','product_provider',"name='".$Name."',postal_code='".$PostalCode."',address='".$Address."',cuit=".$CUIT.",iva='".$IVA."',gross_income_tax='".$GrossIncome."',email='".$Email."',fax='".$Fax."',phone='".$Phone."',website='".$Website."',country_id=".$CountryID.",province_id='".$ProvinceID."',region_id=".$RegionID.",zone_id='".$ZoneID."',lat=".$Lat.",lng=".$Lng.",logo='".$Image."',updated_by=".$_SESSION['admin_id'],"provider_id=".$ID);
 		//echo $this->lastQuery();
 		
 		// PROCESS AGENTS

@@ -43,6 +43,11 @@ class AdminData extends DataBase
 		$this->ProfileName	= $ProfileData[0]['title'];
 	}
 	
+	public function IsOwner()
+	{
+		return $this->AdminData['group_id'] == 360;
+	}
+	
 	public function GetCustomer()
 	{
 		if(!$this->Customer)

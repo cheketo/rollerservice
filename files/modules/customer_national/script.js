@@ -4,32 +4,50 @@ $(document).ready(function(){
 		$("#cuit").inputmask();  //static mask
 
 	DeleteAgent();
+	CancelAgent();
 	if($('.selectTags').length>0)
 	{
-		$('#iva_select').select2({placeholder: {id: '0',text: 'Seleccione IVA'}});
+		$('#iva_select').select2({placeholder: {id: '',text: 'Seleccione IVA'}});
 		$('#iva_select').on("select2:select", function (e) { $("#iva").val(e.params.data.id); });
 		$('#iva_select').on("select2:unselect", function (e) { $("#iva").val(''); });
 		
-		$('.BrokerSelect').select2({placeholder: {id: '0',text: 'Seleccione un Corredor'}});
+		select2Broker();
 		
 		select2Focus();
 	}
 });
 
-function select2Focus()
+function select2Broker()
 {
-	$('.select2').on(
-        'select2:select',(
-            function(){
-                $(this).focus();
-            }
-        )
-    );
+	$('.BrokerSelect').select2({
+		tags: true
+	});
+	$('.BrokerSelect').on("change", function (e) { 
+		var id = $(this).attr("branch");
+		SelectBrokers(id);
+	});
+}
+
+function SelectBrokers(id)
+{
+	var brokers = "0";
+	$("#select_broker_"+id).next('span').children('span').children('span').children('ul').children('.select2-selection__choice').each(function(){
+		var optionName = $(this).attr("title");
+		$("#select_broker_"+id).children("option").each(function(){
+			if($(this).html()==optionName)
+			{
+				brokers += ","+$(this).attr("value");
+			}
+		});
+	});
+	$("#brokers_"+id).val(brokers);
 }
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
 	$("#BtnCreate,#BtnCreateNext").on("click",function(e){
 		e.preventDefault();
+		//alert(validate.validateFields('new_company_form')+' && '+validateMaps());
+		ShowErrorMapDiv();
 		if(validate.validateFields('new_company_form') && validateMaps())
 		{
 			var BtnID = $(this).attr("id")
@@ -42,12 +60,12 @@ $(function(){
 				procText = "creaci&oacute;n"
 			}
 
-			confirmText += " el proveedor '"+$("#name").val()+"'";
+			confirmText += " el cliente '"+$("#name").val()+"'";
 
 			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
 				if(e)
 				{
-					var process		= '../../library/processes/proc.common.php?object=Provider';
+					var process		= '../../library/processes/proc.common.php?object=Customer';
 					if(BtnID=="BtnCreate")
 					{
 						var target		= 'list.php?element='+$('#title').val()+'&msg='+ $("#action").val();
@@ -84,22 +102,28 @@ $(function(){
 
 ///////////////////////// CREATE/EDIT FORM FUNCTIONS ////////////////////////////////////
 $(function(){
-	$("#agent_add").on("click",function(e){
+	AddAgent();
+});
+
+function AddAgent()
+{
+	$(".agent_add").on("click",function(e){
 		e.preventDefault();
-		if(validate.validateFields('new_agent_form'))
+		var id = $(this).attr("branch");
+		if(validate.validateFields('new_agent_form_'+id))
 		{
-			var name = $('#agentname').val();
-			var charge = $('#agentcharge').val();
-			var email = $('#agentemail').val();
-			var phone = $('#agentphone').val();
-			var extra = $('#agentextra').val();
-			if(!$("#total_agents").val() || $("#total_agents").val()=='undefined')
-				$("#total_agents").val(0);
-			var total = parseInt($("#total_agents").val())+1;
+			var name = $('#agentname_'+id).val();
+			var charge = $('#agentcharge_'+id).val();
+			var email = $('#agentemail_'+id).val();
+			var phone = $('#agentphone_'+id).val();
+			var extra = $('#agentextra_'+id).val();
+			if(!$("#branch_total_agents_"+id).val() || $("#branch_total_agents_"+id).val()=='undefined')
+				$("#branch_total_agents_"+id).val(0);
+			var total = parseInt($("#branch_total_agents_"+id).val())+1;
 			
 			
-			$("#total_agents").val(total);
-			var agent = $("#total_agents").val();
+			$("#branch_total_agents_"+id).val(total);
+			var agent = $("#branch_total_agents_"+id).val();
 			if(charge)
 			{
 				chargehtml = '<br><span><i class="fa fa-briefcase"></i> '+charge+'</span>';
@@ -125,25 +149,37 @@ $(function(){
 				extrahtml = '';
 			}
 			
-			$("#agent_list").append('<div class="col-md-6 col-sm-6 col-xs-12 AgentCard"><div class="info-card-item"><input type="hidden" id="agent_name_'+agent+'" value="'+name+'" /><input type="hidden" id="agent_charge_'+agent+'" value="'+charge+'" /><input type="hidden" id="agent_email_'+agent+'" value="'+email+'" /><input type="hidden" id="agent_phone_'+agent+'" value="'+phone+'" /><input type="hidden" id="agent_extra_'+agent+'" value="'+extra+'" /><div class="close-btn DeleteAgent"><i class="fa fa-times"></i></div><span><i class="fa fa-user"></i> <b>'+name+'</b></span>'+chargehtml+phonehtml+emailhtml+extrahtml+'</div></div>');
+			$("#agent_list_"+id).append('<div class="col-md-6 col-sm-6 col-xs-12 AgentCard"><div class="info-card-item"><input type="hidden" id="agent_name_'+agent+'_'+id+'" value="'+name+'" /><input type="hidden" id="agent_charge_'+agent+'_'+id+'" value="'+charge+'" /><input type="hidden" id="agent_email_'+agent+'_'+id+'" value="'+email+'" /><input type="hidden" id="agent_phone_'+agent+'_'+id+'" value="'+phone+'" /><input type="hidden" id="agent_extra_'+agent+'_'+id+'" value="'+extra+'" /><div class="close-btn DeleteAgent"><i class="fa fa-times"></i></div><span><i class="fa fa-user"></i> <b>'+name+'</b></span>'+chargehtml+phonehtml+emailhtml+extrahtml+'</div></div>');
 			
-			$('#agentname').val('');
-			$('#agentcharge').val('');
-			$('#agentemail').val('');
-			$('#agentphone').val('');
-			$('#agentextra').val('');
-			$('#agent_form').addClass('Hidden');
-			$('#BtnCreate').removeClass('disabled-btn');
-			$('#BtnCreate').prop("disabled", false);
-			$('#BtnCreateNext').removeClass('disabled-btn');
-			$('#BtnCreateNext').prop("disabled", false);
-			$("#empty_agent").remove();
+			$('#agentname_'+id).val('');
+			$('#agentcharge_'+id).val('');
+			$('#agentemail_'+id).val('');
+			$('#agentphone_'+id).val('');
+			$('#agentextra_'+id).val('');
+			$('#agent_form_'+id).addClass('Hidden');
+			$('#SaveBranchEdition'+id).removeClass('disabled-btn');
+			$('#SaveBranchEdition'+id).prop("disabled", false);
+			$("#empty_agent_"+id).remove();
 			DeleteAgent();
 		}
 	});
-	
-	
-});
+}
+
+function CancelAgent()
+{
+	$(".agent_cancel").on("click",function(e){
+		e.preventDefault();
+		var id = $(this).attr("branch");
+		$('#agentname_'+id).val('');
+		$('#agentcharge_'+id).val('');
+		$('#agentemail_'+id).val('');
+		$('#agentphone_'+id).val('');
+		$('#agentextra_'+id).val('');
+		$('#agent_form_'+id).addClass('Hidden');
+		$('#SaveBranchEdition'+id).removeClass('disabled-btn');
+		$('#SaveBranchEdition'+id).prop("disabled", false);
+	});
+}
 
 function DeleteAgent()
 {
@@ -172,185 +208,160 @@ $(function(){
 		var noData		= function(){console.log("No data");}
 		sumbitFields(process,haveData,noData);
 	});
+	ShowAgentForm();
 });
 
-$('#agent_new').on("click",function(){
-    if ($('#agent_form').hasClass('Hidden')) {
-      $('#agent_form').removeClass('Hidden');
-      $('#BtnCreate').addClass('disabled-btn');
-      $('#BtnCreate').attr('disabled', 'disabled');
-      $('#BtnCreateNext').addClass('disabled-btn');
-      $('#BtnCreateNext').attr('disabled', 'disabled');
-    } else {
-      $('#agent_form').addClass('Hidden');
-      $('#BtnCreate').removeClass('disabled-btn');
-      $('#BtnCreate').prop("disabled", false);
-      $('#BtnCreateNext').removeClass('disabled-btn');
-      $('#BtnCreateNext').prop("disabled", false);
-    }
-});
+function ShowAgentForm()
+{
+	$('.agent_new').on("click",function(){
+		var id = $(this).attr("branch");
+	    if ($('#agent_form_'+id).hasClass('Hidden')) {
+			$('#agent_form_'+id).removeClass('Hidden');
+			$('#SaveBranchEdition'+id).addClass('disabled-btn');
+			$('#SaveBranchEdition'+id).attr('disabled', true);
+	    } else {
+			$('#agent_form').addClass('Hidden');
+			$('#SaveBranchEdition'+id).removeClass('disabled-btn');
+			$('#SaveBranchEdition'+id).prop("disabled", false);
+	    }
+	});
+}
+
+///////////////////////////// BROKERS /////////////////////////////////////////
+
+function AddBroker()
+{
+	$(".add_broker").on("click",function(){
+		var id = $(this).attr("branch");
+	});
+}
+
+function ShowErrorMapDiv()
+{
+	if(!validateMap(1))
+	{
+		$("#MapsErrorMessage").removeClass('Hidden');
+	}else{
+		$("#MapsErrorMessage").addClass('Hidden');
+	}
+}
 
 //////////////////////////// ADD BRANCH ///////////////////////////////////////
-function addBranch2()
+function addBranchModal()
 {
-		var id = parseInt($("#total_branches").val())+1;
-		$("#total_branches").val(id);
-		var html = '';
-		html += '<h4 class="subTitleB"><i class="fa fa-globe"></i> Geolocalizaci&oacute;n</h4>';
-		html += '<div class="row form-group inline-form-custom">';
-		html += '<div class="col-xs-12 col-sm-6">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-map-marker"></i></span>';
-		html += '<input type="text" id="address_'+id+'" class="form-control" disabled="disabled" placeholder="Direcci&oacute;n" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo.">';
-		html += '</span>';
-		html += '</div>';
-		html += '<div class="col-xs-12 col-sm-6">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-bookmark"></i></span>';
-		html += '<input type="text" id="postal_code_'+id+'" class="form-control" disabled="disabled" placeholder="C&oacute;digo Postal" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo.">';
-		html += '</span>';
-		html += '</div>';
-		html += '</div>';
-		html += '<div class="row form-group inline-form-custom">';
-		html += '<div class="col-xs-12 col-sm-12">';
-		html += InsertAutolocationMap(id);
-		// html += '<iframe name="map'+id+'" id="map'+id+'" map="'+id+'" src="../../library/frames/frame.map.autolocation.php" framepadding="0" frameborder="0" style="width:100%;height:25em;overflow:expand;"></iframe>';
-		// html += '<div id="map'+id+'_ErrorMsg" class="ErrorText Red Hidden">Seleccione una ubicaci&oacute;n</div>';
-		// html += '<input type="hidden" id="map'+id+'_lat" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_lng" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_address" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_address_short" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_zone" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_zone_short" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_region" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_region_short" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_province" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_province_short" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_country" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_country_short" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_postal_code" branch="'+id+'">';
-		// html += '<input type="hidden" id="map'+id+'_postal_code_suffix" branch="'+id+'">';
 		
-		html += '</div>';
-		html += '</div>';
-		html += '<br>';
-		html += '<h4 class="subTitleB"><i class="fa fa-globe"></i> Datos de contacto</h4>';
-		html += '<div class="row form-group inline-form-custom">';
-		html += '<div class="col-sm-6 col-xs-12">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-envelope"></i></span>';
-		html += '<input type="text" id="email_'+id+'" class="form-control" placeholder="Email">';
-		html += '</span>';
-		html += '</div>';
-		html += '<div class="col-sm-6 col-xs-12">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-phone"></i></span>';
-		html += '<input type="text" id="phone_'+id+'" class="form-control" placeholder="Tel&eacute;fono">';
-		html += '</span>';
-		html += '</div>';
-		html += '</div>';
-		html += '<div class="row form-group inline-form-custom">';
-		html += '<div class="col-sm-6 col-xs-12">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-desktop"></i></span>';
-		html += '<input type="text" id="website_'+id+'" class="form-control" placeholder="Sitio Web">';
-		html += '</span>';
-		html += '</div>';
-		html += '<div class="col-sm-6 col-xs-12">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-fax"></i></span>';
-		html += '<input type="text" id="fax_'+id+'" class="form-control" placeholder="Fax">';
-		html += '</span>';
-		html += '</div>';
-		html += '</div>';
-		html += '<br>';
-		html += '<div class="row">';
-		html += '<div class="col-md-12 info-card">';
-		html += '<h4 class="subTitleB"><i class="fa fa-male"></i> Representantes</h4>';
-		html += '<div id="agent_list" class="row">';
-		html += '</div>';
-		html += '<div class="row txC">';
-		html += '<button id="agent_new_1" branch="1" type="button" class="btn btn-warning Info-Card-Form-Btn AddAgent"><i class="fa fa-plus"></i> Agregar un representante</button>';
-		html += '</div>';
-		html += '<input type="hidden" id="total_agents_'+id+'" branch="'+id+'">';
-		html += '<input type="hidden" id="branch_name_'+id+'" branch="'+id+'">'; /////// BRANCH NAME MUST BE A TEXT INPUT
-		html += '<div id="agent_form_'+id+'" branch="1" class="Info-Card-Form Hidden">';
-		html += '<form id="new_agent_form_'+id+'">';
-		html += '<div class="info-card-arrow">';
-		html += '<div class="arrow-up"></div>';
-		html += '</div>';
-		html += '<div class="info-card-form animated fadeIn">';
-		html += '<div class="row form-group inline-form-custom">';
-		html += '<div class="col-xs-12 col-sm-6">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-user"></i></span>';
-		html += '<input type="text" id="agentname_'+id+'" class="form-control" placeholder="Nombre y Apellido" validateEmpty="Ingrese un nombre">';
-		html += '</span>';
-		html += '</div>';
-		html += '<div class="col-xs-12 col-sm-6">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-briefcase"></i></span>';
-		html += '<input type="text" id="agentcharge_'+id+'" class="form-control" placeholder="Cargo">';
-		html += '</span>';
-		html += '</div>';
-		html += '</div>';
-		html += '<div class="row form-group inline-form-custom">';
-		html += '<div class="col-xs-12 col-sm-6">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-envelope"></i></span>';
-		html += '<input type="text" id="agentemail_'+id+'" class="form-control" placeholder="Email" validateEmail="Ingrese un email v&aacute;lido.">';
-		html += '</span>';
-		html += '</div>';
-		html += '<div class="col-xs-12 col-sm-6">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-phone"></i></span>';
-		html += '<input type="text" id="agentphone_'+id+'" class="form-control" placeholder="Tel&eacute;fono">';
-		html += '</span>';
-		html += '</div>';
-		html += '</div>';
-		html += '<div class="row form-group inline-form-custom">';
-		html += '<div class="col-xs-12 col-sm-12">';
-		html += '<span class="input-group">';
-		html += '<span class="input-group-addon"><i class="fa fa-info-circle"></i></span>';
-		html += '<textarea id="agentextra_'+id+'" class="form-control" rows="1" placeholder="Informaci&oacute;n Extra"></textarea>';
-		html += '</span>';
-		html += '</div>';
-		html += '</div>';
-		html += '<div class="row txC">';
-		html += '<button id="agent_add_'+id+'" branch="'+id+'" type="button" class="Info-Card-Form-Done btn btnGreen"><i class="fa fa-check"></i> Agregar</button>';
-		html += '<button id="agent_cancel_'+id+'" branch="'+id+'" type="button" class="Info-Card-Form-Done btn btnRed"><i class="fa fa-times"></i> Cancelar</button>';
-		html += '</div>';
-		html += '</div>';
-		html += '</form>';
-		html += '</div>';
-		html += '</div>';
-		html += '</div>';
-		html += '<br>';
-		html += '<h4 class="subTitleB"><i class="fa fa-briefcase"></i> Corredores</h4>';
-		html += '<div id="broker_list_'+id+'" branch="'+id+'" class="row">';
-		html += '<div class="col-xs-12 col-sm-6">';
-		html += ''; ///////<?php echo insertElement('select','select_broker_1','','form-control select2 selectTags BrokerSelect','',$DB->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),'0','Seleccione una Opci&oacute;n'); ?>
-		html += '<input type="hidden" id="brokers_'+id+'" branch="'+id+'">';
-		html += '</div>';
-		html += '<div class="col-xs-12 col-sm-6">';
-		html += '<button id="add_broker" branch="'+id+'" style="margin:0px!important;" type="button" class="btn btn-success Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar Corredor</button>';
-		html += '</div>';
-		html += '</div>';
-		html += '<hr>';
+		var process		= '../../library/processes/proc.common.php?object=Customer&action=Getbranchmodal';
+		var haveData	= function(returningData)
+		{
+			//console.log(returningData);
+			$("#ModalBranchesContainer").append(returningData);
+			$("#branch_modal_"+$("#total_branches").val()).show();
+			EditBranch();
+			select2Broker();
+			CancelBranchEdition();
+			SaveBranchEdition();
+			validateMap();
+			ShowAgentForm();
+			AddAgent();
+			CancelAgent();
+			initMap($("#total_branches").val());
+			validateDivChange();
+		}
+		var noData		= function()
+		{
+			console.log("no returning data");
+		}
+		sumbitFields(process,haveData,noData);
 		
-		$("#branches_container").append(html);
+		
 }
 
 function addBranch()
 {
-	var name = 'Sucursal';
+	var id = parseInt($("#total_branches").val())+1;
+	$("#total_branches").val(id);
+	var name = 'Sucursal '+(id-1);
 	var img = '../../../skin/images/body/pictures/main_branch.png';
-	//var img = '../../../skin/images/body/pictures/coal_power_plant.png';
-	var html = '<div class="row branch_row listRow2" style="margin:0px!important;"><div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center hideMobile990"><div class="listRowInner"><img class="img" style="margin-top:5px!important;" src="'+img+'" alt="Sucursal" title="Sucursal"></div></div><div class="col-lg-9 col-md-7 col-sm-5 flex-justify-center hideMobile990"><span class="listTextStrong" style="margin-top:15px!important;">'+name+'</span></div><div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button>&nbsp;<button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></div></div>';
+	var html = '<div id="branch_row_'+id+'" class="row branch_row listRow2" style="margin:0px!important;"><div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center hideMobile990"><div class="listRowInner"><img class="img" style="margin-top:5px!important;" src="'+img+'" alt="Sucursal" title="Sucursal"></div></div><div class="col-lg-9 col-md-7 col-sm-5 flex-justify-center"><span class="listTextStrong" style="margin-top:15px!important;" id="branch_row_name_'+id+'">'+name+'</span></div><div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center"><button type="button" branch="'+id+'" id="EditBranch'+id+'" class="btn btnBlue EditBranch"><i class="fa fa-pencil"></i></button>&nbsp;<button type="button" id="DeleteBranch'+id+'" branch="'+id+'" class="btn btnRed DeleteBranch"><i class="fa fa-trash"></i></button></div></div>';
 	$("#branches_container").append(html);
-	
+	addBranchModal();
+	DeleteBranch();
 }
 
 $("#add_branch").on("click",function(){
 	addBranch();
 });
+
+function EditBranch()
+{
+	$(".EditBranch").on("click",function(){
+		var id = $(this).attr('branch');
+		$("#branch_modal_"+id).show();
+		// console.log($("#branch_modal_"+id).html());
+	});
+}
+
+function SaveBranchEdition()
+{
+	$(".SaveBranchEdition").click(function(e){
+		e.stopPropagation();
+		var id = $(this).attr('branch');
+		
+		// alert(validate.validateFields('branch_form_'+id));
+		// alert(validate.getLastValidation());
+		
+		if(validate.validateFields('branch_form_'+id) && validateMap(id))
+		{
+			$("#branch_modal_"+id).removeClass("NewBranch");
+			$("#branch_modal_"+id).hide();
+			$("#branch_row_name_"+id).html('Sucursal '+$("#branch_name_"+id).val());
+			$("#BranchTitle"+id).html('Editar Sucursal '+$("#branch_name_"+id).val());
+		}
+		ShowErrorMapDiv();
+		return false;
+	});
+	
+	$(".branchname").on("keyup",function(){
+		var name = $(this).val();	
+		var id = $(this).attr('branch');
+		$("#BranchTitle"+id).html('Editar Sucursal '+name);
+	});
+}
+
+function DeleteBranch()
+{
+	$(".DeleteBranch").on("click",function(){
+		var id = $(this).attr('branch');
+		$("#branch_row_"+id).remove();
+		$("#branch_modal_"+id).remove();
+	});
+}
+
+function CancelBranchEdition()
+{
+	$(".CancelBranchEdition").on("click",function(){
+		var id = $(this).attr('branch');
+		if($("#branch_modal_"+id).hasClass("NewBranch"))
+		{
+			$("#DeleteBranch"+id).click();
+			$("#total_branches").val(id-1);
+		}else{
+			$("#branch_modal_"+id).hide();
+		}
+	});
+	return false;
+}
+$(document).ready(function(){
+	EditBranch();
+	SaveBranchEdition();
+	CancelBranchEdition();
+	$(".LoadedMap").click(function(){
+		if(!$(this).hasClass('Initializated'))
+		{
+			var id =$(this).attr("branch");
+			$(this).addClass('Initializated');
+			initMap(id);
+		}
+		
+	});
+})
