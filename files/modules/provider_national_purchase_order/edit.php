@@ -1,237 +1,195 @@
 <?php
     include("../../includes/inc.main.php");
-    $ID           = $_GET['id'];
-    $Edit         = new Provider($ID);
-    $Data         = $Edit->GetData();
-    $IVA = array(1=>"Excento",2=>"Responsable Inscripto",3=>"Monotributista");
-    ValidateID($Data);
-    $Agents = $DB->fetchAssoc('product_provider_agent','*','provider_id='.$ID);
     
-    $Head->setTitle($Data['name']);
+    $ID     = $_GET['id'];
+    $Edit   = new ProviderPurchaseOrder($ID);
+    $Data   = $Edit->GetData();
+    ValidateID($Data['order_id']);
+    $Status = $Edit->Data['status'];
+    if($Status!='P')
+    {
+      header('Location: list.php?error=status');
+			die();
+    }
+    $Agents = $DB->fetchAssoc('product_provider_agent','agent_id,name','provider_id='.$Edit->Data['provider_id']);
+    $Items  = $DB->fetchAssoc('product_provider_purchase_order_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*,(a.price * a.quantity) AS total','order_id='.$ID);
+    
+    
+    
+    $Head->setTitle("Editar Orden de ".$Data['provider']);
+    $Head->setSubTitle($Menu->GetTitle());
+    $Head->setTitle("Editar Orden de ".$Data['provider']);
     $Head->setSubTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
   <div class="box animated fadeIn">
     <div class="box-header flex-justify-center">
-      <div class="col-md-8 col-sm-12">
+      <div class="col-xs-12">
         
           <div class="innerContainer main_form">
-            <form id="new_company_form">
-            <h4 class="subTitleB"><i class="fa fa-newspaper-o"></i> Datos del Proveedor</h4>
+            <!--<form id="new_order">-->
             <?php echo insertElement("hidden","action",'update'); ?>
-            <?php echo insertElement("hidden","type",'N'); ?>
             <?php echo insertElement("hidden","id",$ID); ?>
-            <?php echo insertElement("hidden","newimage",$Edit->GetImg());?>
-            <?php echo insertElement("hidden","total_agents",count($Agents)); ?>
+            <?php echo insertElement("hidden","type",'N'); ?>
+            <?php //echo insertElement("hidden","total_items","1"); ?>
+            <?php echo insertElement("hidden","items",count($Items)); ?>
+            <h4 class="subTitleB"><i class="fa fa-building"></i> Proveedor</h4>
             <div class="row form-group inline-form-custom">
-              <div class="col-xs-12 col-sm-6">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-building"></i></span>
-                  <?php echo insertElement('text','name',$Data['name'],'form-control',' placeholder="Nombre de la Empresa" validateEmpty="Ingrese un nombre." validateFromFile="../../library/processes/proc.common.php///El nombre ya existe///action:=validate///actualname:='.$Data['name'].'///object:=Provider" autofocus'); ?>
-                </span>
-              </div>
-              <div class="col-xs-12 col-sm-6">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-book"></i></span>
-                  <?php echo insertElement('select','iva_select',$Data['iva'],'form-control select2 selectTags','',$DB->fetchAssoc('config_iva_type','type_id,name',"status='A'",'name'),'0','Seleccione una Opci&oacute;n'); ?>
-                  <?php echo insertElement("hidden","iva",$Data['iva']); ?>
-                </span>
+              <div class="col-xs-12">
+                  <?php echo insertElement('select','providers',$Edit->Data['provider_id'],'form-control select2 selectTags','',$DB->fetchAssoc('product_provider','provider_id,name',"status='A' AND company_id=".$_SESSION['company_id'],'name'),'','Seleccione un Proveedor'); ?>
+                  <?php echo insertElement("text","provider",$Edit->Data['provider_id'],'Hidden','validateEmpty="Seleccione un Proveedor"'); ?>
               </div>
             </div>
+            <h4 class="subTitleB"><i class="fa fa-male"></i> Contacto</h4>
             <div class="row form-group inline-form-custom">
-              <div class="col-xs-12 col-sm-6">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-file-text-o"></i></span>
-                  <?php echo insertElement('text','cuit',$Data['cuit'],'form-control','data-inputmask="\'mask\': \'99-99999999-9\'" placeholder="N&uacute;mero CUIT" validateEmpty="Ingrese un CUIT." '); ?>
-                </span>
-              </div>
-              <div class="col-xs-12 col-sm-6">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-file-text"></i></span>
-                  <?php echo insertElement('text','gross_income_number',$Data['gross_income_tax'],'form-control',' placeholder="N&uacute;mero Ingresos Brutos" validateMinLength="10///El n&uacute;mero debe contener 11 caracteres como m&iacute;nimo." validateOnlyNumbers="Ingrese n&uacute;meros &uacute;nicamente."'); ?>
-                </span>
+              <div class="col-xs-12">
+                  
+                    <?php if(empty($Agents))
+                          {
+                            //echo insertElement('select','agents',0,'form-control select2 selectTags','disabled=disabled','','0','Sin Contacto');  
+                            echo '<div id="agent-wrapper"><select id="agents" class="form-control select2 selectTags" disabled="disabled" style="width: 100%;"><option value="0">Sin Contacto</option</select></div>';
+                            echo insertElement("text","agent","00",'Hidden','validateEmpty="Seleccione un Contacto"');
+                          }else{
+                            echo '<div id="agent-wrapper">';
+                            echo insertElement('select','agents',$Edit->Data['agent_id'],'form-control select2 selectTags','',$Agents);  
+                            echo '</div>';
+                            echo insertElement("text","agent",$Edit->Data['agent_id'],'Hidden','validateEmpty="Seleccione un Contacto"');
+                            
+                          }
+                     ?>
+                     <input type="text" name="agent" id="agent" value="0" class="Hidden" validateEmpty="Seleccione un Contacto" />
+                  </div>
+                  <?php //echo insertElement("text","agent",$Edit->Data['agent_id'],'Hidden','validateEmpty="Seleccione un Contacto"'); ?>
               </div>
             </div>
-            <br>
-            <h4 class="subTitleB"><i class="fa fa-globe"></i> Geolocalizaci&oacute;n</h4>
-            <div class="row form-group inline-form-custom">
-              <div class="col-xs-12 col-sm-6">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
-                  <?php echo insertElement('text','address_1',$Data['address'],'form-control','disabled="disabled" placeholder="Direcci&oacute;n" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."'); ?>
-                </span>
-              </div>
-              <div class="col-xs-12 col-sm-6">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-bookmark"></i></span>
-                  <?php echo insertElement('text','postal_code_1',$Data['postal_code'],'form-control','disabled="disabled" placeholder="C&oacute;digo Postal" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."'); ?>
-                </span>
-              </div>
-            </div>
-            <div class="row form-group inline-form-custom">
-              <div class="col-xs-12 col-sm-12 MapWrapper">
-                <!--- GOOGLE MAPS FRAME --->
-                <?php echo InsertAutolocationMap(1,$Data); ?>
-              </div>
-            </div>
-            <br>
-            <h4 class="subTitleB"><i class="fa fa-globe"></i> Datos de contacto</h4>
             
-            
+            <h4 class="subTitleB"><i class="fa fa-money"></i> Moneda</h4>
             <div class="row form-group inline-form-custom">
-              <div class="col-sm-6 col-xs-12">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                  <?php echo insertElement('text','email',$Data['email'],'form-control',' placeholder="Email"'); ?>
-                </span>
-              </div>
-              <div class="col-sm-6 col-xs-12">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                  <?php echo insertElement('text','phone',$Data['phone'],'form-control',' placeholder="Tel&eacute;fono"'); ?>
-                </span>
-              </div>
-            </div>
-            <div class="row form-group inline-form-custom">
-              <div class="col-sm-6 col-xs-12">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-desktop"></i></span>
-                  <?php echo insertElement('text','website',$Data['website'],'form-control',' placeholder="Sitio Web"'); ?>
-                </span>
-              </div>
-              <div class="col-sm-6 col-xs-12">
-                <span class="input-group">
-                  <span class="input-group-addon"><i class="fa fa-fax"></i></span>
-                  <?php echo insertElement('text','fax',$Data['fax'],'form-control',' placeholder="Fax"'); ?>
-                </span>
+              <div class="col-xs-12">
+                <?php echo insertElement('select','currency_selector',$Edit->Data['currency_id'],'form-control',' ',$DB->fetchAssoc('currency','currency_id,title',"",'title DESC'),'','Seleccione una Moneda'); ?>
+                <?php echo insertElement("text","currency",$Edit->Data['currency_id'],'Hidden','validateEmpty="Seleccione un Moneda"'); ?>
               </div>
             </div>
             <br>
-            <div class="row">
-              <div class="col-md-12 col-xs-12 simple_upload_image">
-                  <h4 class="subTitleB"><i class="fa fa-image"></i> Logo</h4>
-                <div class="image_sector">
-                  <img id="company_logo" src="<?php echo $Edit->GetImg(); ?>" width="100" alt="" class="animated" />
-                  <div id="image_upload" class="overlay-text"><span><i class="fa fa-upload"></i> Subir Im&aacute;gen</span></div>
-                  <?php echo insertElement('file','image','','form-control Hidden',' placeholder="Sitio Web"'); ?>
+            <h4 class="subTitleB"><i class="fa fa-cubes"></i> Art&iacute;culos</h4>
+            
+            <div style="margin:0px 10px;">
+              <div class="row form-group inline-form-custom bg-light-blue" style="margin-bottom:0px!important;">
+                
+                <div class="col-xs-4 txC">
+                  <strong>Art&iacute;culo</strong>
+                </div>
+                <div class="col-xs-1 txC">
+                  <strong>Precio</strong>
+                </div>
+                <div class="col-xs-1 txC">
+                  <strong>Cantidad</strong>
+                </div>
+                <div class="col-xs-2 txC">
+                  <strong>Fecha Entrega</strong>
+                </div>
+                <div class="col-xs-1 txC"><strong>Costo</strong></div>
+                <div class="col-xs-3 txC">
+                  <strong>Acciones</strong>
                 </div>
               </div>
-            </div>
-          </form>
-          <br>
-          <div class="row">
-            <div class="col-md-12 info-card">
-              <h4 class="subTitleB"><i class="fa fa-male"></i> Representantes</h4>
-              <!--<span id="empty_agent" class="Info-Card-Empty info-card-empty">No hay representantes ingresados</span>-->
-              <div id="agent_list" class="row">
-                <?php $X=1; foreach($Agents as $Agent){ ?>
-                  <div class="col-md-6 col-sm-6 col-xs-12 AgentCard">
-                    <div class="info-card-item">
-                      <div class="close-btn DeleteAgent"><i class="fa fa-times"></i></div>
-                      <?php 
-                        if($Agent['name'])
-                        {
-                          echo '<input type="hidden" id="agent_name_'.$X.'" value="'.$Agent['name'].'" />';
-                          echo '<span><i class="fa fa-user"></i> <b>'.$Agent['name'].'</b></span><br>';
-                        }
-                        if($Agent['charge']) 
-                        {
-                          echo '<input type="hidden" id="agent_charge_'.$X.'" value="'.$Agent['charge'].'" />';
-                          echo '<span><i class="fa fa-briefcase"></i> '.$Agent['charge'].'</span><br>';
-                        }
-                        if($Agent['email']) 
-                        {
-                          echo '<input type="hidden" id="agent_email_'.$X.'" value="'.$Agent['email'].'" />';
-                          echo '<span><i class="fa fa-envelope"></i> '.$Agent['email'].'</span><br>';
-                        }
-                        if($Agent['phone']) 
-                        {
-                          echo '<input type="hidden" id="agent_phone_'.$X.'" value="'.$Agent['phone'].'" />';
-                          echo '<span><i class="fa fa-phone"></i> '.$Agent['phone'].'</span><br>';
-                        }
-                        if($Agent['extra']) 
-                        {
-                          echo '<input type="hidden" id="agent_extra_'.$X.'" value="'.$Agent['extra'].'" />';
-                          echo '<span><i class="fa fa-info-circle"></i> '.$Agent['extra'].'</span><br>';
-                        }
-                      ?>
-                    </div>
+              <hr style="margin-top:0px!important;margin-bottom:0px!important;">
+              <!--- ITEMS --->
+              <div id="ItemWrapper">
+                <?php $I = 1; ?>
+                <?php foreach($Items as $Item){?>
+                <!--- NEW ITEM --->
+                <?php 
+                  $Date = explode(" ",$Item['delivery_date']); 
+                  $Date = implode("/",array_reverse(explode("-",$Date[0]))); 
+                ?>
+                <div id="item_row_<?php echo $I ?>" item="<?php echo $I ?>" class="row form-group inline-form-custom ItemRow bg-gray" style="margin-bottom:0px!important;padding:10px 0px!important;">
+                  <form id="item_form_<?php echo $I ?>" name="item_form_<?php echo $I ?>">
+                  <div class="col-xs-4 txC">
+                    <span id="Item<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?>"><?php echo $Item['product'] ?></span>
+                    <?php echo insertElement('select','items_'.$I,$Item['product_id'],'ItemField'.$I.'form-control select2 selectTags itemSelect','item="'.$I.'"',$DB->fetchAssoc('product','product_id,code',"status='A'",'code'),'','Seleccione un Art&iacute;culo'); ?>
+                    <?php echo insertElement("text","item_".$I,$Item['product_id'],'Hidden','validateEmpty="Seleccione un Art&iacute;culo"'); ?>
                   </div>
-                <?php $X++;} ?>
-                
+                  <div class="col-xs-1 txC">
+                    <span id="Price<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?>">$ <?php echo $Item['price'] ?></span>
+                    <?php echo insertElement('text','price_'.$I,$Item['price'],'ItemField'.$I.' form-control calcable','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"'); ?>
+                  </div>
+                  <div class="col-xs-1 txC">
+                    <span id="Quantity<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?>"><?php echo $Item['quantity'] ?></span>
+                    <?php echo insertElement('text','quantity_'.$I,$Item['quantity'],'ItemField'.$I.' form-control calcable QuantityItem','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"'); ?>
+                  </div>
+                  <div class="col-xs-2 txC">
+                    <span id="Date<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?> OrderDate"><?php echo $Date ?></span>
+                    <?php echo insertElement('text','date_'.$I,$Date,'ItemField'.$I.' form-control delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"'); ?>
+                  </div>
+                  <div id="item_number_<?php echo $I ?>" class="col-xs-1 txC item_number" total="<?php echo $Item['total']; ?>" item="<?php echo $I ?>">$ <?php echo $Item['total']; ?></div>
+                  <div class="col-xs-3 txC">
+  									  <button type="button" id="SaveItem<?php echo $I ?>" class="btn btnGreen SaveItem" style="margin:0px;" item="<?php echo $I ?>"><i class="fa fa-check"></i></button>
+  									  <button type="button" id="EditItem<?php echo $I ?>" class="btn btnBlue EditItem Hidden" style="margin:0px;" item="<?php echo $I ?>"><i class="fa fa-pencil"></i></button>
+  									  <?php if($I!=1){ ?>
+  									    <button type="button" id="DeleteItem<?php echo $I ?>" class="btn btnRed DeleteItem" style="margin:0px;" item="<?php echo $I ?>"><i class="fa fa-trash"></i></button>
+  									  <?php } ?>
+  								</div>
+  								</form>
+                </div>
+                <!--- NEW ITEM --->
+                <?php $I++;} ?>
               </div>
-              <button id="agent_new" type="button" class="btn btn-warning Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar un representante</button>
-
-              <!-- New representative form -->
-              <div id="agent_form" class="Info-Card-Form Hidden">
-                <form id="new_agent_form">
-                  <div class="info-card-arrow">
-                    <div class="arrow-up"></div>
-                  </div>
-                  <div class="info-card-form animated fadeIn">
-                    <div class="row form-group inline-form-custom">
-                      <div class="col-xs-12 col-sm-6">
-                        <span class="input-group">
-                          <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                          <?php echo insertElement('text','agentname','','form-control',' placeholder="Nombre y Apellido" validateEmpty="Ingrese un nombre"'); ?>
-                          </span>
-                      </div>
-                      <div class="col-xs-12 col-sm-6">
-                        <span class="input-group">
-                          <span class="input-group-addon"><i class="fa fa-briefcase"></i></span>
-                          <?php echo insertElement('text','agentcharge','','form-control',' placeholder="Cargo"'); ?>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="row form-group inline-form-custom">
-                      <div class="col-xs-12 col-sm-6">
-                        <span class="input-group">
-                          <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                          <?php echo insertElement('text','agentemail','','form-control',' placeholder="Email" validateEmail="Ingrese un email v&aacute;lido."'); ?>
-                        </span>
-                      </div>
-                      <div class="col-xs-12 col-sm-6">
-                        <span class="input-group">
-                          <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                          <?php echo insertElement('text','agentphone','','form-control',' placeholder="Tel&eacute;fono"'); ?>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="row form-group inline-form-custom">
-                      <div class="col-xs-12 col-sm-12">
-                        <span class="input-group">
-                          <span class="input-group-addon"><i class="fa fa-info-circle"></i></span>
-                          <?php echo insertElement('textarea','agentextra','','form-control','rows="1" placeholder="Informaci&oacute;n Extra"'); ?>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="row txC">
-                      <button id="agent_add" type="button" class="Info-Card-Form-Done btn btnGreen"><i class="fa fa-check"></i> Agregar</button>
-                      <button id="agent_cancel" type="button" class="Info-Card-Form-Done btn btnRed"><i class="fa fa-times"></i> Cancelar</button>
-                    </div>
-                  </div>
-                </form>
+              <!--- TOTALS --->
+              <hr style="margin-top:0px!important;">
+              <div class="row form-group inline-form-custom bg-light-blue">
+                <div class="col-xs-4 txC">
+                  Art&iacute;culos Totales: <strong id="TotalItems" >1</strong>
+                </div>
+                <div class="col-xs-3 txC">
+                  Cantidad Total: <strong id="TotalQuantity" >0</strong>
+                </div>
+                <div class="col-xs-3 txC">
+                  Costo Total: <strong  id="TotalPrice">$ 0.00</strong> <span class="text-danger">(Sin IVA)</span>
+                  <?php echo insertElement("hidden","total_price","0"); ?>
+                </div>
               </div>
-              <!-- New representative form -->
+              <!--- TOTALS --->
             </div>
+            
+            
+            <div class="row">
+              <div class="col-sm-6 col-xs-12 txC">
+                <button type="button" id="add_order_item" class="btn btn-warning"><i class="fa fa-plus"></i> <strong>Agregar Art&iacute;culo</strong></button>
+              </div>
+              <div class="col-sm-6 col-xs-12 txC">
+                <div class="input-group">
+                <div class="input-group-btn">
+                  <button type="button" id="ChangeDates" class="btn bg-teal" style="margin:0px;"><i class="fa fa-flash"></i></button>
+                </div>
+                <!-- /btn-group -->
+                <?php echo insertElement('text','change_date','','form-control delivery_date',' placeholder="Modificar la fecha de todos los art&iacute;culos"'); ?>
+              </div>
+              </div>
+            </div>
+            
+            <h4 class="subTitleB"><i class="fa fa-info-circle"></i> Informaci&oacute;n Extra</h4><div class="row form-group inline-form-custom">
+              <div class="col-xs-12">
+                  <?php echo insertElement('textarea','extra',$Edit->Data['extra'],'form-control',' placeholder="Ingrese otros datos..."'); ?>
+              </div>
           </div>
           <hr>
           <div class="row txC">
-            <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-plus"></i> Modificar Proveedor</button>
+            <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-plus"></i> Editar Orden</button>
             <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
           </div>
+          <!--</form>-->
         </div>
       </div>
     </div><!-- box -->
   </div><!-- box -->
-
 <?php
-$Foot->setScript('../../js/script.map.autolocation.js');
-$Foot->setScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCuMB_Fpcn6USQEoumEHZB_s31XSQeKQc0&libraries=places&callback=initMaps&language=es','async defer');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
 $Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/datepicker/bootstrap-datepicker.js');
 include('../../includes/inc.bottom.php');
 ?>

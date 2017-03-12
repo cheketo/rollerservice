@@ -13,11 +13,24 @@ $.fn.datepicker.dates['es'] = {
 
 $(document).ready(function(){
 	
+	if(get['error']=="status")
+	{
+		notifyError('La orden no puede ser editada ya que no se encuentra en estado pendiente.');
+	}
+	
+	if(get['error']=="user")
+	{
+		notifyError('La orden que desea editar no existe.');
+	}
+	
 	addOrderItem();
 	saveItem();
 	calculateRowPrice();
 	editItem();
 	changeDates();
+	countItems();
+	calculateTotalOrderPrice();
+	calculateTotalOrderQuantity();
 	
 	setDatePicker();
 	priceImputMask(1);
@@ -298,7 +311,12 @@ $(function(){
 					var haveData	= function(returningData)
 					{
 						$("input,select").blur();
-						notifyError("Ha ocurrido un error durante el proceso de "+procText+".");
+						if(returningData=="403")
+						{
+							notifyError("No es posible editar esta orden. No se encuentra en el estado correcto.");
+						}else{
+							notifyError("Ha ocurrido un error durante el proceso de "+procText+".");
+						}
 						console.log(returningData);
 					}
 					var noData		= function()

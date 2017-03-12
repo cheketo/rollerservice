@@ -377,7 +377,11 @@ public function MakeRegs($Mode="List")
 	{
 		$ID 	= $_POST['id'];
 		$Edit	= new ProviderPurchaseOrder($ID);
-		
+		$Status = $Edit->Data['status'];
+		if($Status!='P')
+		{
+			echo "403";
+		}
 		// ITEMS DATA
 		$Items = array();
 		for($I=1;$I<=$_POST['items'];$I++)
@@ -397,15 +401,12 @@ public function MakeRegs($Mode="List")
 		}
 		
 		// Basic Data
-		$Type 			= $_POST['type'];
-		$Name			= $_POST['name'];
-		$CUIT			= str_replace('-','',$_POST['cuit']);
-		$IVA			= $_POST['iva'];
-		$GrossIncome	= $_POST['gross_income_number'];
-		$Email 			= strtolower($_POST['email']);
-		$Phone			= $_POST['phone'];
-		$Website 		= strtolower($_POST['website']);
-		$Fax			= $_POST['fax'];
+		$Type			= $_POST['type'];
+		$ProviderID		= $_POST['provider'];
+		$AgentID 		= $_POST['agent']? $_POST['agent']: 0;
+		$CurrencyID		= $_POST['currency'];
+		$Extra			= $_POST['extra'];
+		$Total			= $_POST['total_price'];
 		
 		// CREATE NEW IMAGE IF EXISTS
 		if($Image!=$Edit->Data['logo'])
@@ -421,28 +422,21 @@ public function MakeRegs($Mode="List")
 			}
 		}
 		
-		$Update		= $this->execQuery('update','product_provider',"name='".$Name."',postal_code='".$PostalCode."',address='".$Address."',cuit=".$CUIT.",iva='".$IVA."',gross_income_tax='".$GrossIncome."',email='".$Email."',fax='".$Fax."',phone='".$Phone."',website='".$Website."',country_id=".$CountryID.",province_id='".$ProvinceID."',region_id=".$RegionID.",zone_id='".$ZoneID."',lat=".$Lat.",lng=".$Lng.",logo='".$Image."',updated_by=".$_SESSION['admin_id'],"provider_id=".$ID);
+		$Update		= $this->execQuery('update','product_provider_purchase_order',"type='".$Type."',provider_id=".$ProviderID.",agent_id=".$AgentID.",currency_id=".$CurrencyID.",extra='".$Extra."',total=".$Total.",updated_by=".$_SESSION['admin_id'],"order_id=".$ID);
 		//echo $this->lastQuery();
 		
-		// PROCESS AGENTS
-		$Agents = array();
-		for($i=1;$i<=$_POST['total_agents'];$i++)
-		{
-			if($_POST['agent_name_'.$i])
-				$Agents[] = array('name'=>ucfirst($_POST['agent_name_'.$i]),'charge'=>ucfirst($_POST['agent_charge_'.$i]),'email'=>$_POST['agent_email_'.$i],'phone'=>$_POST['agent_phone_'.$i],'extra'=>$_POST['agent_extra_'.$i]);
-		}
+		// DELETE OLD ITEMS
+		$this->execQuery('delete','product_provider_purchase_order_item',"order_id = ".$ID);
 		
-		// DELETE OLD AGENTS
-		$this->execQuery('delete','product_provider_agent',"provider_id = ".$ID);
-		
-		// INSERT NEW AGENTS
-		foreach($Agents as $Agent)
+		// INSERT ITEMS
+		foreach($Items as $Item)
 		{
 			if($Fields)
 				$Fields .= "),(";
-			$Fields .= $ID.",'".$Agent['name']."','".$Agent['charge']."','".$Agent['email']."','".$Agent['phone']."','".$Agent['extra']."'";
+			$Fields .= $ID.",".$ProviderID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",'".$Item['delivery_date']."',".$CurrencyID.",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id'];
 		}
-		$this->execQuery('insert','product_provider_agent','provider_id,name,charge,email,phone,extra',$Fields);
+		$this->execQuery('insert','product_provider_purchase_order_item','order_id,provider_id,product_id,price,quantity,delivery_date,currency_id,creation_date,created_by,company_id',$Fields);
+		echo $this->lastQuery();
 	}
 	
 	public function Activate()
