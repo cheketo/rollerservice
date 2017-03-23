@@ -52,14 +52,14 @@
                           {
                             //echo insertElement('select','agents',0,'form-control select2 selectTags','disabled=disabled','','0','Sin Contacto');  
                             echo '<div id="agent-wrapper"><select id="agents" class="form-control select2 selectTags" disabled="disabled" style="width: 100%;"><option value="0">Sin Contacto</option</select></div>';
-                            echo 
                           }else{
                             echo '<div id="agent-wrapper">';
                             echo insertElement('select','agents',$Edit->Data['agent_id'],'form-control select2 selectTags','',$Agents);  
                             echo '</div>';
-                            echo insertElement("text","agent",$Edit->Data['agent_id'],'Hidden','validateEmpty="Seleccione un Contacto"');
+                            
                             
                           }
+                          echo insertElement("text","agent",$Edit->Data['agent_id'],'Hidden');
                      ?>
                   </div>
                   <?php //echo insertElement("text","agent",$Edit->Data['agent_id'],'Hidden','validateEmpty="Seleccione un Contacto"'); ?>
