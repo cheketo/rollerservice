@@ -1,7 +1,7 @@
 <?php
     include("../../includes/inc.main.php");
     $ID           = $_GET['id'];
-    $Menu         = new Menu($ID);
+    $Menu         = new AdminMenu($ID);
     $Data         = $Menu->GetData();
     $Data['link'] = $Data['link']=='#'? '' : $Data['link'];
     ValidateID($Data);
@@ -42,7 +42,7 @@
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Ubicaci&oacute;n</label>
-                <?php echo insertElement('select','parent',$Data['parent_id'],'form-control','',$DB->fetchAssoc('menu','menu_id,title',"status<>'I' AND menu_id <>".$ID),'0','Men&uacute; Principal'); ?>
+                <?php echo insertElement('select','parent',$Data['parent_id'],'form-control','',$DB->fetchAssoc('admin_menu','menu_id,title',"status<>'I' AND menu_id <>".$ID),'0','Men&uacute; Principal'); ?>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label>Link</label>

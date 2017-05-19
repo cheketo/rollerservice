@@ -18,7 +18,7 @@ $(document).ready(function() {
 
 function sumbitLogin(){
 	
-		var rememberuser = $("#rememberuser:checked").val();
+		var rememberuser	= $("input:checked").val();
 		var password 		= $("#password").val();
 		var user			= $("#user").val();
 		var target			= '../main/main.php?msg=logok';

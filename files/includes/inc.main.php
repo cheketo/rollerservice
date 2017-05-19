@@ -39,5 +39,5 @@
 	/* SETTING FOOT OF THE DOCUMENT */
 	$Foot	= new Foot();
 	/* SETTING MENU OF THE DOCUMENT */
-	$Menu = new Menu();
+	$Menu = new AdminMenu();
 ?>

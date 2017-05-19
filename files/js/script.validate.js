@@ -39,7 +39,14 @@ VALIDATION ATRIBUTES:
 	Declaration: 'mustBeChecked="3///Only 3 of the checkboxes can be checked///limited"'
 	Declaration: 'mustBeChecked="2///Only 2 of the checkboxes can be checked///strict"'
 	Data: Value///Text///(Mode)
+	
+9)	validateMaxValue: Checks if the field reaches a maximum numeric value.
+	Declaration: 'validateMaxValue="25.07///Please, enter a number lower than 25.07"'
+	Data: MaxVal///Text
 
+10) validateMinValue: Checks if the field have a minimum value.
+	Declaration: 'validateMinValue="25.07///Please, enter a number higher than 25.07"'
+	Data: MaxVal///Text
 
 \****************************************************************/
 
@@ -126,6 +133,27 @@ VALIDATION ATRIBUTES:
 		else
 			return false
 	}
+	
+	ValidateFields.prototype.minValue	= function(object)
+	{
+		var	minVal;
+
+		minval	= false;
+		if($(object).attr("validateMinValue") && $(object).val()!="")
+		{
+			minVal	= $(object).attr("validateMinValue").substring(0, $(object).attr("validateMinValue").indexOf(validateDelimiter));
+			minval	= ValidateFields.prototype.isMinValue(parseFloat($(object).val()),minVal);
+		}
+		return minval;
+	}
+
+	ValidateFields.prototype.isMinValue	= function(value,minVal)
+	{
+		if(value<minVal)
+			return true
+		else
+			return false
+	}
 
 	ValidateFields.prototype.minLength	= function(object)
 	{
@@ -143,6 +171,27 @@ VALIDATION ATRIBUTES:
 	ValidateFields.prototype.isMinLength	= function(value,minVal)
 	{
 		if(value<minVal)
+			return true
+		else
+			return false
+	}
+	
+	ValidateFields.prototype.maxValue	= function(object)
+	{
+		var	maxVal;
+
+		maxval	= false;
+		if($(object).attr("validateMaxValue") && $(object).val()!="")
+		{
+			maxVal		= $(object).attr("validateMaxValue").substring(0, $(object).attr("validateMaxValue").indexOf(validateDelimiter));
+			maxval	= ValidateFields.prototype.isMaxValue(parseFloat($(object).val()),maxVal);
+		}
+		return maxval;
+	}
+
+	ValidateFields.prototype.isMaxValue	= function(value,maxVal)
+	{
+		if(value>maxVal)
 			return true
 		else
 			return false
@@ -290,6 +339,7 @@ VALIDATION ATRIBUTES:
 		var name 		= $(object).attr("name");
 		var disabled	= $(object).attr("disabled");
 		var display		= isVisible(object);
+		var validateCheckboxGroups		= new Array();
 
 		if($(object).attr("mustBeChecked") && disabled!="disabled" && display && !inArray(name,validateCheckboxGroups))
 		{
@@ -376,11 +426,25 @@ VALIDATION ATRIBUTES:
 				$("#"+$(object).attr("id")+"ErrorDiv").html($(object).attr("validateEmpty"));
 
 			}
+			
+			if(valid && ValidateFields.prototype.minValue(object))
+			{
+				valid	= false;
+				var text	= $(object).attr("validateMinValue").substring($(object).attr("validateMinValue").indexOf(validateDelimiter)+validateDelimiter.length);
+				$("#"+$(object).attr("id")+"ErrorDiv").html(text);
+			}
 
 			if(valid && ValidateFields.prototype.minLength(object))
 			{
 				valid	= false;
 				var text	= $(object).attr("validateMinLength").substring($(object).attr("validateMinLength").indexOf(validateDelimiter)+validateDelimiter.length);
+				$("#"+$(object).attr("id")+"ErrorDiv").html(text);
+			}
+			
+			if(valid && ValidateFields.prototype.maxValue(object))
+			{
+				valid	= false;
+				var text	= $(object).attr("validateMaxValue").substring($(object).attr("validateMaxValue").indexOf(validateDelimiter)+validateDelimiter.length);
 				$("#"+$(object).attr("id")+"ErrorDiv").html(text);
 			}
 
@@ -414,8 +478,8 @@ VALIDATION ATRIBUTES:
 			{
 				valid			= false;
 				var text		= $(object).attr("mustBeChecked").substring($(object).attr("mustBeChecked").indexOf(validateDelimiter)+validateDelimiter.length);
-				var errormsg	= new Message();
-				errormsg.error(text,1500);
+				//var errormsg	= new Message();
+				notifyError(text,1500);
 				//$("#"+$(object).attr("id")+"ErrorDiv").html(text);
 			}
 

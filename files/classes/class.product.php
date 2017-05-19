@@ -28,7 +28,7 @@ class Product extends DataBase
 	{
 		if(!$this->Providers)
 		{
-			$Providers = $this->fetchAssoc("relation_product_provider",'provider_id',$this->TableID." =".$this->ID);
+			$Providers = $this->fetchAssoc("relation_provider",'provider_id',$this->TableID." =".$this->ID);
 			foreach($Providers as $Provider)
 			{
 				if($ProvidersID) $ProvidersID .= ',';
@@ -85,11 +85,11 @@ public function MakeRegs($Mode="List")
 					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="'.$Row->Data['code'].'">
 									<div class="col-lg-3 col-md-3 col-sm-10 col-xs-10">
 										<div class="listRowInner" style="text-align:left!important;">
-											<img class="img-circle hideMobile990" style="margin-right:1em!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['cod'].'">
+											<img class="img-circle" style="margin-right:1em!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['cod'].'">
 											<span class="listTextStrong" style="margin-top:0.7em;">'.$Row->Data['code'].'</span>
 										</div>
 									</div>
-									<div class="col-lg-3 col-md-3 col-sm-3 hideMobile990">
+									<div class="col-lg-3 col-md-3 col-sm-3">
 										<div class="listRowInner">
 											<span class="smallTitle">L&iacute;nea</span>
 											<span class="listTextStrong"><span class="label label-primary">'.ucfirst($Row->Data['category']).'</span></span>

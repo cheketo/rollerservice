@@ -16,7 +16,7 @@
         $Title = "Eliminadas";
       break;
   }
-  $Company = new ProviderPurchaseOrder();
+  $Company = new ProviderOrder();
   $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
   $Head->setTitle("Ordenes de Compra a Proveedores ".$Title);
   $Head->setIcon($Menu->GetHTMLicon());

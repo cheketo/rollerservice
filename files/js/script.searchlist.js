@@ -2,6 +2,36 @@
 ////////////////////////////////////////////////////////////////////////////// LIST & GRID ////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function selectAllRows()
+{
+	$('#SelectAll').click(function(){
+		$('.listRow').each(function(){
+			if(!$(this).hasClass('SelectedRow'))
+			{
+				$(this).click();
+			}
+		});
+	$('#SelectAll').addClass('Hidden');
+    $('#UnselectAll').removeClass('Hidden');
+	});
+}
+selectAllRows();
+
+function unselectAllRows()
+{
+	$('#UnselectAll').click(function(){
+		$('.listRow').each(function(){
+			if($(this).hasClass('SelectedRow'))
+			{
+				$(this).click();
+			}
+		});
+		$('#SelectAll').removeClass('Hidden');
+	    $('#UnselectAll').addClass('Hidden');
+	});
+}
+unselectAllRows();
+
 // Row element selected
 function rowElementSelected()
 {
@@ -24,8 +54,18 @@ gridElementSelected();
 
 function toggleRow(element)
 {
-    element.toggleClass('SelectedRow');
-    element.toggleClass('listRowSelected');
+	var id = element.attr("id").split("_");
+	if(element.hasClass('SelectedRow'))
+	{
+		unselectRow(id[1]);
+		element.removeClass('SelectedRow');
+		element.removeClass('listRowSelected');
+	}else{
+		selectRow(id[1]);
+		element.addClass('SelectedRow');
+		element.addClass('listRowSelected');
+	}
+    
     var actions = element.children('.listActions');
     actions.toggleClass('Hidden');
 
@@ -33,8 +73,10 @@ function toggleRow(element)
     	showActivateButton();
     else
 		showDeleteButton();
+	
+	showSelectAllButton();
+	
     //Toggle grid
-    var id = element.attr("id").split("_");
     var grid = $("#grid_"+id[1]);
     toggleGrid(grid);
 }
@@ -125,7 +167,7 @@ function deleteElement(element)
         success: function(data){
             if(data)
             {
-                console.log(data);
+            	console.log(data);
                 result = false;
             }else{
                 grid.remove();
@@ -134,7 +176,6 @@ function deleteElement(element)
             }
         }
     });
-    console.log(result);
     return result;
 }
 
@@ -167,7 +208,7 @@ function activateElement(element)
             }
         }
     });
-    console.log(result);
+    //console.log(result);
     return result;
 }
 
@@ -184,6 +225,7 @@ function deleteListElement()
 		alertify.confirm(utf8_decode('Est&aacute; a punto de eliminar a '+title+' ¿Desea continuar?'), function(e){
 			if(e)
 			{
+				unselectRow(id);
 				var result;
 				result = deleteElement(element);
 
@@ -213,6 +255,7 @@ function activateListElement()
 		alertify.confirm(utf8_decode('Est&aacute; a punto de activar a '+title+' ¿Desea continuar?'), function(e){
 			if(e)
 			{
+				unselectRow(id);
 				var result;
 				result = activateElement(element);
 
@@ -234,19 +277,30 @@ activateListElement();
 function massiveElementDelete()
 {
 	$(".DeleteSelectedElements").click(function(){
-		var delBtn = $(this)
+		var delBtn		= $(this);
+		// var elements	= "";
+		// var id;
 		alertify.confirm(utf8_decode('¿Desea eliminar los registros seleccionados?'), function(e){
 	        if(e){
+	        	
 	        	var result;
 	        	$(".SelectedRow").children('.listActions').children('div').children('.roundItemActionsGroup').children('.deleteElement').each(function(){
-	        		result = deleteElement($(this));
+	        		result	= deleteElement($(this));
+	        		// id		= $(this).attr("id").split("_")
+	        		// if(elements!="")
+	        		// {
+	        		// 	elements = elements + "," + id[1];
+	        		// }else{
+	        		// 	elements = id[1];
+	        		// }
 	        	});
-
+				unselectAll();
 	        	if(result)
 	        	{
 	        		delBtn.addClass('Hidden');
 	        		notifySuccess(utf8_decode('Los registros seleccionados han sido eliminados.'));
 	        		submitSearch();
+	        		var selectedIDS = $("#selected_ids").val().split(",");
 	        	}else{
 	        		notifyError('Hubo un problema al intentar eliminar los registros.');
 	        	}
@@ -267,7 +321,7 @@ function massiveElementActivate()
 	        	$(".SelectedRow").children('.listActions').children('div').children('.roundItemActionsGroup').children('.activateElement').each(function(){
 	        		result = activateElement($(this));
 	        	});
-
+				unselectAll();
 	        	if(result)
 	        	{
 	        		delBtn.addClass('Hidden');
@@ -283,18 +337,76 @@ function massiveElementActivate()
 }
 massiveElementActivate();
 
+function unselectRow(id)
+{
+	var selected	= $("#selected_ids").val();
+	selected		= selected.replace(id+",","");
+	$("#selected_ids").val(selected);
+	$("#selected_ids").change();
+}
+
+function selectRow(id)
+{
+	var selected = $("#selected_ids").val();
+	if(selected.indexOf(id)==-1){
+		
+		if(selected)
+			$("#selected_ids").val(selected+id+",");
+		else
+			$("#selected_ids").val(id+",");
+	}
+	$("#selected_ids").change();
+}
+
+function unselectAll()
+{
+	$("#selected_ids").val("");
+	$("#selected_ids").change();
+}
+
+function toggleSelectedRows()
+{
+	var ids = $("#selected_ids").val();
+	if(ids)
+	{
+		ids = ids.split(",");
+		console.log(ids);
+		for (var i = 0; i < ids.length-1; i++) {
+			if($("#row_"+ids[i]).length>0)
+				toggleRow($("#row_"+ids[i]));
+	}
+	}
+}
+
+function showSelectAllButton()
+{
+	if($(".SelectedRow").length==$(".listRow").length)
+	{
+		$('#SelectAll').addClass('Hidden');
+    	$('#UnselectAll').removeClass('Hidden');
+	}else{
+		$('#UnselectAll').addClass('Hidden');
+    	$('#SelectAll').removeClass('Hidden');
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// SEARCHER ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 $(function(){
 	$('.ShowFilters').click(function(){
-		$('.SearFilters').toggleClass('Hidden');
-		$('.NewElementButton').toggleClass('Hidden');
+		$('.SearchFilters').toggleClass('Hidden');
+		// $('.NewElementButton').toggleClass('Hidden');
+		// if(!$('.SearchFilters').hasClass('Hidden'))
+		// {
+		// 	$('.NewElementButton').addClass('Hidden');
+		// }
 	});
 	
 	$(".searchButton").click(function(){
 		$("#view_page").val("1");
 		submitSearch();
+		unselectAll();
 	});
 	
 	$("#regsperview").change(function(){
@@ -339,6 +451,10 @@ function submitSearch()
 			massiveElementDelete();
 			activateListElement();
 			toggleRowDetailedInformation();
+			toggleSelectedRows();
+			selectAllRows();
+			unselectAllRows();
+			showSelectAllButton();
 			$("#TotalRegs").html($("#totalregs").val());
 			var page = $("#view_page").val();
 			appendPager();
@@ -458,7 +574,7 @@ function appendPagerUnlimited(page)
 	if((page-2)>3)
 	{
 		var interPageA = Math.ceil((page-3)/2);
-		html = html + '<li class="pageElement" page="'+interPageA+'"><a href="#">'+interPageA+separatorA+'</a></li>';
+		html = html + '<li class="pageElement" page="'+interPageA+'"><a href="#">'+separatorA+interPageA+separatorA+'</a></li>';
 	}
 		
 	if(((page-2)>=1))
@@ -475,8 +591,9 @@ function appendPagerUnlimited(page)
 	
 	if(totalpages-(page+2)>3)
 	{
-		var interPageB = Math.ceil(totalpages-(page+2)/2);
-		html = html + '<li class="pageElement" page="'+interPageB+'"><a href="#">'+separatorB+interPageB+'</a></li>';
+		//var interPageB = Math.ceil(totalpages-(page+2)/2);
+		var interPageB = Math.ceil( (totalpages/2) + (page/2));
+		html = html + '<li class="pageElement" page="'+interPageB+'"><a href="#">'+separatorB+interPageB+separatorB+'</a></li>';
 	}	
 		
 	if((page+2)<totalpages)
@@ -517,19 +634,25 @@ function switchPrevNextPage()
 	});
 	
 	$('.Next10Page').click(function(){
+		event.stopPropagation();
 		var page = parseInt($("#view_page").val())+10;
 		if(page<calculateTotalPages())
+		{
 			$(".pageElement[page='"+page+"']").click();
-		else
+		}else{
 			$(".pageElement[page='"+calculateTotalPages()+"']").click();
+		}
 	});
 	
 	$('.Prev10Page').click(function(){
+		event.stopPropagation();
 		var page = parseInt($("#view_page").val())-10;
 		if(page>0)
+		{
 			$(".pageElement[page='"+page+"']").click();
-		else
+		}else{
 			$(".pageElement[page='1']").click();
+		}
 	});
 }
 

@@ -1,11 +1,11 @@
 <?php
 
-class ProviderPurchaseOrder extends DataBase
+class ProviderOrder extends DataBase
 {
 	var	$ID;
 	var $Data;
 	var $Items 			= array();
-	var $Table			= "product_provider_purchase_order";
+	var $Table			= "provider_order";
 	var $TableID		= "order_id";
 	
 	const DEFAULTIMG	= "../../../skin/images/providers/default/order.png";
@@ -19,9 +19,9 @@ class ProviderPurchaseOrder extends DataBase
 			$this->Data = $Data[0];
 			$this->ID = $ID;
 			$this->Data['items'] = $this->GetItems();
-			$Provider = $this->fetchAssoc("product_provider","name","provider_id=".$this->Data['provider_id']);
+			$Provider = $this->fetchAssoc("provider","name","provider_id=".$this->Data['provider_id']);
 			$this->Data['provider'] = $Provider[0]['name'];
-			$Quantity = $this->fetchAssoc("product_provider_purchase_order_item","SUM(quantity) AS total",$this->TableID."=".$this->ID);
+			$Quantity = $this->fetchAssoc("provider_order_item","SUM(quantity) AS total",$this->TableID."=".$this->ID);
 			$this->Data['quantity'] = $Quantity[0]['total'];
 		}
 	}
@@ -60,25 +60,30 @@ public function MakeRegs($Mode="List")
 		//echo $this->lastQuery();
 		for($i=0;$i<count($Rows);$i++)
 		{
-			$Row	=	new ProviderPurchaseOrder($Rows[$i][$this->TableID]);
-			//var_dump($Row);
-			// $UserGroups = $Row->GetGroups();
-			// $Groups='';
-			// foreach($UserGroups as $Group)
-			// {
-			// 	$Groups .= '<span class="label label-warning">'.$Group['title'].'</span> ';
-			// }
-			// if(!$Groups) $Groups = 'Ninguno';
-			$Actions	= 	'<span class="roundItemActionsGroup"><a><button type="button" class="btn btnGreen ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a>';
+			$Row	=	new ProviderOrder($Rows[$i][$this->TableID]);
+			$Actions	= 	'<span class="roundItemActionsGroup"><a title="M&aacute;s informaci&oacute;n" alt="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a> ';
 			
 			if($Row->Data['status']=="P" || $Row->Data['status']=="I"){
-				$Actions	.= '<a class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
+				$Actions	.= '<a title="Confirmar" alt="Confirmar" class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
 			}
 			
-			if($Row->Data['status']=="P")
+			if($Row->Data['status']=="A" || $Row->Data['status']=="S"){
+				$Actions	.= '<a title="Enviar a facturaci&oacute;n" alt="Enviar a facturaci&oacute;n" class="Invoice" status="'.$Row->Data['status'].'" id="payment_'.$Row->ID.'"><button type="button" class="btn bg-olive"><i class="fa fa-dollar"></i></button></a> ';
+			}
+			
+			if(($Row->Data['status']!="P")){
+				$Actions	.= '<a title="Ver Detalle" alt="Ver Detalle" href="payment.php?view=F&id='.$Row->ID.'" id="payment_'.$Row->ID.'"><button type="button" class="btn btn-github"><i class="fa fa-eye"></i></button></a> ';
+			}
+			
+			if($Row->Data['status']=="A" || $Row->Data['status']=="C")
 			{
-				$Actions	.= 	'<a href="edit.php?id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
-				$Actions	.= '<a class="deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
+				$Actions	.= '<a class="completeElement" href="../stock/stock_entrance.php?id='.$Row->ID.'" title="Ingresar stock" id="complete_'.$Row->ID.'"><button type="button" class="btn btn-dropbox"><i class="fa fa-sign-in"></i></button></a>';
+			}
+			
+			if($Row->Data['status']=="P" || $Row->Data['status']=="A")
+			{
+				$Actions	.= '<a title="Editar" alt="Editar" href="edit.php?id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
+				$Actions	.= '<a title="Eliminar" alt="Eliminar" class="deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
 				
 			}
 			$Actions	.= '</span>';
@@ -90,6 +95,8 @@ public function MakeRegs($Mode="List")
 			
 			$Items = '<div style="margin-top:10px;">';
 			$I=0;
+			$ItemsReceived = 0;
+			$ItemsTotal = 0;
 			foreach($Row->Data['items'] as $Item)
 			{
 				$I++;
@@ -99,6 +106,9 @@ public function MakeRegs($Mode="List")
 				$DeliveryDate = implode("/",array_reverse(explode("-",$Date[0])));
 				$ItemTotal = $Item['currency']." ".$Item['total'];
 				$ItemPrice = $Item['currency']." ".$Item['price'];
+				
+				$ItemsReceived	+= $Item['quantity_received'];
+				$ItemsTotal		+= $Item['quantity'];
 				
 				$Items .= '
 							<div class="row '.$RowClass.'" style="padding:5px;">
@@ -130,6 +140,13 @@ public function MakeRegs($Mode="List")
 							</div>';
 			}
 			$Items .='</div>';
+			
+			switch($Row->Data['delivery_status'])
+			{
+				case 'A': $DeliveryStatus = '<span class="label label-warning">En Proceso('.$ItemsReceived.'/'.$ItemsTotal.')<span>'; break;
+				case 'F': $DeliveryStatus = '<span class="label label-success">Si('.$ItemsReceived.'/'.$ItemsTotal.')<span>'; break;
+				default: $DeliveryStatus = '<span class="label label-danger">No('.$ItemsReceived.'/'.$ItemsTotal.')<span>'; break;
+			}
 			switch(strtolower($Mode))
 			{
 				case "list":
@@ -151,8 +168,8 @@ public function MakeRegs($Mode="List")
 									</div>
 									<div class="col-lg-3 col-md-3 col-sm-2 hideMobile990">
 										<div class="listRowInner">
-											<span class="listTextStrong">Cant. Total</span>
-											<span class="listTextStrong"><span class="label label-primary">'.$Row->Data['quantity'].'</span></span>
+											<span class="listTextStrong">Stock Recibido</span>
+											<span class="listTextStrong">'.$DeliveryStatus.'</span>
 										</div>
 									</div>
 									<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
@@ -193,7 +210,22 @@ public function MakeRegs($Mode="List")
 				break;
 			}
         }
-        if(!$Regs) $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores.</h4><p>Puede crear una orden haciendo click <a href="new.php">aqui</a>.</p></div>';
+        if(!$Regs)
+        {
+			switch ($_REQUEST['status']) {
+				case 'A': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores activas.</h4></div>'; break;
+				case 'S': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes de facturaci&oacute;n.</h4></div>'; break;
+				case 'C': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes de ingreso.</h4></div>'; break;
+        		case 'F': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores finalizadas.</h4></div>'; break;
+				default: $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes.</h4><p>Puede crear una orden haciendo click <a href="new.php">aqui</a>.</p></div>'; break;
+        	}
+	        // if($_POST['list']!='stock')
+	        // {
+	        // 	$Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores.</h4><p>Puede crear una orden haciendo click <a href="new.php">aqui</a>.</p></div>';
+	        // }else{
+	        // 	$Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ingresos de stock pendientes.</h4></div>';
+	        // }
+        }
 		return $Regs;
 	}
 	
@@ -229,16 +261,17 @@ public function MakeRegs($Mode="List")
 	
 	protected function InsertSearchButtons()
 	{
-		return '<!-- New Button -->
+		$HTML =	'<!-- New Button --> 
 		    	<a href="new.php"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-plus"></i> Nueva Orden de Compra</button></a>
 		    	<!-- /New Button -->';
+		return $HTML;
 	}
 	
 	public function ConfigureSearchRequest()
 	{
-		$this->SetTable($this->Table.' a LEFT JOIN product_provider_purchase_order_item b ON (b.order_id=a.order_id) LEFT JOIN product c ON (b.product_id = c.product_id) LEFT JOIN product_provider d ON (d.provider_id=a.provider_id) LEFT JOIN product_provider_agent e ON (e.agent_id = a.agent_id)');
+		$this->SetTable($this->Table.' a LEFT JOIN provider_order_item b ON (b.order_id=a.order_id) LEFT JOIN product c ON (b.product_id = c.product_id) LEFT JOIN provider d ON (d.provider_id=a.provider_id) LEFT JOIN provider_agent e ON (e.agent_id = a.agent_id)');
 		$this->SetFields('a.order_id,a.type,a.total,a.extra,a.status,a.payment_status,a.delivery_status,d.name as provider,SUM(b.quantity) as quantity');
-		$this->SetWhere("c.company_id=".$_SESSION['company_id']);
+		$this->SetWhere("a.provider_id > 0 AND c.company_id=".$_SESSION['company_id']);
 		//$this->AddWhereString(" AND c.company_id = a.company_id");
 		//$this->SetOrder('a.delivery_date');
 		$this->SetGroupBy("a.".$this->TableID);
@@ -267,38 +300,34 @@ public function MakeRegs($Mode="List")
 			$this->SetWhereCondition("a.status","=","P");
 		}
 		
-		$Prefix = "a.";
-		$Order = 'delivery_date';
-		$Mode = 'ASC';
-		$this->SetOrder($Prefix.$Order." ".$Mode);
-		if($_POST['view_order_field'])
+		if(strtolower($_POST['view_order_mode']))
+			$Mode = $_POST['view_order_mode'];
+		else
+			$Mode = 'ASC';
+		
+		$Order = strtolower($_POST['view_order_field']);
+		switch($Order)
 		{
-			if(strtolower($_POST['view_order_mode'])=="desc")
-				$Mode = "DESC";
-			else
-				$Mode = $_POST['view_order_mode'];
-			
-			$Order = strtolower($_POST['view_order_field']);
-			switch($Order)
-			{
-				case "name": 
-					$Order = 'name';
-					$Prefix = "d.";
-				break;
-				case "code": 
-					$Order = 'code';
-					$Prefix = "c.";
-				break;
-				case "agent": 
-					$Order = 'name';
-					$Prefix = "e.";
-				break;
-				// default:
-				//		$Prefix = "a.";	
-				// break;
-			}
-			$this->SetOrder($Prefix.$Order." ".$Mode);
+			case "name": 
+				$Order = 'name';
+				$Prefix = "d.";
+			break;
+			case "code": 
+				$Order = 'code';
+				$Prefix = "c.";
+			break;
+			case "agent": 
+				$Order = 'name';
+				$Prefix = "e.";
+			break;
+			default:
+				$Order = 'delivery_date';
+				$Prefix = "a.";		
+			break;
 		}
+		$this->SetOrder($Prefix.$Order." ".$Mode);
+		
+		
 		if($_POST['regsperview'])
 		{
 			$this->SetRegsPerView($_POST['regsperview']);
@@ -341,7 +370,7 @@ public function MakeRegs($Mode="List")
 					$Date = $ItemDate;
 				}
 				if(strtotime($ItemDate." 00:00:00") > strtotime($Date." 00:00:00")){
-					$Date = $LastDate;
+					$Date = $ItemDate;
 				}
 			}
 		}
@@ -359,7 +388,7 @@ public function MakeRegs($Mode="List")
 		$Insert			= $this->execQuery('insert',$this->Table,'type,provider_id,agent_id,currency_id,extra,total,delivery_date,status,creation_date,created_by,company_id',"'".$Type."',".$ProviderID.",".$AgentID.",".$CurrencyID.",'".$Extra."',".$Total.",'".$Date."','".$Status."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
 		//echo $this->lastQuery();
 		$NewID 		= $this->GetInsertId();
-		$New 	= new ProviderPurchaseOrder($NewID);
+		$New 	= new ProviderOrder($NewID);
 		
 		// INSERT ITEMS
 		foreach($Items as $Item)
@@ -368,7 +397,7 @@ public function MakeRegs($Mode="List")
 				$Fields .= "),(";
 			$Fields .= $NewID.",".$ProviderID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",'".$Item['delivery_date']."',".$CurrencyID.",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id'];
 		}
-		$this->execQuery('insert','product_provider_purchase_order_item','order_id,provider_id,product_id,price,quantity,delivery_date,currency_id,creation_date,created_by,company_id',$Fields);
+		$this->execQuery('insert','provider_order_item','order_id,provider_id,product_id,price,quantity,delivery_date,currency_id,creation_date,created_by,company_id',$Fields);
 		//echo $this->lastQuery();
 		
 	}
@@ -376,7 +405,7 @@ public function MakeRegs($Mode="List")
 	public function Update()
 	{
 		$ID 	= $_POST['id'];
-		$Edit	= new ProviderPurchaseOrder($ID);
+		$Edit	= new ProviderOrder($ID);
 		$Status = $Edit->Data['status'];
 		if($Status!='P')
 		{
@@ -395,7 +424,7 @@ public function MakeRegs($Mode="List")
 					$Date = $ItemDate;
 				}
 				if(strtotime($ItemDate." 00:00:00") > strtotime($Date." 00:00:00")){
-					$Date = $LastDate;
+					$Date = $ItemDate;
 				}
 			}
 		}
@@ -422,11 +451,11 @@ public function MakeRegs($Mode="List")
 			}
 		}
 		
-		$Update		= $this->execQuery('update','product_provider_purchase_order',"type='".$Type."',provider_id=".$ProviderID.",agent_id=".$AgentID.",currency_id=".$CurrencyID.",extra='".$Extra."',total=".$Total.",updated_by=".$_SESSION['admin_id'],"order_id=".$ID);
+		$Update		= $this->execQuery('update','provider_order',"type='".$Type."',provider_id=".$ProviderID.",agent_id=".$AgentID.",currency_id=".$CurrencyID.",delivery_date='".$Date."',extra='".$Extra."',total=".$Total.",updated_by=".$_SESSION['admin_id'],"order_id=".$ID);
 		//echo $this->lastQuery();
 		
 		// DELETE OLD ITEMS
-		$this->execQuery('delete','product_provider_purchase_order_item',"order_id = ".$ID);
+		$this->execQuery('delete','provider_order_item',"order_id = ".$ID);
 		
 		// INSERT ITEMS
 		foreach($Items as $Item)
@@ -435,22 +464,83 @@ public function MakeRegs($Mode="List")
 				$Fields .= "),(";
 			$Fields .= $ID.",".$ProviderID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",'".$Item['delivery_date']."',".$CurrencyID.",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id'];
 		}
-		$this->execQuery('insert','product_provider_purchase_order_item','order_id,provider_id,product_id,price,quantity,delivery_date,currency_id,creation_date,created_by,company_id',$Fields);
-		echo $this->lastQuery();
+		$this->execQuery('insert','provider_order_item','order_id,provider_id,product_id,price,quantity,delivery_date,currency_id,creation_date,created_by,company_id',$Fields);
 	}
 	
 	public function Activate()
 	{
 		$ID	= $_POST['id'];
-		$Order = new ProviderPurchaseOrder($ID);
+		$Order = new ProviderOrder($ID);
 		$Status = $Order->Data['status'] == 'I'? 'P' : 'A';
 		$this->execQuery('update',$this->Table,"status = '".$Status."'",$this->TableID."=".$ID);
+	}
+	
+	public function Payorder()
+	{
+		$ID	= $_POST['item'];
+		$Status = strtoupper($_POST['status']);
+		if($Status=='A')
+		{
+			$this->execQuery('update','provider_order',"status='C',updated_by='".$_SESSION['admin_id']."'","order_id=".$ID);
+		}else{
+			$this->execQuery('update','provider_order',"status='F',updated_by='".$_SESSION['admin_id']."'","order_id=".$ID);
+		}
+		
+		// $TotalItems = $_POST['total_items'];
+	 //   $ProviderID = $_POST['provider'];
+		// $Items = array();
+		
+		// for($I=1;$I<=$TotalItems;$I++)
+		// {
+		//     $Item = $_POST['paid'.$I];
+		//     if($Item>0)
+		//     {
+		//     	$Received	= $_POST['received_quantity'.$I];
+		//     	$Amount		= $_POST['total_amount'.$I];
+		//         $Items[]	= $Item;
+		        
+		//         // $this->execQuery('update','provider_order_item',"status='A',quantity_received=quantity_received+".$_POST['quantity'.$I].",verified_by='".$_SESSION['admin_id']."'","item_id = ".$Item);	
+		//         // $this->execQuery('update','product',"stock=stock+".$_POST['quantity'.$I],"product_id = ".$_POST['product'.$I]);
+		//         $this->execQuery('insert','provider_payment_item',"item_id,order_id,product_id,provider_id,amount,delivered_at_moment,creation_date,created_by,company_id",$Item.",".$ID.",".$_POST['product'.$I].",".$ProviderID.",".$Amount.",".$Received.",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
+		//         //echo $this->lastQuery();
+		//     }
+		// }
+		// if(count($Items))
+		// {
+		// 	$ItemsQ = implode(",",$Items);
+		// 	$this->execQuery('update','provider_order_item',"payment_status='F'","item_id IN (".$ItemsQ.")");	
+		// }
+		// if($TotalItems<=count($Items))
+		// {
+		// 	$DeliveryStatus = $this->fetchAssoc($this->Table,'delivery_status',"order_id=".$ID);
+		// 	$DeliveryStatus = $DeliveryStatus[0]['delivery_status'];
+		// 	if($DeliveryStatus=='F')
+		// 		$UpdateStatus = ",status='F'";
+		// 	$this->execQuery('update','provider_order',"payment_status='F'".$UpdateStatus.",updated_by='".$_SESSION['admin_id']."'","order_id=".$ID);
+		// 	//echo $this->lastQuery();
+		// }else{
+		// 	$this->execQuery('update','provider_order',"payment_status='A',updated_by='".$_SESSION['admin_id']."'","order_id=".$ID);
+		// }
+		
 	}
 	
 	public function Delete()
 	{
 		$ID	= $_POST['id'];
-		$this->execQuery('update',$this->Table,"status = 'I'",$this->TableID."=".$ID);
+		$Order = $this->fetchAssoc($this->Table,'*',$this->TableID."=".$ID);
+		$Status = $Order[0]['status'];
+		switch ($Status) {
+			case 'P':
+				$this->execQuery('update',$this->Table,"status = 'I'",$this->TableID."=".$ID);
+			break;
+			case 'A':
+				$this->execQuery('update',$this->Table,"status = 'P'",$this->TableID."=".$ID);
+			break;
+			
+			default:
+				echo 'No se puede borrar una orden que no esté en estado pendiente de aprovación';
+			break;
+		}
 	}
 	
 	public function Search()
@@ -466,7 +556,7 @@ public function MakeRegs($Mode="List")
 			$ID	= $_POST['id'];
 			if($ID)
 			{
-				$New = new ProviderPurchaseOrder($ID);
+				$New = new ProviderOrder($ID);
 				if($_POST['newimage']!=$New->GetImg() && file_exists($_POST['newimage']))
 					unlink($_POST['newimage']);
 				$TempDir= $this->ImgGalDir;
@@ -499,7 +589,7 @@ public function MakeRegs($Mode="List")
 	public function Fillagents()
 	{
 		$Provider = $_POST['provider'];
-		$Agents = $this->fetchAssoc('product_provider_agent','agent_id,name',"provider_id=".$Provider,'name');
+		$Agents = $this->fetchAssoc('provider_agent','agent_id,name',"provider_id=".$Provider,'name');
 		if(count($Agents)>0)
 		{
 			$HTML = insertElement('select','agents','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"',$Agents,'','Seleccione un Contacto');

@@ -422,9 +422,8 @@ class DataBase
 	{
 		return '<div class="box">
     		<div class="box-body">
-    			'.$this->InsertSearchButtons().'
-		    	<!-- Search Filters -->
-		    	<div class="SearFilters searchFiltersHorizontal animated fadeIn Hidden">
+    			<!-- Search Filters -->
+		    	<div class="SearchFilters searchFiltersHorizontal animated fadeIn Hidden" style="margin-bottom:10px;">
 			        <div class="form-inline" id="SearchFieldsForm">
 			        	'.insertElement('hidden','view_type','list').'
 			        	'.insertElement('hidden','view_page','1').'
@@ -441,6 +440,8 @@ class DataBase
 			        </div>
 			      </div>
 			      <!-- /Search Filters -->
+    			'.$this->InsertDefaultSearchButtons().$this->InsertSearchButtons().'
+			      '.insertElement('hidden','selected_ids','').'
 			      <div class="changeView">
 			        <button class="ShowFilters SearchElement btn"><i class="fa fa-search"></i></button>
 			        <button class="ShowList GridElement btn Hidden"><i class="fa fa-list"></i></button>
@@ -460,16 +461,7 @@ class DataBase
 			      <!-- Paginator -->
 			    </div>
 			  </div><!-- /.box -->
-			  <!-- DELETE SELECTED BUTTON -->
-			    <div class="deleteSelectedAbs Hidden DeleteSelectedElements">
-			      <i class="fa fa-trash-o"></i> Eliminar Seleccionados
-			    </div>
-			  <!-- DELETE SELECTED BUTTON-->
-			  <!-- ACTIVATE SELECTED BUTTON -->
-			    <div class="deleteSelectedAbs Hidden ActivateSelectedElements">
-			      <i class="fa fa-check-circle"></i> Activar Seleccionados
-			    </div>
-			  <!-- ACTIVATE SELECTED BUTTON-->';
+			  ';
 	}
 	
 	public function InsertSearchResults()
@@ -492,6 +484,21 @@ class DataBase
 			        </div><!-- row -->
 			        '.insertElement('hidden','totalregs',$this->GetTotalRegs()).'
 			      </div><!-- /Content Container -->';
+	}
+	
+	public function InsertDefaultSearchButtons()
+	{
+		return '<!-- Select All -->
+		    	<button type="button" title="Seleccionar todos" id="SelectAll" class="btn animated fadeIn NewElementButton"><i class="fa fa-square-o"></i></button>
+		    	<button type="button" title="Deseleccionar todos" id="UnselectAll" class="btn animated fadeIn NewElementButton Hidden"><i class="fa fa-square"></i></button>
+		    	<!--/Select All -->
+		    	<!-- Remove All -->
+		    	<button type="button" title="Borrar registros seleccionados" class="btn bg-red animated fadeIn NewElementButton Hidden DeleteSelectedElements"><i class="fa fa-trash-o"></i></button>
+		    	<!-- /Remove All -->
+		    	<!-- Activate All -->
+		    	<button type="button" title="Activar registros seleccionados" class="btn btnGreen animated fadeIn NewElementButton Hidden ActivateSelectedElements"><i class="fa fa-check-circle"></i></button>
+		    	<!-- /Activate All -->
+		    	';
 	}
 }
 ?>

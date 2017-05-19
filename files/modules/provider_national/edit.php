@@ -5,7 +5,7 @@
     $Data         = $Edit->GetData();
     $IVA = array(1=>"Excento",2=>"Responsable Inscripto",3=>"Monotributista");
     ValidateID($Data);
-    $Agents = $DB->fetchAssoc('product_provider_agent','*','provider_id='.$ID);
+    $Agents = $DB->fetchAssoc('provider_agent','*','provider_id='.$ID);
     
     $Head->setTitle($Data['name']);
     $Head->setSubTitle($Menu->GetTitle());

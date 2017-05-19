@@ -1,7 +1,7 @@
 <?php
     include("../../includes/inc.main.php");
     //$Head->setTitle("Nuevo Usuario");
-    $Menu   = new Menu();
+    $Menu   = new AdminMenu();
     $Group  = new GroupData();
     $Head->setTitle($Menu->GetTitle());
     // $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off

@@ -1,6 +1,6 @@
 <?php
   include('../../includes/inc.main.php');
-  $Menu   = new Menu();
+  $Menu   = new AdminMenu();
   $Head->setTitle("Clientes");
   $Head->setIcon($Menu->GetHTMLicon());
   $Head->setSubTitle("Listado de Clientes");

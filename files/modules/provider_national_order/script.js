@@ -13,6 +13,11 @@ $.fn.datepicker.dates['es'] = {
 
 $(document).ready(function(){
 	
+	if(get['msg']=='addok')
+	{
+		notifySuccess('Stock ingresado correctamente');
+	}
+	
 	if(get['error']=="status")
 	{
 		notifyError('La orden no puede ser editada ya que no se encuentra en estado pendiente.');
@@ -23,6 +28,12 @@ $(document).ready(function(){
 		notifyError('La orden que desea editar no existe.');
 	}
 	
+	
+	////// PAYMENT FUNCTIONS////////
+	//updateTotalPrice()
+	
+	
+	////// ORDER FUNCTIONS ////////
 	addOrderItem();
 	saveItem();
 	calculateRowPrice();
@@ -120,7 +131,7 @@ function addOrderItem()
 	$("#add_order_item").click(function(){
 		var id		= parseInt($("#items").val())+1;
 		var process = '../../library/processes/proc.common.php';
-		var string	= 'item='+ id +'&action=addorderitem&object=ProviderPurchaseOrder';
+		var string	= 'item='+ id +'&action=addorderitem&object=ProviderOrder';
 		$.ajax({
 	        type: "POST",
 	        url: process,
@@ -301,7 +312,7 @@ $(function(){
 			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
 				if(e)
 				{
-					var process		= '../../library/processes/proc.common.php?object=ProviderPurchaseOrder';
+					var process		= '../../library/processes/proc.common.php?object=ProviderOrder';
 					if(BtnID=="BtnCreate")
 					{
 						var target		= 'list.php?msg='+ $("#action").val();
@@ -350,7 +361,7 @@ function fillAgentSelect()
 	var provider = $('#provider').val();
 	var process = '../../library/processes/proc.common.php';
 
-	var string      = 'provider='+ provider +'&action=fillagents&object=ProviderPurchaseOrder';
+	var string      = 'provider='+ provider +'&action=fillagents&object=ProviderOrder';
 
     var data;
     $.ajax({
@@ -376,3 +387,112 @@ function fillAgentSelect()
     });
 }
 
+
+
+///////////////////////////////////////////// LIST FUNCTIONS //////////////////////////////////////
+
+$(function(){
+	
+	$(".Invoice").click(function(){
+		var ID = $(this).attr('id').split("_");
+		ID = ID[1];
+		var status = $(this).attr('status');
+		
+		var process = '../../library/processes/proc.common.php';
+		var string	= 'item='+ ID +'&action=payorder&object=ProviderOrder&status='+status;
+		$.ajax({
+	        type: "POST",
+	        url: process,
+	        data: string,
+	        cache: false,
+	        success: function(data){
+	            if(data)
+	            {
+	               notifyError('Se produjo un error al querer cambiar de estado la orden');
+	                console.log('Error al intentar cambiar de estado. Item='+ID+'. Error: '+data);
+	            }else{
+	                $(".searchButton").click();
+	                notifySuccess('La orden se envi&oacute; a facturaci&oacute;n');
+	                
+	            }
+	        }
+	    });
+		
+	});
+	
+	
+// 	$("#BtnContinue").click(function(){
+// 		$("#ItemSelection").addClass('Hidden');
+// 		$("#FillData").removeClass('Hidden');
+// 		//$("#BtnCancel").removeClass('Hidden');
+// 	});
+	
+	
+// 	////////////////////////////////// Checkbox ////////////////////////////////
+// 	$(".iCheckbox").on('ifChecked', function(){
+// 		var id = $(this).attr("id");
+// 		var item = $(this).attr("item");
+// 		$("#id"+item).val(id);
+// 		//updateTotalAmount();
+// 	});
+	
+// 	$(".iCheckbox").on('ifUnchecked',function(){
+// 		var item = $(this).attr("item");
+// 		$("#id"+item).val('');
+// 		//updateTotalAmount();
+// 	});
+	
+// 	////////////////// PAYMENT PROCESS ///////////
+// 	$("#BtnAdd").on("click",function(e){
+// 		e.preventDefault();
+// 		if(validate.validateFields('*'))
+// 		{
+// 			var TotalAmount = $('#total_currency').html()+$('#total_payment').html();
+
+// 			alertify.confirm(utf8_decode('Est&aacute; a punto de realizar un pogo por <strong>'+TotalAmount+'</strong> ¿Desea countinuar?'), function(e){
+// 				if(e)
+// 				{
+// 					var process		= '../../library/processes/proc.common.php?object=ProviderOrder';
+// 					var target		= 'list.php?status=A&msg='+ $("#action").val();
+					
+// 					var haveData	= function(returningData)
+// 					{
+// 						$("input,select").blur();
+// 						if(returningData=="403")
+// 						{
+// 							notifyError("No es posible pagar esta orden. No se encuentra en el estado correcto.");
+// 						}else{
+// 							notifyError("Ha ocurrido un error durante el proceso de pago.");
+// 						}
+// 						console.log(returningData);
+// 					}
+// 					var noData		= function()
+// 					{
+// 						document.location = target;
+// 					}
+// 					sumbitFields(process,haveData,noData);
+// 				}
+// 			});
+// 		}
+// 	});
+});
+
+// function updateTotalAmount()
+// {
+// 	var total = 0;
+// 	$('.ItemsToPay').each(function(){
+// 		var ID = $(this).attr('item');
+// 		if($("#paid"+ID).val()!='')
+// 			total += parseFloat($('#TotalPrice'+ID).html());
+// 	});
+// 	$('#total_payment').html(total);
+// }
+
+// function updateTotalPrice()
+// {
+// 	$(".QuantityField").change(function(){
+// 		var ID		= $(this).attr('item');
+// 		var total	= parseFloat($("#Price"+ID).html()) * parseFloat($(this).val());
+// 		$("#TotalPrice"+ID).html(total);
+// 	});
+// }

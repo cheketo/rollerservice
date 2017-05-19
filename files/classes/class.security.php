@@ -25,7 +25,7 @@ class Security extends dataBase
 		$this->Password	= isset($_COOKIE['password'])? 		$_COOKIE['password'] 	: $Password;
 		$this->File		= basename($_SERVER['PHP_SELF']);
 		$this->getLink();
-		$MenuData		= $this->fetchAssoc("menu","menu_id,public","link LIKE '%".$this->Link."%'");
+		$MenuData		= $this->fetchAssoc('admin_menu',"menu_id,public","link LIKE '%".$this->Link."%'");
 		$this->MenuData	= $MenuData[0];
 	}
 

@@ -97,7 +97,7 @@ class AdminData extends DataBase
 
 	public function GetParents()
 	{
-		$Parents	= $this->fetchAssoc('menu','DISTINCT(parent_id)',"parent_id <> 0 AND status <> 'I'");
+		$Parents	= $this->fetchAssoc('admin_menu','DISTINCT(parent_id)',"parent_id <> 0 AND status <> 'I'");
 
 		foreach($Parents as $Parent){
 			$this->Parents[] = $Parent['parent_id'];

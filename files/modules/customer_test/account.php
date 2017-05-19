@@ -1,6 +1,6 @@
 <?php
   include('../../includes/inc.main.php');
-  $Menu   = new Menu();
+  $Menu   = new AdminMenu();
   $Head->setTitle("Cuenta Corriente");
   $Head->setIcon($Menu->GetHTMLicon());
   $Head->setSubTitle("Estado de Cuentas");

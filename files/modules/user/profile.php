@@ -45,10 +45,10 @@
             <span class="profile-titles"><strong><i class="fa fa-key"></i> Permisos Especiales</strong></span>
             <p>
               <?php
-                $Menues = $DB->fetchAssoc('menu','*',"status = 'A' AND menu_id IN (SELECT menu_id FROM relation_admin_menu WHERE admin_id = ".$_SESSION['admin_id'].")");
-                foreach($Menues as $AdminMenu)
+                $Menues = $DB->fetchAssoc('admin_menu','*',"status = 'A' AND menu_id IN (SELECT menu_id FROM relation_admin_menu WHERE admin_id = ".$_SESSION['admin_id'].")");
+                foreach($Menues as $Menu)
                 {
-                  echo '<span class="label label-success"><i class="fa '.$AdminMenu['icon'].'"></i> '.$AdminMenu['title'].'</span> ';
+                  echo '<span class="label label-success"><i class="fa '.$Menu['icon'].'"></i> '.$Menu['title'].'</span> ';
                 }
                 if(count($Menues)<1) echo "Ninguno";
               ?>

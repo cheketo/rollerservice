@@ -7,7 +7,7 @@ class Provider extends DataBase
 	var $ImgGalDir		= '../../../skin/images/providers/';
 	var $Customers 		= array();
 	var $Parent 		= array();
-	var $Table			= "product_provider";
+	var $Table			= "provider";
 	var $TableID		= "provider_id";
 	
 	const DEFAULTIMG	= "../../../skin/images/providers/default/provider.png";
@@ -211,7 +211,7 @@ public function MakeRegs($Mode="List")
 	
 	public function ConfigureSearchRequest()
 	{
-		$this->SetTable('product_provider c LEFT JOIN product_provider_agent a ON (a.provider_id)');
+		$this->SetTable('provider c LEFT JOIN provider_agent a ON (a.provider_id)');
 		$this->SetFields('c.*,a.name as agent_name, a.phone as agent_phone, a.email as agent_email, a.charge as agent_charge');
 		$this->SetWhere("c.company_id=".$_SESSION['company_id']);
 		//$this->AddWhereString(" AND c.company_id = a.company_id");
@@ -330,7 +330,7 @@ public function MakeRegs($Mode="List")
 		}
 		
 		//PROVINCE
-		$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$CountryID." AND name='".$Province."'");
+		$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$CountryID." AND short_name='".$ProvinceShort."'");
 		if($DBQ[0]['id'])
 		{
 			$ProvinceID = $DBQ[0]['id'];
@@ -404,7 +404,7 @@ public function MakeRegs($Mode="List")
 				$Fields .= "),(";
 			$Fields .= $NewID.",'".$Agent['name']."','".$Agent['charge']."','".$Agent['email']."','".$Agent['phone']."','".$Agent['extra']."'";
 		}
-		$this->execQuery('insert','product_provider_agent','provider_id,name,charge,email,phone,extra',$Fields);
+		$this->execQuery('insert','provider_agent','provider_id,name,charge,email,phone,extra',$Fields);
 		
 		
 	}	
@@ -451,7 +451,7 @@ public function MakeRegs($Mode="List")
 		}
 		
 		//PROVINCE
-		$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$CountryID." AND name='".$Province."'");
+		$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$CountryID." AND short_name='".$ProvinceShort."'");
 		if($DBQ[0]['id'])
 		{
 			$ProvinceID = $DBQ[0]['id'];
@@ -510,7 +510,7 @@ public function MakeRegs($Mode="List")
 			}
 		}
 		
-		$Update		= $this->execQuery('update','product_provider',"name='".$Name."',postal_code='".$PostalCode."',address='".$Address."',cuit=".$CUIT.",iva='".$IVA."',gross_income_tax='".$GrossIncome."',email='".$Email."',fax='".$Fax."',phone='".$Phone."',website='".$Website."',country_id=".$CountryID.",province_id='".$ProvinceID."',region_id=".$RegionID.",zone_id='".$ZoneID."',lat=".$Lat.",lng=".$Lng.",logo='".$Image."',updated_by=".$_SESSION['admin_id'],"provider_id=".$ID);
+		$Update		= $this->execQuery('update','provider',"name='".$Name."',postal_code='".$PostalCode."',address='".$Address."',cuit=".$CUIT.",iva='".$IVA."',gross_income_tax='".$GrossIncome."',email='".$Email."',fax='".$Fax."',phone='".$Phone."',website='".$Website."',country_id=".$CountryID.",province_id='".$ProvinceID."',region_id=".$RegionID.",zone_id='".$ZoneID."',lat=".$Lat.",lng=".$Lng.",logo='".$Image."',updated_by=".$_SESSION['admin_id'],"provider_id=".$ID);
 		//echo $this->lastQuery();
 		
 		// PROCESS AGENTS
@@ -522,7 +522,7 @@ public function MakeRegs($Mode="List")
 		}
 		
 		// DELETE OLD AGENTS
-		$this->execQuery('delete','product_provider_agent',"provider_id = ".$ID);
+		$this->execQuery('delete','provider_agent',"provider_id = ".$ID);
 		
 		// INSERT NEW AGENTS
 		foreach($Agents as $Agent)
@@ -531,7 +531,7 @@ public function MakeRegs($Mode="List")
 				$Fields .= "),(";
 			$Fields .= $ID.",'".$Agent['name']."','".$Agent['charge']."','".$Agent['email']."','".$Agent['phone']."','".$Agent['extra']."'";
 		}
-		$this->execQuery('insert','product_provider_agent','provider_id,name,charge,email,phone,extra',$Fields);
+		$this->execQuery('insert','provider_agent','provider_id,name,charge,email,phone,extra',$Fields);
 	}
 	
 	public function Activate()

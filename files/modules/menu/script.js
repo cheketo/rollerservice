@@ -18,7 +18,7 @@ $(function(){
 			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
 				if(e)
 				{
-					var process		= '../../library/processes/proc.common.php?object=Menu';
+					var process		= '../../library/processes/proc.common.php?object=AdminMenu';
 					if(BtnID=="BtnCreate")
 					{
 						var target		= 'list.php?element='+utf8_encode($('#title').val())+'&msg='+ $("#action").val();

@@ -520,7 +520,7 @@ public function MakeRegs($Mode="List")
 				}
 				
 				//PROVINCE
-				$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$Branches[$I]['country_id']." AND name='".$Branches[$I]['province']."'");
+				$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$Branches[$I]['country_id']." AND short_name='".$Branches[$I]['province_short']."'");
 				if($DBQ[0]['id'])
 				{
 					$Branches[$I]['province_id'] = $DBQ[0]['id'];

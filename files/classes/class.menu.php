@@ -1,6 +1,6 @@
 <?php
 
-class Menu extends DataBase
+class AdminMenu extends DataBase
 {
 	var $IDs 				= array();
 	var $MenuData 			= array();
@@ -17,12 +17,12 @@ class Menu extends DataBase
 		$this->Connect();
 		if($MenuID>0)
 		{
-			$Data	= $this->fetchAssoc('menu','*',"menu_id = ".$MenuID);
+			$Data	= $this->fetchAssoc('admin_menu','*',"menu_id = ".$MenuID);
 			$this->MenuData	= $Data[0];
 		}else{
 			$this->MenuData	= $this->GetLinkData();
 		}
-		// $this->SetTable('menu');
+		// $this->SetTable('admin_menu');
 		// $this->SetFields('*');
 		//$this->SetWhere("company_id=".$_SESSION['company_id']);
 		// $this->SetOrder('title');
@@ -32,7 +32,7 @@ class Menu extends DataBase
 	{
 		if(count($this->MenuData)<1)
 		{
-			$Data 				= $this->fetchAssoc('menu','*',"link = '../".$this->getLink()."'");
+			$Data 				= $this->fetchAssoc('admin_menu','*',"link = '../".$this->getLink()."'");
 			$this->MenuData 	= $Data[0];
 
 		}
@@ -51,19 +51,52 @@ class Menu extends DataBase
 
 	public function hasChild($MenuID)
 	{
-		return count($this->fetchAssoc('menu','menu_id',"parent_id = ".$MenuID." AND status = 'A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")"))>0;
+		return count($this->fetchAssoc('admin_menu','menu_id',"parent_id = ".$MenuID." AND status = 'A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")"))>0;
 	}
 	
 	public function GetActiveMenus($ID=0)
 	{
 		if($ID==0)
 		{
-			$Menu = $this->fetchAssoc('menu','menu_id,parent_id',"link LIKE '%".$this->getLink()."%'");
+			$Menues = $this->fetchAssoc('admin_menu','menu_id,parent_id,link',"link LIKE '%".$this->getLink()."%'");
+			if(count($Menues)>1)
+			{
+				$ChosenMenu[1] = 0;
+				foreach($Menues as $Key => $Menu)
+				{
+					$I=-1;
+					$Link = $Menu['link'];
+					$Link = explode("?",$Link);
+					$Args = $Link[1];
+					if($Args)
+					{
+						$Args = explode('&',$Args);
+						foreach($Args as $Arg)
+						{
+							$Arg = explode('=',$Arg);
+							if($_GET[$Arg[0]]==$Arg[1])
+								$I++;
+						}
+						if($I>=$ChosenMenu[1])
+						{
+							$ChosenMenu[0] = $Menues[$Key];
+							$ChosenMenu[1] = $I;
+						}
+					}else{
+						if($ChosenMenu[1]==0)
+							$ChosenMenu[0] = $Menues[$Key];
+					}
+				}
+				$Menu = $ChosenMenu[0];
+			}else{
+				$Menu = $Menues[0];
+			}
 		}else{
-			$Menu = $this->fetchAssoc('menu','menu_id,parent_id',"menu_id = ".$ID);
+			$Menues = $this->fetchAssoc('admin_menu','menu_id,parent_id',"menu_id = ".$ID);
+			$Menu	= $Menues[0];
 		}
-		$MenuID 	= $Menu[0]['menu_id'];
-		$ParentID	= $Menu[0]['parent_id'];
+		$MenuID 	= $Menu['menu_id'];
+		$ParentID	= $Menu['parent_id'];
 		if($ParentID==0)
 		{
 			return $MenuID;
@@ -75,7 +108,7 @@ class Menu extends DataBase
 	public function insertMenu($PorfileID=0,$AdminID=0)
 	{
 		$this->GetMenues($PorfileID,$AdminID);
-		$Rows	= $this->fetchAssoc('menu','*',"parent_id = 0 AND status = 'A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")","position");
+		$Rows	= $this->fetchAssoc('admin_menu','*',"parent_id = 0 AND status = 'A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")","position");
 		
 		//ACTIVE MENUS FOR NAVBAR
 		$ActiveMenus = explode(',',$this->GetActiveMenus());
@@ -107,7 +140,7 @@ class Menu extends DataBase
 
 	public function insertSubMenu($Parent_id)
 	{
-		$Rows		= $this->fetchAssoc('menu','*',"parent_id = ".$Parent_id." AND status='A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")","position");
+		$Rows		= $this->fetchAssoc('admin_menu','*',"parent_id = ".$Parent_id." AND status='A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")","position");
 		$NumRows	= count($Rows);
 		if($NumRows>0)
 		{
@@ -143,12 +176,12 @@ class Menu extends DataBase
 		{
 			$MenuID = !$_GET['id']? "0":$_GET['id'];
 
-			$Menu = $this->fetchAssoc('menu','*'," menu_id = ".$MenuID);
+			$Menu = $this->fetchAssoc('admin_menu','*'," menu_id = ".$MenuID);
 		}else{
 			if($ID==0)
-				$Menu = $this->fetchAssoc('menu','*',"link = '../".$this->getLink()."' ");
+				$Menu = $this->fetchAssoc('admin_menu','*',"link = '../".$this->getLink()."' ");
 			else
-				$Menu = $this->fetchAssoc('menu','*'," menu_id = ".$ID);
+				$Menu = $this->fetchAssoc('admin_menu','*'," menu_id = ".$ID);
 		}
 
 
@@ -175,7 +208,7 @@ class Menu extends DataBase
 	{
 		if(count($this->Children)<1)
 		{
-			$Children = $this->fetchAssoc('menu','*'," status = 'A' AND view_status='A' AND parent_id = ".$this->MenuData['menu_id']);
+			$Children = $this->fetchAssoc('admin_menu','*'," status = 'A' AND view_status='A' AND parent_id = ".$this->MenuData['menu_id']);
 			foreach ($Children as $Child)
 			{
 				if(!$Child['link'] || $Child['link']=="#")
@@ -208,12 +241,12 @@ class Menu extends DataBase
 
 
 		//$RestringedMenues		= $this->fetchAssoc('relation_menu_profile','DISTINCT(menu_id)');
-		//$RestringedMenues		= $this->fetchAssoc('menu','menu_id',"public <> 'Y'");
+		//$RestringedMenues		= $this->fetchAssoc('admin_menu','menu_id',"public <> 'Y'");
 
-		//$AllowedMenues 			= $this->fetchAssoc('menu m, realtion_menu_profile r, relation_admin_menu e','DISTINCT(m.menu_id)',"m.public = 'Y' OR ()");
+		//$AllowedMenues 			= $this->fetchAssoc('admin_menum, realtion_menu_profile r, relation_admin_menu e','DISTINCT(m.menu_id)',"m.public = 'Y' OR ()");
 		if($PorfileID==self::PROFILE)
 		{
-			$AllowedMenues 	= $this->fetchAssoc('menu','menu_id',"status = 'A'");
+			$AllowedMenues 	= $this->fetchAssoc('admin_menu','menu_id',"status = 'A'");
 		}else{
 			if($PorfileID>0)
 			{
@@ -227,10 +260,10 @@ class Menu extends DataBase
 				}
 				$MenuesGroup = implode(",",$MGroup);
 
-				$AllowedMenues 	= $this->fetchAssoc('menu','DISTINCT(menu_id)',"public = 'Y' OR menu_id IN (SELECT menu_id FROM relation_menu_profile WHERE profile_id= ".$PorfileID.") OR menu_id IN (SELECT menu_id FROM relation_admin_menu WHERE admin_id = ".$AdminID.") OR menu_id IN (".$MenuesGroup.")  AND status = 'A'");
+				$AllowedMenues 	= $this->fetchAssoc('admin_menu','DISTINCT(menu_id)',"public = 'Y' OR menu_id IN (SELECT menu_id FROM relation_menu_profile WHERE profile_id= ".$PorfileID.") OR menu_id IN (SELECT menu_id FROM relation_admin_menu WHERE admin_id = ".$AdminID.") OR menu_id IN (".$MenuesGroup.")  AND status = 'A'");
 
 			}else{
-				$AllowedMenues 	= $this->fetchAssoc('menu','menu_id',"public = 'Y' AND status = 'A'");
+				$AllowedMenues 	= $this->fetchAssoc('admin_menu','menu_id',"public = 'Y' AND status = 'A'");
 			}
 		}
 
@@ -244,7 +277,7 @@ class Menu extends DataBase
 
 	public function GetParent($Menu_id)
 	{
-		$Parent = $this->fetchAssoc('menu','title','menu_id='.$Menu_id);
+		$Parent = $this->fetchAssoc('admin_menu','title','menu_id='.$Menu_id);
 		return $Parent[0]['title'];
 	}
 
@@ -261,7 +294,7 @@ class Menu extends DataBase
 	public function MakeTree($Parent=0)
 	{
 		$HTML		= '<ul>';
-		$Menues 	= $this->fetchAssoc('menu','*',"parent_id = ".$Parent." AND status <> 'I'","position");
+		$Menues 	= $this->fetchAssoc('admin_menu','*',"parent_id = ".$Parent." AND status <> 'I'","position");
 		$Parents	= $this->GetParents();
 		
 		foreach($Menues as $Menu)
@@ -282,7 +315,7 @@ class Menu extends DataBase
 	{
 		if(count($this->Parents)<1)
 		{
-			$Parents	= $this->fetchAssoc('menu','DISTINCT(parent_id)',"parent_id <> 0 AND status <> 'I'");
+			$Parents	= $this->fetchAssoc('admin_menu','DISTINCT(parent_id)',"parent_id <> 0 AND status <> 'I'");
 			foreach($Parents as $Parent)
 			{
 				$this->Parents[] = $Parent['parent_id'];
@@ -320,7 +353,7 @@ class Menu extends DataBase
 		//echo $this->lastQuery();
 		for($i=0;$i<count($Rows);$i++)
 		{
-			$Row	=	new Menu($Rows[$i]['menu_id']);
+			$Row	=	new AdminMenu($Rows[$i]['menu_id']);
 			$MenuGroups = $Row->GetGroups();
 			$Groups = '';
 			foreach($MenuGroups as $Group)
@@ -429,7 +462,7 @@ class Menu extends DataBase
 	protected function InsertSearchField()
 	{
 		$Parents = $this->GetParents();
-		$Parents = $this->fetchAssoc('menu','menu_id,title',"status<>'I' AND menu_id IN (".implode(",",$Parents).")");
+		$Parents = $this->fetchAssoc('admin_menu','menu_id,title',"status<>'I' AND menu_id IN (".implode(",",$Parents).")");
 		$Parents[] = array("menu_id"=>"0","title"=>"Men&uacute; Principal");
 		
 		return '<!-- Title -->
@@ -478,7 +511,7 @@ class Menu extends DataBase
 	
 	public function ConfigureSearchRequest()
 	{
-		$this->SetTable('menu AS m, admin_group AS g, relation_menu_group AS rg, admin_profile AS p, relation_menu_profile AS rp');
+		$this->SetTable('admin_menu AS m, admin_group AS g, relation_menu_group AS rg, admin_profile AS p, relation_menu_profile AS rp');
 		$this->SetFields('m.*,p.title as profile, g.title as group_title');
 		$this->SetWhere("1=1");
 		//$this->AddWhereString(" AND a.profile_id = p.profile_id");
@@ -580,7 +613,7 @@ class Menu extends DataBase
 		$Status		= $_POST['status']=='on'? 'A':'O';
 		$Public		= $_POST['public']=='on'? 'N':'Y';
 		if(!$Link) $Link="#";
-		$this->execQuery('insert','menu','title,link,position,icon,parent_id,status,public',"'".$Title."','".$Link."',".$Position.",'".$Icon."',".$Parent.",'".$Status."','".$Public."'");
+		$this->execQuery('insert','admin_menu','title,link,position,icon,parent_id,status,public',"'".$Title."','".$Link."',".$Position.",'".$Icon."',".$Parent.",'".$Status."','".$Public."'");
 		$ID 		= $this->GetInsertId();
 		foreach($Groups as $Group)
 		{
@@ -612,7 +645,7 @@ class Menu extends DataBase
 		$Status		= $_POST['status']? 'A':'O';
 		$Public		= $_POST['public']? 'N':'Y';
 		if(!$Link) $Link="#";
-		$this->execQuery('update','menu',"title='".$Title."',link='".$Link."',position='".$Position."',icon='".$Icon."',status='".$Status."',parent_id=".$ParentID.",public='".$Public."'","menu_id=".$ID);
+		$this->execQuery('update','admin_menu',"title='".$Title."',link='".$Link."',position='".$Position."',icon='".$Icon."',status='".$Status."',parent_id=".$ParentID.",public='".$Public."'","menu_id=".$ID);
 		$this->execQuery('delete','relation_menu_group',"menu_id = ".$ID);
 		$this->execQuery('delete','relation_menu_profile',"menu_id = ".$ID);
 		foreach($Groups as $Group)
@@ -633,13 +666,13 @@ class Menu extends DataBase
 	public function Activate()
 	{
 		$ID	= $_POST['id'];
-		$this->execQuery('update','menu',"status = 'A'","menu_id=".$ID);
+		$this->execQuery('update','admin_menu',"status = 'A'","menu_id=".$ID);
 	}
 	
 	public function Delete()
 	{
 		$ID	= $_POST['id'];
-		$this->execQuery('update','menu',"status = 'I'","menu_id=".$ID);
+		$this->execQuery('update','admin_menu',"status = 'I'","menu_id=".$ID);
 	}
 	
 	public function Search()

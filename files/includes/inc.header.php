@@ -66,9 +66,11 @@
           </ul>
         </li>
         <!-- Control Sidebar Toggle Button -->
+        <?php if($Menu->GetLink()=="user/profile.php"){ ?>
         <li>
           <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
         </li>
+        <?php } ?>
       </ul>
     </div>
   </nav>

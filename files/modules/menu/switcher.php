@@ -4,7 +4,7 @@
     if($_GET['id'])
     {
       $MenuID   = $_GET['id'];
-      $Switcher = new Menu($MenuID);
+      $Switcher = new AdminMenu($MenuID);
       $Children = $Switcher->getChildren();
       if(count($Children)<1)
       {

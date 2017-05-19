@@ -1,6 +1,6 @@
 <?php
   include('../../includes/inc.main.php');
-  $Menu   = new Menu();
+  $Menu   = new AdminMenu();
   $Head->setTitle($Menu->GetTitle());
   $Head->setIcon($Menu->GetHTMLicon());
   $Head->setHead();
