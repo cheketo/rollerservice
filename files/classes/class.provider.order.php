@@ -21,8 +21,9 @@ class ProviderOrder extends DataBase
 			$this->Data['items'] = $this->GetItems();
 			$Provider = $this->fetchAssoc("provider","name","provider_id=".$this->Data['provider_id']);
 			$this->Data['provider'] = $Provider[0]['name'];
-			$Quantity = $this->fetchAssoc("provider_order_item","SUM(quantity) AS total",$this->TableID."=".$this->ID);
-			$this->Data['quantity'] = $Quantity[0]['total'];
+			$this->Data['quantity'] = count($this->Data['items']);
+			// $Quantity = $this->fetchAssoc("provider_order_item","SUM(quantity) AS total",$this->TableID."=".$this->ID);
+			// $this->Data['quantity'] = $Quantity[0]['total'];
 		}
 	}
 	
@@ -54,7 +55,7 @@ class ProviderOrder extends DataBase
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// SEARCHLIST FUNCTIONS ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-public function MakeRegs($Mode="List")
+	public function MakeRegs($Mode="List")
 	{
 		$Rows	= $this->GetRegs();
 		//echo $this->lastQuery();
@@ -213,18 +214,12 @@ public function MakeRegs($Mode="List")
         if(!$Regs)
         {
 			switch ($_REQUEST['status']) {
-				case 'A': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores activas.</h4></div>'; break;
-				case 'S': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes de facturaci&oacute;n.</h4></div>'; break;
-				case 'C': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes de ingreso.</h4></div>'; break;
-        		case 'F': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores finalizadas.</h4></div>'; break;
-				default: $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes.</h4><p>Puede crear una orden haciendo click <a href="new.php">aqui</a>.</p></div>'; break;
+				case 'A': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compra a proveedores en camino.</h4></div>'; break;
+				case 'S': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compra a proveedores a controlar.</h4></div>'; break;
+				case 'C': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compra a proveedores pendientes de ingreso.</h4></div>'; break;
+				case 'F': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compra a proveedores finalizadas.</h4></div>'; break;
+				default: $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compra a proveedores pendientes.</h4><p>Puede crear una orden haciendo click <a href="new.php">aqui</a>.</p></div>'; break;
         	}
-	        // if($_POST['list']!='stock')
-	        // {
-	        // 	$Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores.</h4><p>Puede crear una orden haciendo click <a href="new.php">aqui</a>.</p></div>';
-	        // }else{
-	        // 	$Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ingresos de stock pendientes.</h4></div>';
-	        // }
         }
 		return $Regs;
 	}

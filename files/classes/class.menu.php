@@ -21,6 +21,7 @@ class AdminMenu extends DataBase
 			$this->MenuData	= $Data[0];
 		}else{
 			$this->MenuData	= $this->GetLinkData();
+				
 		}
 		// $this->SetTable('admin_menu');
 		// $this->SetFields('*');
@@ -32,8 +33,8 @@ class AdminMenu extends DataBase
 	{
 		if(count($this->MenuData)<1)
 		{
-			$Data 				= $this->fetchAssoc('admin_menu','*',"link = '../".$this->getLink()."'");
-			$this->MenuData 	= $Data[0];
+			$Menues 		= $this->fetchAssoc('admin_menu','*',"link LIKE '../".$this->getLink()."%'");
+			$this->MenuData = $this->ChosenMenu($Menues);;
 
 		}
 		return $this->MenuData;
@@ -54,43 +55,48 @@ class AdminMenu extends DataBase
 		return count($this->fetchAssoc('admin_menu','menu_id',"parent_id = ".$MenuID." AND status = 'A' AND view_status = 'A' AND menu_id IN (".implode(",",$this->IDs).")"))>0;
 	}
 	
+	public function ChosenMenu($Menues)
+	{
+		if(count($Menues)>1)
+		{
+			$ChosenMenu[1] = 0;
+			foreach($Menues as $Key => $Menu)
+			{
+				$I=-1;
+				$Link = $Menu['link'];
+				$Link = explode("?",$Link);
+				$Args = $Link[1];
+				if($Args)
+				{
+					$Args = explode('&',$Args);
+					foreach($Args as $Arg)
+					{
+						$Arg = explode('=',$Arg);
+						if($_GET[$Arg[0]]==$Arg[1])
+							$I++;
+					}
+					if($I>=$ChosenMenu[1])
+					{
+						$ChosenMenu[0] = $Menues[$Key];
+						$ChosenMenu[1] = $I;
+					}
+				}else{
+					if($ChosenMenu[1]==0)
+						$ChosenMenu[0] = $Menues[$Key];
+				}
+			}
+			return $ChosenMenu[0];
+		}else{
+			return $Menues[0];
+		}
+	}
+	
 	public function GetActiveMenus($ID=0)
 	{
 		if($ID==0)
 		{
 			$Menues = $this->fetchAssoc('admin_menu','menu_id,parent_id,link',"link LIKE '%".$this->getLink()."%'");
-			if(count($Menues)>1)
-			{
-				$ChosenMenu[1] = 0;
-				foreach($Menues as $Key => $Menu)
-				{
-					$I=-1;
-					$Link = $Menu['link'];
-					$Link = explode("?",$Link);
-					$Args = $Link[1];
-					if($Args)
-					{
-						$Args = explode('&',$Args);
-						foreach($Args as $Arg)
-						{
-							$Arg = explode('=',$Arg);
-							if($_GET[$Arg[0]]==$Arg[1])
-								$I++;
-						}
-						if($I>=$ChosenMenu[1])
-						{
-							$ChosenMenu[0] = $Menues[$Key];
-							$ChosenMenu[1] = $I;
-						}
-					}else{
-						if($ChosenMenu[1]==0)
-							$ChosenMenu[0] = $Menues[$Key];
-					}
-				}
-				$Menu = $ChosenMenu[0];
-			}else{
-				$Menu = $Menues[0];
-			}
+			$Menu	= $this->ChosenMenu($Menues);
 		}else{
 			$Menues = $this->fetchAssoc('admin_menu','menu_id,parent_id',"menu_id = ".$ID);
 			$Menu	= $Menues[0];
@@ -179,9 +185,13 @@ class AdminMenu extends DataBase
 			$Menu = $this->fetchAssoc('admin_menu','*'," menu_id = ".$MenuID);
 		}else{
 			if($ID==0)
-				$Menu = $this->fetchAssoc('admin_menu','*',"link = '../".$this->getLink()."' ");
-			else
+			{
+				// $Menues = $this->fetchAssoc('admin_menu','*',"link LIKE '../".$this->getLink()."%'");
+				// $Menu = $this->ChosenMenu($Menues);
+				$Menu = array(0=>$this->GetLinkData());
+			}else{
 				$Menu = $this->fetchAssoc('admin_menu','*'," menu_id = ".$ID);
+			}
 		}
 
 
