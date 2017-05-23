@@ -1,6 +1,6 @@
 <?php
 
-class ProviderOrderBilling extends DataBase
+class ProviderInvoice extends DataBase
 {
 	var	$ID;
 	var $Data;
@@ -8,7 +8,7 @@ class ProviderOrderBilling extends DataBase
 	var $Table			= "provider_order";
 	var $TableID		= "order_id";
 	
-	const DEFAULTIMG	= "../../../skin/images/providers/default/order.png";
+	const DEFAULTIMG	= "../../../skin/images/invoices/default.png";
 
 	public function __construct($ID=0)
 	{
@@ -21,8 +21,6 @@ class ProviderOrderBilling extends DataBase
 			$this->Data['items'] = $this->GetItems();
 			$Provider = $this->fetchAssoc("provider","name","provider_id=".$this->Data['provider_id']);
 			$this->Data['provider'] = $Provider[0]['name'];
-// 			$Quantity = $this->fetchAssoc("provider_order_item","SUM(quantity) AS total",$this->TableID."=".$this->ID);
-// 			$this->Data['quantity'] = $Quantity[0]['total'];
 		}
 	}
 	
@@ -57,33 +55,33 @@ class ProviderOrderBilling extends DataBase
     public function MakeRegs($Mode="List")
 	{
 		$Rows	= $this->GetRegs();
-		//echo $this->lastQuery();
+		echo $this->lastQuery();
 		for($i=0;$i<count($Rows);$i++)
 		{
-			$Row	=	new ProviderOrderBilling($Rows[$i][$this->TableID]);
+			$Row	=	new ProviderInvoice($Rows[$i][$this->TableID]);
 			$Actions	= 	'<span class="roundItemActionsGroup"><a title="M&aacute;s informaci&oacute;n" alt="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a> ';
 			
-			if($Row->Data['status']=="P" || $Row->Data['status']=="I"){
-				$Actions	.= '<a title="Confirmar" alt="Confirmar" class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
+			// if($Row->Data['payment_status']=="P" || $Row->Data['payment_status']=="I"){
+			// 	$Actions	.= '<a title="Confirmar" alt="Confirmar" class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
+			// }
+			
+			if($Row->Data['payment_status']=="P" || $Row->Data['payment_status']=="A"){
+				$Actions	.= '<a title="Cargar Factura" alt="Cargar Factura" class="Invoice" status="'.$Row->Data['status'].'" id="payment_'.$Row->ID.'"><button type="button" class="btn bg-github"><i class="fa fa-dollar"></i></button></a> ';
 			}
 			
-			if($Row->Data['status']=="A" || $Row->Data['status']=="S"){
-				$Actions	.= '<a title="Enviar a facturaci&oacute;n" alt="Enviar a facturaci&oacute;n" class="Invoice" status="'.$Row->Data['status'].'" id="payment_'.$Row->ID.'"><button type="button" class="btn bg-olive"><i class="fa fa-dollar"></i></button></a> ';
-			}
-			
-			if(($Row->Data['status']!="P")){
+			if(($Row->Data['payment_status']!="P")){
 				$Actions	.= '<a title="Ver Detalle" alt="Ver Detalle" href="payment.php?view=F&id='.$Row->ID.'" id="payment_'.$Row->ID.'"><button type="button" class="btn btn-github"><i class="fa fa-eye"></i></button></a> ';
 			}
 			
-			if($Row->Data['status']=="A" || $Row->Data['status']=="C")
+			if($Row->Data['payment_status']=="A" || $Row->Data['payment_status']=="C")
 			{
 				$Actions	.= '<a class="completeElement" href="../stock/stock_entrance.php?id='.$Row->ID.'" title="Ingresar stock" id="complete_'.$Row->ID.'"><button type="button" class="btn btn-dropbox"><i class="fa fa-sign-in"></i></button></a>';
 			}
 			
-			if($Row->Data['status']=="P" || $Row->Data['status']=="A")
+			if($Row->Data['payment_status']=="P")
 			{
-				$Actions	.= '<a title="Editar" alt="Editar" href="edit.php?id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
-				$Actions	.= '<a title="Eliminar" alt="Eliminar" class="deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
+				// $Actions	.= '<a title="Editar" alt="Editar" href="edit.php?id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
+				$Actions	.= '<a title="Cancelar" alt="Cancelar" class="deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-times-circle-o"></i></button></a>';
 				
 			}
 			$Actions	.= '</span>';
@@ -213,11 +211,9 @@ class ProviderOrderBilling extends DataBase
         if(!$Regs)
         {
 			switch ($_REQUEST['status']) {
-				case 'A': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores activas.</h4></div>'; break;
-				case 'S': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes de facturaci&oacute;n.</h4></div>'; break;
-				case 'C': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes de ingreso.</h4></div>'; break;
-                case 'F': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores finalizadas.</h4></div>'; break;
-				default: $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compras a proveedores pendientes.</h4><p>Puede crear una orden haciendo click <a href="new.php">aqui</a>.</p></div>'; break;
+				case 'P': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron facturas a proveedores pendientes.</h4></div>'; break;
+				case 'A': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron facturas a proveedores en proceso.</h4></div>'; break;
+				case 'F': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron facturas a proveedores archivadas.</h4></div>'; break;
         	}
         }
 		return $Regs;
@@ -286,12 +282,12 @@ class ProviderOrderBilling extends DataBase
 			
 		if($_POST['name']) $this->SetWhereCondition("d.name","LIKE","%".$_POST['name']."%");
 		if($_POST['code']) $this->SetWhereCondition("c.code","LIKE","%".$_POST['code']."%");
-// 		if($_POST['extra']) $this->SetWhereCondition("a.extra","LIKE","%".$_POST['extra']."%");
-// 		if($_POST['delivery_date'])
-// 		{
-// 			$_POST['delivery_date'] = implode("-",array_reverse(explode("/",$_POST['delivery_date'])));
-// 			$this->AddWhereString(" AND (a.delivery_date = '".$_POST['delivery_date']."' OR b.delivery_date='".$_POST['delivery_date']."')");
-// 		}
+
+		if($_POST['delivery_date'])
+		{
+			$_POST['delivery_date'] = implode("-",array_reverse(explode("/",$_POST['delivery_date'])));
+			$this->AddWhereString(" AND (a.delivery_date = '".$_POST['delivery_date']."' OR b.delivery_date='".$_POST['delivery_date']."')");
+		}
 		
 		
 		if($_REQUEST['status'])
