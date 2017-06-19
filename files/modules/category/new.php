@@ -1,7 +1,7 @@
 <?php
     include("../../includes/inc.main.php");
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
+     
     $Head->setHead();
     include('../../includes/inc.top.php');
     $New = new Category();
@@ -39,6 +39,6 @@
     </div>
   </div>
 <?php
-  $Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
+  
   include('../../includes/inc.bottom.php');
 ?>

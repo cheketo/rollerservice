@@ -16,6 +16,8 @@
 <script src="../../../vendors/alertify/script.alertify.js"></script>
 <!-- Font Awesome -->
 <script src="https://use.fontawesome.com/f5ce95baa2.js"></script>
+<!-- Chosen Select -->
+<script src="../../../vendors/chosen-js/chosen.jquery.js"></script>
 <!-- Validations -->
 <script src="../../js/script.validate.js"></script>
 <!-- Renovatio Script -->

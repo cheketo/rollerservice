@@ -87,7 +87,6 @@ function selectImg()
 // /////////////////////////// Fill Groups /////////////////////////////////////
 $(document).ready(function(){
 	fillGroups();
-	setGroups();
 });
 
 $(function(){

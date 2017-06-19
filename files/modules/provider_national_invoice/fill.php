@@ -161,7 +161,7 @@
   
 <?php
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js'); // Input Mask
-$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js'); // Chosen Select Input
+ // Chosen Select Input
 $Foot->setScript('../../../vendors/datepicker/bootstrap-datepicker.js'); // Date Picker Calendar
 include('../../includes/inc.bottom.php');
 ?>

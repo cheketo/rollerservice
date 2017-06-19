@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $Head->setTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Bootstrap Select Input
+     // Bootstrap Select Input
     $Head->setHead();
     
     $Category = new Category();
@@ -157,7 +157,7 @@
 
   <!-- Help Modal -->
 <?php
-$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js'); // Bootstrap Select Input
+ // Bootstrap Select Input
 $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
 $Foot->setScript('../../../vendors/jquery-mask/src/jquery.mask.js');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');

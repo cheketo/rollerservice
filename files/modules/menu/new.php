@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $Head->setTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
+     
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
@@ -78,6 +78,6 @@
 <?php include ('modal.icon.php'); ?>
 <?php
 $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
-$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
+
 include('../../includes/inc.bottom.php');
 ?>

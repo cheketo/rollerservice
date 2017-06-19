@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $New = new ProviderOrder();
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
+     
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
@@ -143,7 +143,7 @@
   </div><!-- box -->
 <?php
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
-$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
+
 $Foot->setScript('../../../vendors/datepicker/bootstrap-datepicker.js');
 include('../../includes/inc.bottom.php');
 ?>

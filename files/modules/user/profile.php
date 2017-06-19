@@ -7,7 +7,7 @@
     
     $Head->setTitle($Menu->GetTitle());
     $Head->setIcon($Menu->GetHTMLicon());
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
+     
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
@@ -66,8 +66,8 @@
   </div><!-- /.box -->
 
 <?php
-// Select Inputs With Tags
-$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
+
+
 // ----
 // Tree With Checkbox
 // DOCUMENTATION >  http://www.jquery-az.com/jquery-treeview-with-checkboxes-2-examples-with-bootstrap

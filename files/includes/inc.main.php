@@ -2,7 +2,7 @@
 	session_name("rollerservice");
 	session_cache_expire(15800);
 	session_start();
-	include_once("../../classes/class.database.php");
+	include_once("../../classes/class.data.base.php");
 
 	/* CONNECTION STARTS */
 	$DB = new DataBase();
@@ -15,7 +15,8 @@
 
 	include_once("../../classes/class.api.rest.php");
 	include_once("../../library/functions/func.common.php");
-	include_dir("../../classes");
+	spl_autoload_register('autoload'); // PHP Class Autoload
+	// include_dir("../../classes");
 
 	/* SECURIRTY CHECKS */
 	$Security		= new Security();

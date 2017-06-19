@@ -252,34 +252,36 @@ public function MakeRegs($Mode="List")
 	protected function InsertSearchField()
 	{
 		return '<!-- First Name -->
-          <div class="input-group">
+		<div class="row">
+          <div class="input-group col-xs-3">
             <span class="input-group-addon order-arrows sort-activated" order="first_name" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
             '.insertElement('text','first_name','','form-control','placeholder="Nombre"').'
           </div>
           <!-- Last Name -->
-          <div class="input-group">
+          <div class="input-group col-xs-3">
             <span class="input-group-addon order-arrows" order="last_name" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
             '.insertElement('text','last_name','','form-control','placeholder="Apellido"').'
           </div>
           <!-- User -->
-          <div class="input-group">
+          <div class="input-group col-xs-3">
             <span class="input-group-addon order-arrows" order="user" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
             '.insertElement('text','user','','form-control','placeholder="Usuario"').'
           </div>
           <!-- Email -->
-          <div class="input-group">
+          <div class="input-group col-xs-3">
             <span class="input-group-addon order-arrows" order="email" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
             '.insertElement('text','email','','form-control','placeholder="Email"').'
           </div>
           <!-- Profile -->
-          <div class="input-group">
-            <span class="input-group-addon order-arrows" order="profile" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('select','profile','','form-control','',$this->fetchAssoc('admin_profile','profile_id,title',"company_id=".$_SESSION['company_id']." AND status='A' AND profile_id >= ".$_SESSION['profile_id']),'', 'Perfil').'
+          <div class="input-group col-xs-3">
+            <span class="input-group-addon order-arrows btnFormAddon" order="profile" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+            '.insertElement('select','profile','','form-control chosenSelect','data-placeholder="Perfil"',$this->fetchAssoc('admin_profile','profile_id,title',"company_id=".$_SESSION['company_id']." AND status='A' AND profile_id >= ".$_SESSION['profile_id']),' ', '').'
           </div>
           <!-- Group -->
-          <div class="input-group">
-            <span class="input-group-addon order-arrows" order="group" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('select','group','','form-control','',$this->fetchAssoc('admin_group','group_id,title',"company_id=".$_SESSION['company_id']." AND status='A' AND group_id IN (SELECT group_id FROM relation_group_profile WHERE profile_id >= ".$_SESSION['profile_id'].")","title"),'', 'Grupo').'
+          <div class="input-group col-xs-3">
+            <span class="input-group-addon order-arrows btnFormAddon" order="group" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+            '.insertElement('select','group','','form-control chosenSelect','data-placeholder="Grupo"',$this->fetchAssoc('admin_group','group_id,title',"company_id=".$_SESSION['company_id']." AND status='A' AND group_id IN (SELECT group_id FROM relation_group_profile WHERE profile_id >= ".$_SESSION['profile_id'].")","title"),' ', '').'
+          </div>
           </div>';
 	}
 	

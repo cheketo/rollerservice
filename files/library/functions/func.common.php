@@ -9,6 +9,20 @@
         }
         closedir($handle);
 	}
+	
+	function autoload($Class)
+	{
+		echo $Class = strtolower(splitAtUpperCaseAddDot($Class));
+		include "../../classes/class".$Class.".php";
+	}
+	
+	function splitAtUpperCaseAddDot($String){
+	    return preg_replace('/([a-z0-9])?([A-Z])/','$1.$2',$String);
+	}
+	
+	// function splitAtUpperCase($String) {
+	// 	return preg_split('/(?=[A-Z])/', $String, -1, PREG_SPLIT_NO_EMPTY);
+	// }
 
 	function GetDirFiles($Path)
 	{

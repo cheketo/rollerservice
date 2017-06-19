@@ -2,7 +2,6 @@
     include("../../includes/inc.main.php");
     $New = new Customer();
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
     include('../../includes/inc.top.php');
@@ -109,7 +108,7 @@
 $Foot->setScript('../../js/script.map.autolocation.js');
 $Foot->setScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCuMB_Fpcn6USQEoumEHZB_s31XSQeKQc0&libraries=places&language=es','async defer');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
-$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
+
 
 include('../../includes/inc.bottom.php');
 ?>

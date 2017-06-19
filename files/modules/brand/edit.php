@@ -6,7 +6,7 @@
     ValidateID($Data);
     $Edit->Data = Utf8EncodeArray($Edit->Data);
     $Head->setTitle("Modificar Marca ".$Data['title']);
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
+     
     $Head->setHead();
     
     include('../../includes/inc.top.php');
@@ -45,6 +45,6 @@
   <!-- //// HELP MODAL //// -->
   <!-- Help Modal -->
 <?php
-$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
+
 include('../../includes/inc.bottom.php');
 ?>

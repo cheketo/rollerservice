@@ -74,6 +74,11 @@ html {
 
 .txR {
   text-align: right; }
+  
+.btnFormAddon
+{
+  width: 15px!important;
+}
 
 @media (max-width: 765px) {
   .wrapper {

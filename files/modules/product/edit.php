@@ -7,7 +7,7 @@
     $Head->setTitle($Data['code']);
     $Head->setSubTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
+     
     $Head->setHead();
     
     
@@ -174,6 +174,6 @@
 $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
 $Foot->setScript('../../../vendors/jquery-mask/src/jquery.mask.js');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
-$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
+
 include('../../includes/inc.bottom.php');
 ?>

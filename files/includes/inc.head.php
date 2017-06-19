@@ -27,3 +27,5 @@
 <link rel="stylesheet" href="../../../vendors/iCheck/square/grey.css">
 <link rel="stylesheet" href="../../../vendors/iCheck/square/pink.css">
 <link rel="stylesheet" href="../../../vendors/iCheck/square/purple.css">
+<!-- Chosen Select -->
+<link rel="stylesheet" href="../../../vendors/chosen-js/bootstrap-chosen.css" type="text/css" />

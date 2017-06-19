@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $Profile  = new ProfileData();
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
+     
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
     $Head->setHead();
     include('../../includes/inc.top.php');
@@ -75,7 +75,7 @@
 
 <?php
   $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
-  $Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
+  
   $Foot->setScript('../../../vendors/treemultiselect/logger.min.js');
   $Foot->setScript('../../../vendors/treemultiselect/treeview.min.js');
   include('../../includes/inc.bottom.php');
