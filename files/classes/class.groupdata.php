@@ -9,7 +9,7 @@ class GroupData extends DataBase
 	var $RelationsAdmin = array();
 	var $Data 			= array();
 	var $AdminGroups 	= array();
-	var $ImgGalDir		= '../../../skin/images/profiles/';
+	var $ImgGalDir		= '../../../skin/images/groups/';
 	var $ID;
 
 	const DEFAULTIMG		= "../../../skin/images/groups/default/groupgen.jpg";
@@ -314,6 +314,7 @@ public function MakeRegs($Mode="List")
 				unlink($Image);
 			$Image 	= $New->ImgGalDir.$Dir[0];
 			copy($Temp,$Image);
+			if(file_exists($Temp)) unlink($Temp);
 			
 		}
 		$this->execQuery('update','admin_group',"image='".$Image."'","group_id=".$NewID);

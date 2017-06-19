@@ -20,7 +20,6 @@
               <div class="col-xs-12 col-sm-6 inner">
                 <label>Origen</label>
                 <?php echo insertElement('select','country','','form-control chosenSelect','data-placeholder="Seleccione un pa&iacute;s"',$DB->fetchAssoc('admin_country','country_id,title',"status<>'I'"),' ',''); ?>
-                <!--<select id="country" class="form-control select2 selectTags select2-hidden-accessible" ></select>-->
               </div>
             </div><!-- inline-form -->
             <hr>

@@ -23,7 +23,7 @@
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Ubicaci&oacute;n</label>
-                <?php echo insertElement('select','parent','','form-control','',$DB->fetchAssoc('admin_menu','menu_id,title',"status<>'I'",'title'),'0','Men&uacute; Principal'); ?>
+                <?php echo insertElement('select','parent','','form-control chosenSelect','',$DB->fetchAssoc('admin_menu a INNER JOIN admin_menu b ON (a.parent_id=b.menu_id)',"a.menu_id,CONCAT(b.title,'/',a.title) as title","a.status<>'I'"),'0','Men&uacute; Principal'); ?>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label>Link</label>

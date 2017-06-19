@@ -626,9 +626,9 @@ class Invoice extends DataBase
 		$Agents = $this->fetchAssoc('provider_agent','agent_id,name',"provider_id=".$Provider,'name');
 		if(count($Agents)>0)
 		{
-			$HTML = insertElement('select','agents','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"',$Agents,'','Seleccione un Contacto');
+			$HTML = insertElement('select','agent','','form-control chosenSelect','data-placeholder="Seleccione un Contacto"',$Agents,' ','');
 		}else{
-			//$HTML = insertElement('select','agents','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"','','0','Sin Contacto');
+			
 		}
 		echo $HTML;
 	}
@@ -646,8 +646,7 @@ class Invoice extends DataBase
                 <form id="item_form_'.$ID.'">
                 <div class="col-xs-4 txC">
                 	<span id="Item'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.insertElement('select','items_'.$ID,'','ItemField'.$ID.' form-control select2 selectTags','',$this->fetchAssoc('product','product_id,code',"status='A' AND company_id=".$_SESSION['company_id'],'code'),'','Seleccione un Art&iacute;culo').'
-                  '.insertElement("text","item_".$ID,'','Hidden','validateEmpty="Seleccione un Art&iacute;culo"').'
+                  '.insertElement('select','item_'.$ID,'','ItemField'.$ID.' form-control chosenSelect','validateEmpty="Seleccione un Art&iacute;culo" data-placeholder="Seleccione un Art&iacute;culo"',$this->fetchAssoc('product','product_id,code',"status='A' AND company_id=".$_SESSION['company_id'],'code'),' ','').'
                 </div>
                 <div class="col-xs-1 txC">
                 	<span id="Price'.$ID.'" class="Hidden ItemText'.$ID.'"></span>

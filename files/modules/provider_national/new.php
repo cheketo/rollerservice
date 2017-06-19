@@ -30,7 +30,7 @@
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-book"></i></span>
-                  <?php echo insertElement('select','iva_select','','form-control select2 selectTags','data-placeholder="Seleccione IVA"',$DB->fetchAssoc('tax_iva_type','type_id,name',"status='A'",'name'),' ',''); ?>
+                  <?php echo insertElement('select','iva','','form-control chosenSelect','data-placeholder="Seleccione IVA"',$DB->fetchAssoc('tax_iva_type','type_id,name',"status='A'",'name'),' ',''); ?>
                 </span>
               </div>
             </div>

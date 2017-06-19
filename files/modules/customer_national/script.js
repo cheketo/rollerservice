@@ -217,7 +217,6 @@ function addBranchModal()
 			$("#ModalBranchesContainer").append(returningData);
 			$("#branch_modal_"+$("#total_branches").val()).show();
 			EditBranch();
-			// select2Broker();
 			CancelBranchEdition();
 			SaveBranchEdition();
 			validateMap();

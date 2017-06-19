@@ -38,8 +38,7 @@
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-book"></i></span>
-                  <?php echo insertElement('select','iva_select','','form-control select2 selectTags','',$DB->fetchAssoc('config_iva_type','type_id,name',"status='A'",'name'),'0','Seleccione una Opci&oacute;n'); ?>
-                  <?php echo insertElement("hidden","iva"); ?>
+                  <?php echo insertElement('select','iva','','form-control chosenSelect','data-placeholder="Seleccione IVA"',$DB->fetchAssoc('config_iva_type','type_id,name',"status='A'",'name'),' ',''); ?>
                 </span>
               </div>
             </div>
@@ -194,8 +193,7 @@
           <h4 class="subTitleB"><i class="fa fa-briefcase"></i> Corredores</h4>
           <div id="agent_list_1" branch="1" class="row">
             <div class="col-xs-12 col-sm-6">
-              <?php echo insertElement('select','select_broker_1','','form-control select2 selectTags BrokerSelect','',$DB->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),'0','Seleccione una Opci&oacute;n'); ?>
-              <?php echo insertElement('hidden','brokers_1',''); ?>
+              <?php echo insertElement('multiple','brokers_1','','form-control chosenSelect BrokerSelect','data-placeholder="Seleccione Corredores"',$DB->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),' ',''); ?>
             </div>
             <div class="col-xs-12 col-sm-6">
               <button id="add_broker" branch="1" style="margin:0px!important;" type="button" class="btn btn-success Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar Corredor</button>

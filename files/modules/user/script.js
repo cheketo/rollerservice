@@ -118,12 +118,6 @@ function fillGroups()
                 $('#groups-wrapper').html('<h4 class="subTitleB"><i class="fa fa-users"></i> Grupos</h4><select id="group" class="form-control chosenSelect" multiple="multiple" disabled="disabled" data-placeholder="Seleccione los grupos"></select>');
             }
             chosenSelect();
-   //         if($('.selectTags').length)
-			// {
-			// 	$('.selectTags').select2();
-	  //          $('.selectTags').on("change", function () { setGroups(); });
-	  //          setGroups();
-			// }
         }
     });
 }

@@ -67,7 +67,6 @@
 
 <?php
 // Select Inputs With Tags
-// DOCUMENTATION > https://select2.github.io/examples.html
 $Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 // ----
 // Tree With Checkbox

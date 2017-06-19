@@ -380,8 +380,8 @@ $(function(){
 function inArray(needle, haystack) {
     var length = haystack.length;
     for(var i = 0; i < length; i++) {
-        if(haystack[i] == needle) return true;
-        if(haystack[i].length>0 && inArray(needle,haystack[i])) return true;
+        if(haystack[i] == needle || (Array.isArray(haystack[i]) && inArray(needle,haystack[i])))
+            return true;
     }
     return false;
 }
@@ -626,19 +626,6 @@ $(function(){
 		window.history.back();
 	});
 });
-
-
-///////////////////////// Select2 //////////////////////////////////////////////
-function select2Focus()
-{
-	$('.select2').on(
-        'select2:select',(
-            function(){
-                $(this).focus();
-            }
-        )
-    );
-}
 
 /////////////////////// MONEY FORMAT /////////////////
 Number.prototype.formatMoney = function(c, d, t){

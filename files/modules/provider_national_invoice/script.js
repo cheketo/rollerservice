@@ -103,7 +103,6 @@ function addOrderItem()
 	                //$("#item_row_"+$("#items").val()).after(data);
 	                $(".ItemRow:last-child").after(data);
 	                $("#items").val(id);
-	                // setItemSelect2(id);
 	                chosenSelect();
 	                saveItem();
 	                editItem();
@@ -333,10 +332,8 @@ function fillAgentSelect()
             if(data)
             {
                 $('#agent-wrapper').html(data);
-                $("#agent").val('');
             }else{
-                $('#agent-wrapper').html('<select id="agents" class="form-control select2 selectTags" disabled="disabled" style="width: 100%;"><option value="0">Sin Contacto</option</select>');
-                $("#agent").val(0);
+                $('#agent-wrapper').html('<select id="agent" class="form-control chosenSelect" disabled="disabled" ><option value="0">Sin Contacto</option</select>');
             }
             chosenSelect();
 			

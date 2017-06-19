@@ -282,7 +282,7 @@ public function MakeRegs($Mode="List")
 	{
 		$Province = $_POST['province'];
 		//$Zones = $this->fetchAssoc("admin_country_zone","*","status = 'A' AND province_id = ".$Province);
-		$HTML = '<span class="input-group-addon"><i class="fa fa-map-o"></i></span>'.insertElement('select','zone_select','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"',$this->fetchAssoc('admin_country_zone','zone_id,title',"status<>'I' AND country_id = 54 AND province_id=".$Province),'0','Seleccione una Zona');
+		$HTML = '<span class="input-group-addon"><i class="fa fa-map-o"></i></span>'.insertElement('select','zone','','form-control chosenSelect','data-placeholder="Seleccione una Zona"',$this->fetchAssoc('admin_country_zone','zone_id,title',"status<>'I' AND country_id = 54 AND province_id=".$Province),' ','');
 		echo $HTML;
 	}
 }

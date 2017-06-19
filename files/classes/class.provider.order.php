@@ -622,9 +622,9 @@ class ProviderOrder extends DataBase
 		$Agents = $this->fetchAssoc('provider_agent','agent_id,name',"provider_id=".$Provider,'name');
 		if(count($Agents)>0)
 		{
-			$HTML = insertElement('select','agents','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"',$Agents,'','Seleccione un Contacto');
+			$HTML = insertElement('select','agent','','form-control chosenSelect','data-placeholder="Seleccione un Contacto"',$Agents,' ','');
 		}else{
-			//$HTML = insertElement('select','agents','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"','','0','Sin Contacto');
+			//$HTML = insertElement('select','agents','','form-control',' style="width: 100%;height:auto!important;"','','0','Sin Contacto');
 		}
 		echo $HTML;
 	}

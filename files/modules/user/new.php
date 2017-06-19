@@ -58,7 +58,6 @@
                 <div class="form-group" id="groups-wrapper">
                   <h4 class="subTitleB"><i class="fa fa-users"></i> Grupos</h4>
                   <?php echo insertElement('multiple','groups','','form-control chosenSelect','data-placeholder="Seleccione Grupos"'); ?>
-                  <!--<select id="group" class="form-control select2 selectTags" multiple="multiple" data-placeholder="Seleccione los grupos" style="width: 100%;">-->
                   </select>
 
                 </div>
@@ -152,7 +151,6 @@
   <?php include_once('modal.help.php'); ?>
 <?php
 // Select Inputs With Tags
-// DOCUMENTATION > https://select2.github.io/examples.html
 $Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 // ----
 // Tree With Checkbox

@@ -142,8 +142,7 @@
     //                     <h4 class="subTitleB"><i class="fa fa-briefcase"></i> Corredores</h4>
     //                     <div id="agent_list_'.$ID.'" branch="'.$ID.'" class="row">
     //                         <div class="col-xs-12 col-sm-6">
-    //                             '.insertElement('select','select_broker_'.$ID,'','form-control select2 selectTags BrokerSelect','',$DB->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),'0','Seleccione una Opci&oacute;n').'
-    //                             '.insertElement('hidden','brokers_'.$ID,'').'
+    //                             '.insertElement('multiple','brokers_'.$ID,'','form-control chosenSelect BrokerSelect','',$DB->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),' ','').'
     //                         </div>
     //                         <div class="col-xs-12 col-sm-6">
     //                             <button id="add_broker_'.$ID.'" branch="'.$ID.'" style="margin:0px!important;" type="button" class="btn btn-success Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar Corredor</button>
