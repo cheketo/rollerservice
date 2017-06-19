@@ -1,10 +1,5 @@
 $(document).ready(function(){
-	if($('.selectTags').length>0)
-	{
-		$('.selectTags').select2({placeholder: {id: '0',text: 'Seleccione un País'},allowClear: true});
-		$('.selectTags').on("select2:select", function (e) { $("#country").val(e.params.data.id); });
-		$('.selectTags').on("select2:unselect", function (e) { $("#country").val(''); });
-	}
+	
 });
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){

@@ -68,16 +68,6 @@ $(document).ready(function(){
         $("#category_selected").html(html);
         ShowCategoriesList(categoryID);
     }
-    
-    ///////////////////////// SELECT2 /////////////////////////////////
-	if($('.chosenSelect').length>0)
-	{
-	  console.log($("#brand"));
-		// $('.selectTags').select2({placeholder: {id: '',text: 'Seleccionar Marca'},allowClear: true});
-		// $('.selectTags').on("select2:select", function (e) { $("#brand").val(e.params.data.id); });
-		// $('.selectTags').on("select2:unselect", function (e) { $("#brand").val(''); });
-		$('.chosenSelect').chosen();
-	}
 });
 /////////// Show or Hide Icons On subtop //////////////////////
 $(document).ready(function() {

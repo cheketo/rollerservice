@@ -80,60 +80,6 @@ function fillCheckboxTree()
 	});
 }
 
-///////////////// SELECT PROFILES /////////////////////
-$(function(){
-	$('.selectProfileTags').select2();
-
-	if($('.selectProfileTags').length)
-	{
-		$('.selectProfileTags').select2({
-			tags: true
-		});
-		$('.selectProfileTags').on("change", function (e) { selectProfiles(); });
-	}
-});
-
-function selectProfiles()
-{
-	var profiles = "0";
-	$("#profile").next('span').children('span').children('span').children('ul').children('.select2-selection__choice').each(function(){
-		var optionName = $(this).attr("title");
-		$("#profile").children("option").each(function(){
-			if($(this).html()==optionName)
-			{
-				profiles += ","+$(this).attr("value");
-			}
-		});
-	});
-	$("#profiles").val(profiles);
-}
-
-///////////////// SELECT USERS /////////////////////
-$(function(){
-	$('.selectUserTags').select2();
-	if($('.selectUserTags').length)
-	{
-		$('.selectUserTags').select2({
-			tags: true
-		});
-		$('.selectUserTags').on("change", function (e) { selectUsers(); });
-	}
-});
-function selectUsers()
-{
-	var users = "0";
-	$("#user").next('span').children('span').children('span').children('ul').children('.select2-selection__choice').each(function(){
-		var optionName = $(this).attr("title");
-		$("#user").children("option").each(function(){
-			if($(this).html()==optionName)
-			{
-				users += ","+$(this).attr("value");
-			}
-		});
-	});
-	$("#users").val(users);
-}
-
 ///////////////////////////// UPLOAD IMAGE /////////////////////////////////////
 $(function(){
 	$("#image").change(function(){

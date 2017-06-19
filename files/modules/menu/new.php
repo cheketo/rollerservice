@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $Head->setTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
@@ -32,13 +32,13 @@
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Perfiles</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo insertElement('select','profile','','form-control select2 selectProfileTags','multiple="multiple" data-placeholder="Seleccione Perfiles" style="width: 100%;"',$DB->fetchAssoc('admin_profile','profile_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
+                  <?php echo insertElement('select','profiles','','form-control chosenSelect','multiple="multiple" data-placeholder="Seleccione Perfiles" style="width: 100%;"',$DB->fetchAssoc('admin_profile','profile_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Grupos</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo insertElement('select','group','','form-control select2 selectGroupTags','multiple="multiple" data-placeholder="Seleccione Grupos" style="width: 100%;"',$DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
+                  <?php echo insertElement('select','groups','','form-control chosenSelect','multiple="multiple" data-placeholder="Seleccione Grupos" style="width: 100%;"',$DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
@@ -78,6 +78,6 @@
 <?php include ('modal.icon.php'); ?>
 <?php
 $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 include('../../includes/inc.bottom.php');
 ?>

@@ -46,49 +46,8 @@ $(document).ready(function(){
 	setDatePicker();
 	priceImputMask(1);
 	
-	if($('.selectTags').length>0)
-	{
-		// $('#province_select').select2({placeholder: {id: '0',text: 'Seleccione una Provincia'}});
-		// $('#province_select').on("select2:select", function (e) {$("#province").val(e.params.data.id); fillZoneSelect();});
-		// $('#province_select').on("select2:unselect", function (e) { $("#province").val(''); });
-		
-		setAgentSelect2();
-		$(".itemSelect").each(function(){
-			var item = $(this).attr('item');
-			setItemSelect2(item);
-		});
-		
-		$('#providers').select2({placeholder: {id: '',text: 'Seleccione un Proveedor'}});
-		$('#providers').on("select2:select", function (e) { $("#provider").val(e.params.data.id);fillAgentSelect(); });
-		$('#providers').on("select2:unselect", function (e) { $("#provider").val(''); });
-		
-		
-		
-		$('#currency_selector').select2({placeholder: {id: '',text: 'Seleccione una Moneda'}});
-		$('#currency_selector').on("select2:select", function (e) { $("#currency").val(e.params.data.id); });
-		$('#currency_selector').on("select2:unselect", function (e) { $("#currency").val(''); });
-		
-		
-		
-		// $('#province').on("change", function (event) {event.preventDefault();  });
-		select2Focus();
-		
-	}
+	
 });
-
-function setItemSelect2(id)
-{
-	$('#items_'+id).select2({placeholder: {id: '',text: 'Seleccione un Artículo'}});
-	$('#items_'+id).on("select2:select", function (e) { $("#item_"+id).val(e.params.data.id); });
-	$('#items_'+id).on("select2:unselect", function (e) { $("#item_"+id).val(''); });
-}
-
-function setAgentSelect2()
-{
-	$('#agents').select2({placeholder: {id: '',text: 'Seleccione un Contacto'}});
-	$('#agents').on("select2:select", function (e) { $("#agent").val(e.params.data.id); });
-	$('#agents').on("select2:unselect", function (e) { $("#agent").val(''); });
-}
 
 function setDatePicker()
 {
@@ -144,7 +103,8 @@ function addOrderItem()
 	                //$("#item_row_"+$("#items").val()).after(data);
 	                $(".ItemRow:last-child").after(data);
 	                $("#items").val(id);
-	                setItemSelect2(id);
+	                // setItemSelect2(id);
+	                chosenSelect();
 	                saveItem();
 	                editItem();
 	                deleteItem();
@@ -170,7 +130,7 @@ function saveItem()
 		if(validate.validateFields('item_form_'+id))
 		{
 			var item_id = $("#item_"+id).val();
-			var item = $("#items_"+id).children('option[value="'+item_id+'"]').html();
+			var item = $("#item_"+id).children('option[value="'+item_id+'"]').html();
 			var price = $("#price_"+id).val();
 			var quantity = $("#quantity_"+id).val();
 			var delivery = $("#date_"+id).val();
@@ -180,7 +140,7 @@ function saveItem()
 			$("#Date"+id).html(delivery);
 			$("#SaveItem"+id+",.ItemField"+id).addClass('Hidden');
 			$("#EditItem"+id+",.ItemText"+id).removeClass('Hidden');
-			$("#items_"+id).next().addClass('Hidden');
+			$("#item_"+id).next().addClass('Hidden');
 		}
 	});
 }
@@ -191,7 +151,7 @@ function editItem()
 		var id = $(this).attr("item");
 		$("#SaveItem"+id+",.ItemField"+id).removeClass('Hidden');
 		$("#EditItem"+id+",.ItemText"+id).addClass('Hidden');
-		$("#items_"+id).next().removeClass('Hidden');
+		$("#item_"+id).next().removeClass('Hidden');
 	});
 }
 
@@ -378,11 +338,8 @@ function fillAgentSelect()
                 $('#agent-wrapper').html('<select id="agents" class="form-control select2 selectTags" disabled="disabled" style="width: 100%;"><option value="0">Sin Contacto</option</select>');
                 $("#agent").val(0);
             }
-            if($('#agents').length)
-			{
-				setAgentSelect2();
-	            select2Focus();
-			}
+            chosenSelect();
+			
         }
     });
 }
@@ -419,80 +376,4 @@ $(function(){
 	    });
 		
 	});
-	
-	
-// 	$("#BtnContinue").click(function(){
-// 		$("#ItemSelection").addClass('Hidden');
-// 		$("#FillData").removeClass('Hidden');
-// 		//$("#BtnCancel").removeClass('Hidden');
-// 	});
-	
-	
-// 	////////////////////////////////// Checkbox ////////////////////////////////
-// 	$(".iCheckbox").on('ifChecked', function(){
-// 		var id = $(this).attr("id");
-// 		var item = $(this).attr("item");
-// 		$("#id"+item).val(id);
-// 		//updateTotalAmount();
-// 	});
-	
-// 	$(".iCheckbox").on('ifUnchecked',function(){
-// 		var item = $(this).attr("item");
-// 		$("#id"+item).val('');
-// 		//updateTotalAmount();
-// 	});
-	
-// 	////////////////// PAYMENT PROCESS ///////////
-// 	$("#BtnAdd").on("click",function(e){
-// 		e.preventDefault();
-// 		if(validate.validateFields('*'))
-// 		{
-// 			var TotalAmount = $('#total_currency').html()+$('#total_payment').html();
-
-// 			alertify.confirm(utf8_decode('Est&aacute; a punto de realizar un pogo por <strong>'+TotalAmount+'</strong> ¿Desea countinuar?'), function(e){
-// 				if(e)
-// 				{
-// 					var process		= '../../library/processes/proc.common.php?object=ProviderOrder';
-// 					var target		= 'list.php?status=A&msg='+ $("#action").val();
-					
-// 					var haveData	= function(returningData)
-// 					{
-// 						$("input,select").blur();
-// 						if(returningData=="403")
-// 						{
-// 							notifyError("No es posible pagar esta orden. No se encuentra en el estado correcto.");
-// 						}else{
-// 							notifyError("Ha ocurrido un error durante el proceso de pago.");
-// 						}
-// 						console.log(returningData);
-// 					}
-// 					var noData		= function()
-// 					{
-// 						document.location = target;
-// 					}
-// 					sumbitFields(process,haveData,noData);
-// 				}
-// 			});
-// 		}
-// 	});
 });
-
-// function updateTotalAmount()
-// {
-// 	var total = 0;
-// 	$('.ItemsToPay').each(function(){
-// 		var ID = $(this).attr('item');
-// 		if($("#paid"+ID).val()!='')
-// 			total += parseFloat($('#TotalPrice'+ID).html());
-// 	});
-// 	$('#total_payment').html(total);
-// }
-
-// function updateTotalPrice()
-// {
-// 	$(".QuantityField").change(function(){
-// 		var ID		= $(this).attr('item');
-// 		var total	= parseFloat($("#Price"+ID).html()) * parseFloat($(this).val());
-// 		$("#TotalPrice"+ID).html(total);
-// 	});
-// }

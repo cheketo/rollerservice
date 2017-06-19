@@ -1,35 +1,7 @@
 $(document).ready(function(){
-	
-	if($("#cuit").length>0)
-		$("#cuit").inputmask();  //static mask
-	
-	
-	
 	DeleteAgent();
-	if($('.selectTags').length>0)
-	{
-		// $('#province_select').select2({placeholder: {id: '0',text: 'Seleccione una Provincia'}});
-		// $('#province_select').on("select2:select", function (e) {$("#province").val(e.params.data.id); fillZoneSelect();});
-		// $('#province_select').on("select2:unselect", function (e) { $("#province").val(''); });
-		
-		// setZoneSelect2();
-		
-		$('#iva_select').select2({placeholder: {id: '0',text: 'Seleccione IVA'}});
-		$('#iva_select').on("select2:select", function (e) { $("#iva").val(e.params.data.id); });
-		$('#iva_select').on("select2:unselect", function (e) { $("#iva").val(''); });
-		
-		// $('#province').on("change", function (event) {event.preventDefault();  });
-		select2Focus();
-		
-	}
 });
 
-// function setZoneSelect2()
-// {
-// 	$('#zone_select').select2({placeholder: {id: '0',text: 'Seleccione una Zona'}});
-// 	$('#zone_select').on("select2:select", function (e) { $("#zone").val(e.params.data.id); });
-// 	$('#zone_select').on("select2:unselect", function (e) { $("#zone").val(''); });
-// }
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
 	$("#BtnCreate,#BtnCreateNext").on("click",function(e){
@@ -156,40 +128,6 @@ function DeleteAgent()
 		$(this).parents(".AgentCard").remove();
 	});
 }
-
-
-
-// ///////////////////////// LOAD ZONE SELECT ////////////////////////////////
-// function fillZoneSelect()
-// {
-// 	var province = $('#province').val();
-// 	var process = '../../library/processes/proc.common.php';
-
-// 	var string      = 'province='+ province +'&action=fillzones&object=GeolocationProvince';
-
-//     var data;
-//     $.ajax({
-//         type: "POST",
-//         url: process,
-//         data: string,
-//         cache: false,
-//         success: function(data){
-//             if(data)
-//             {
-//                 $('#zone-wrapper').html(data);
-//             }else{
-//                 $('#zone-wrapper').html('<span class="input-group-addon"><i class="fa fa-map-o"></i></span><select id="zone_select" class="form-control select2 selectTags" disabled="disabled" style="width: 100%;"></select>');
-//             }
-//             if($('#zone_select').length)
-// 			{
-// 				setZoneSelect2();
-// 	            //$('#zone_select').on("change", function () { setZones(); });
-// 	            $("#zone").val(0);
-// 	            select2Focus();
-// 			}
-//         }
-//     });
-// }
 
 ///////////////////////// UPLOAD IMAGE ////////////////////////////////////
 $(function(){

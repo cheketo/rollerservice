@@ -4,7 +4,7 @@ class Customer extends DataBase
 {
 	var	$ID;
 	var $Data;
-	var $ImgGalDir		= '../../../skin/images/providers/';
+	var $ImgGalDir		= '../../../skin/images/customers/';
 	var $Branches 		= array();
 	var $Table			= "customer";
 	var $TableID		= "customer_id";
@@ -55,10 +55,10 @@ class Customer extends DataBase
 	
 	public function ImgGalDir()
 	{
-		$Dir = $this->ImgGalDir.'/'.$this->ID;
+		$Dir = $this->ImgGalDir.$this->ID;
 		if(!file_exists($Dir))
 			mkdir($Dir);
-		return $Dir;
+		return $Dir.'/';
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +100,8 @@ public function MakeRegs($Mode="List")
 				$RowClass = $I % 2 != 0? 'bg-gray':'';
 				
 				$BranchAddress = $Branch['address'].', '.$Branch['zone_short'].', '.$Branch['region_short'].', '.$Branch['province_short'].', '.$Branch['country'];
+				
+				$Row->Data['branches'][($I-1)]['full_address'] = $BranchAddress;
 				
 				$BranchDataFields = '';
 				$BranchDataFields .= $Branch['phone']? '<span class="smallDetails"><i class="fa fa-phone"></i> '.$Branch['phone'].'</span>':'';
@@ -171,7 +173,7 @@ public function MakeRegs($Mode="List")
 						              </div>
 						              <div class="roundItemText">
 						                <p><b>'.$Row->Data['name'].'</b></p>
-						                <p>'.ucfirst($Row->Data['iibb']).'</p>
+						                <p>'.$Row->Data['branches'][0]['full_address'].'</p>
 						                <p>('.$Row->Data['cuit'].')</p>
 						              </div>
 						            </div>
@@ -354,7 +356,7 @@ public function MakeRegs($Mode="List")
 		if(!$IVA) echo 'IVA incompleto';
 		if(!$GrossIncome) echo 'IIBB incompleto';
 		
-		$Insert			= $this->execQuery('INSERT',$this->Table,'type_id,name,cuit,iva,iibb,international,creation_date,created_by,company_id',"'".$Type."','".$Name."',".$CUIT.",".$IVA.",".$GrossIncome.",'".$International."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
+		$Insert			= $this->execQuery('INSERT',$this->Table,'type_id,name,cuit,iva,iibb,international,logo,creation_date,created_by,company_id',"'".$Type."','".$Name."',".$CUIT.",".$IVA.",".$GrossIncome.",'".$International."','".$Image."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
 		//echo $this->lastQuery();
 		$NewID 		= $this->GetInsertId();
 		$New 	= new Customer($NewID);
@@ -388,16 +390,17 @@ public function MakeRegs($Mode="List")
 		{
 			if($Image!=$Edit->GetDefaultImg())
 			{
-				if(file_exists($Edit->GetImg()))
+				if(file_exists($Edit->GetImg()) && $Edit->GetImg()!=$Edit->GetDefaultImg())
 					unlink($Edit->GetImg());
 				$Dir 	= array_reverse(explode("/",$Image));
 				$Temp 	= $Image;
 				$Image 	= $Edit->ImgGalDir().$Dir[0];
 				copy($Temp,$Image);
+				if(file_exists($Temp)) unlink($Temp);
 			}
 		}
 		
-		$Update		= $this->execQuery('update',$this->Table,"name='".$Name."',type_id='".$Type."',cuit=".$CUIT.",iva='".$IVA."',iibb='".$GrossIncome."',updated_by=".$_SESSION['admin_id'],$this->TableID."=".$ID);
+		$Update		= $this->execQuery('update',$this->Table,"name='".$Name."',type_id='".$Type."',cuit=".$CUIT.",iva='".$IVA."',iibb='".$GrossIncome."', logo='".$Image."',updated_by=".$_SESSION['admin_id'],$this->TableID."=".$ID);
 		//echo $this->lastQuery();
 		$Edit->InsertBranchInfo(1);
 		
@@ -788,8 +791,8 @@ public function MakeRegs($Mode="List")
                         <h4 class="subTitleB"><i class="fa fa-briefcase"></i> Corredores</h4>
                         <div id="agent_list_'.$ID.'" branch="'.$ID.'" class="row">
                             <div class="col-xs-12">
-                                '.insertElement('multiple','select_broker_'.$ID,$Brokers,'form-control select2 selectTags BrokerSelect','style="width:100%;" branch="'.$ID.'"',$this->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),'0','Seleccione una Opci&oacute;n').'
-                                '.insertElement('hidden','brokers_'.$ID,$Brokers).'
+                                '.insertElement('multiple','brokers_'.$ID,$Brokers,'form-control chosenSelect BrokerSelect','data-placeholder="Seleccionar Corredores" branch="'.$ID.'"',$this->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),' ','').'
+                                
                             </div>
                         </div>
                     

@@ -1,45 +1,71 @@
 <?php
 
-class ProviderOrder extends DataBase
+class Invoice extends DataBase
 {
 	var	$ID;
 	var $Data;
 	var $Items 			= array();
-	var $Table			= "provider_order";
-	var $TableID		= "order_id";
+	var $Table			= "invoice";
+	var $TableID		= "invoice_id";
 	
-	const DEFAULTIMG	= "../../../skin/images/providers/default/order.png";
+	const DEFAULTIMG	= "../../../skin/images/invoices/default.png";
 
 	public function __construct($ID=0)
 	{
 		$this->Connect();
 		if($ID!=0)
 		{
-			$Data = $this->fetchAssoc($this->Table,"*",$this->TableID."=".$ID);
+			$Data = $this->fetchAssoc($this->Table.' a INNER JOIN currency b ON (a.currency_id=b.currency_id) INNER JOIN invoice_operation c ON (c.operation_id=a.operation_id)',"a.*,b.prefix as currency,c.operation",$this->TableID."=".$ID);
+			
 			$this->Data = $Data[0];
 			$this->ID = $ID;
-			$this->Data['items'] = $this->GetItems();
-			$Provider = $this->fetchAssoc("provider","name","provider_id=".$this->Data['provider_id']);
-			$this->Data['provider'] = $Provider[0]['name'];
-			$this->Data['quantity'] = count($this->Data['items']);
-			// $Quantity = $this->fetchAssoc("provider_order_item","SUM(quantity) AS total",$this->TableID."=".$this->ID);
-			// $this->Data['quantity'] = $Quantity[0]['total'];
 		}
+	}
+	
+	public function GetEntity()
+	{
+		if(!$this->Data['entity'])
+		{
+			if($this->Data['operation']=='I')
+			{
+				$Entity = $this->fetchAssoc('provider a INNER JOIN geolocation_province b ON (b.province_id=a.province_id)',"a.*,b.short_name as province","a.provider_id=".$this->Data['entity_id']);
+				// echo $this->lastQuery();
+			}else{
+				$Entity = $this->fetchAssoc('customer a INNER JOIN customer_branch b ON (b.customer_id=a.customer_id) INNER JOIN geolocation_province c ON (c.province_id=b.province_id)',"a.*,c.short_cname as province","a.customer_id=".$this->Data['entity_id']);
+			}
+			$this->Data['entity'] = $Entity[0];
+		}
+		return $this->Data['entity'];
 	}
 	
 	public function GetItems()
 	{
-		if(empty($this->Items))
+		if(empty($this->Data['items']))
 		{
-			$this->Items = $this->fetchAssoc(
-				$this->Table."_item a 
-				LEFT JOIN product b ON (a.product_id = b.product_id)
-				LEFT JOIN currency c ON (a.currency_id = c.currency_id)
-				",
-				"a.*,(a.price * a.quantity) AS total,c.prefix AS currency,b.code",
-				$this->TableID."=".$this->ID,'a.item_id');
+			$this->Data['items'] = $this->fetchAssoc($this->Table."_detail","*",$this->TableID."=".$this->ID,'detail_id');
+			//echo $this->lastQuery();
 		}
-		return $this->Items;
+		return $this->Data['items'];
+	}
+	
+	public function GetTaxes()
+	{
+		if(empty($this->Data['taxes']))
+		{
+			$Taxes = $this->fetchAssoc("relation_operation_tax a LEFT JOIN tax b ON (a.tax_id=b.tax_id)","*","a.operation_id=".$this->Data['operation_id']);
+			// echo $this->lastQuery();
+			foreach($Taxes as $Key => $Tax)
+			{
+				if($Tax['percentage']==0)
+				{
+					$Percentage = $this->fetchAssoc("relation_cuit_tax","percentage","tax_id=".$Tax['tax_id']." AND cuit=".$this->Data['entity']['cuit']);
+					//echo $this->lastQuery();
+					$Taxes[$Key] = $Percentage[0]['percentage'];
+				}
+			}
+			$this->Data['taxes'] = $Taxes;
+		}
+		return $this->Data['taxes'];
 	}
 
 	public function GetDefaultImg()
@@ -61,26 +87,26 @@ class ProviderOrder extends DataBase
 		//echo $this->lastQuery();
 		for($i=0;$i<count($Rows);$i++)
 		{
-			$Row	=	new ProviderOrder($Rows[$i][$this->TableID]);
-			$Actions	= 	'<span class="roundItemActionsGroup"><a title="M&aacute;s informaci&oacute;n" alt="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a> ';
+			$Row	=	new Invoice($Rows[$i][$this->TableID]);
+			$Actions	= 	'<span class="roundItemActionsGroup">';
+			$Actions	.=	'<a title="M&aacute;s informaci&oacute;n" alt="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a> ';
 			
-			if($Row->Data['status']=="P")
+			
+			if($Row->Data['status']=="A")
 			{
-				$Actions	.= '<a title="Archivar" alt="Archivar" class="storeElement" process="../../library/processes/proc.common.php" id="store_'.$Row->ID.'"><button type="button" class="btn btn-primary"><i class="fa fa-archive"></i></button></a>';	
+				// $Actions	.= '<a title="Confirmar" alt="Confirmar" class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
+				$Actions	.= '<a title="Pagar" alt="Pagar" id="payment_'.$Row->ID.'"><button type="button" class="btn btn-success"><i class="fa fa-dollar"></i></button></a> ';
 			}
 			
-			if($Row->Data['status']=="P" || $Row->Data['status']=="I")
+			if($Row->Data['status']=="A" || $Row->Data['status']=="F")
 			{
-				$Actions	.= '<a title="Confirmar" alt="Confirmar" class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
+				$Actions	.= '<a href="invoice.php?id='.$Row->ID.'" title="Imprimir Factura" alt="Imprimir Factura" class="Print" status="'.$Row->Data['status'].'" id="print_'.$Row->ID.'"><button type="button" class="btn bg-aqua"><i class="fa fa-print"></i></button></a> ';
 			}
 			
-			if($Row->Data['status']=="A" && $Row->Data['payment_status']!="F")
+			if($Row->Data['status']=="P" || $Row->Data['status']=="A")
 			{
-				$Actions	.= '<a href="invoice.php?id='.$Row->ID.'" title="Cargar Factura" alt="Cargar Factura" class="Invoice" status="'.$Row->Data['status'].'" id="payment_'.$Row->ID.'"><button type="button" class="btn bg-olive"><i class="fa fa-file-text"></i></button></a> ';
-			}
-			
-			if($Row->Data['status']!="P" && $Row->Data['status']!="Z"){
-				$Actions	.= '<a title="Ver Detalle" alt="Ver Detalle" href="view.php?id='.$Row->ID.'" id="payment_'.$Row->ID.'"><button type="button" class="btn btn-github"><i class="fa fa-eye"></i></button></a> ';
+				$Actions	.= '<a title="Cargar" alt="Cargar" href="fill.php?id='.$Row->ID.'" id="store_'.$Row->ID.'"><button type="button" class="btn btn-primary"><i class="fa fa-edit"></i></button></a>';	
+				$Actions	.= '<a title="Rechazar" alt="Rechazar" class="deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-times"></i></button></a>';
 			}
 			
 			// if($Row->Data['status']=="A" || $Row->Data['status']=="C")
@@ -88,41 +114,31 @@ class ProviderOrder extends DataBase
 			// 	$Actions	.= '<a class="completeElement" href="../stock/stock_entrance.php?id='.$Row->ID.'" title="Ingresar stock" id="complete_'.$Row->ID.'"><button type="button" class="btn btn-dropbox"><i class="fa fa-sign-in"></i></button></a>';
 			// }
 			
-			if($Row->Data['status']!="F" && $Row->Data['status']!="Z")
-			{
-				$Actions	.= '<a title="Editar" alt="Editar" href="edit.php?status='.$Row->Data['status'].'&id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
-			}
-			
-			if($Row->Data['payment_status']=="P" && $Row->Data['delivery_status']=="P" && $Row->Data['status']!="Z")
-			{
-				$Actions	.= '<a title="Eliminar" alt="Eliminar" class="deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
-				
-			}
+			// if($Row->Data['status']!="F" && $Row->Data['status']!="Z")
+			// {
+			// 	$Actions	.= '<a title="Editar" alt="Editar" href="edit.php?status='.$Row->Data['status'].'&id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
+			// }
 			$Actions	.= '</span>';
 			// echo '<pre>';
 			// print_r($Row->Data['items']);
 			// echo '</pre>';
-			$Date = explode(" ",$Row->Data['delivery_date']);
+			$Date = explode(" ",$Row->Data['due_date']);
 			$OrderDate = implode("/",array_reverse(explode("-",$Date[0])));
 			
 			$Items = '<div style="margin-top:10px;">';
 			$I=0;
 			$ItemsReceived = 0;
 			$ItemsTotal = 0;
+			$Row->Data['items'] = $Row->GetItems();
 			foreach($Row->Data['items'] as $Item)
 			{
 				$I++;
 				$RowClass = $I % 2 != 0? 'bg-gray':'bg-gray-active';
 				
-				$Date = explode(" ",$Item['delivery_date']);
-				$DeliveryDate = implode("/",array_reverse(explode("-",$Date[0])));
-				$ItemTotal = $Item['currency']." ".$Item['total'];
-				$ItemPrice = $Item['currency']." ".$Item['price'];
 				
-				$ItemsReceived	+= $Item['quantity_received'];
-				$ItemsTotal		+= $Item['quantity'];
-				
-				$ItemQuantity = $Row->Data['status']!="P" && $Row->Data['status']!="Z"? $Item['quantity_received'].'/'.$Item['quantity'] : $Item['quantity'];
+				$ItemTotal = $Row->Data['currency']." ".$Item['total'];
+				$ItemPrice = $Row->Data['currency']." ".$Item['price'];
+				$ItemQuantity = $Item['quantity'];
 				
 				$Stock = '<div class="col-md-3 hideMobile990">
 									<div class="listRowInner">
@@ -135,21 +151,20 @@ class ProviderOrder extends DataBase
 							<div class="row '.$RowClass.'" style="padding:5px;">
 								<div class="col-md-3 col-sm-5">
 									<div class="listRowInner">
-										<span class="listTextStrong">'.$Item['code'].'</span>
-										<span class="listTextStrong"><span class="label label-warning"><i class="fa fa-calendar"></i> '.$DeliveryDate.'</span></span>
+										<span class="listTextStrong">'.$Item['description'].'</span>
+										
+									</div>
+								</div>
+								<div class="col-md-2 col-sm-6">
+									<div class="listRowInner">
+										<span class="listTextStrong">Total Art.</span>
+										<span class="listTextStrong"><span class="label label-success">'.$ItemTotal.'</span></span>
 									</div>
 								</div>
 								<div class="col-md-2 hideMobile990">
 									<div class="listRowInner">
 										<span class="listTextStrong">Precio</span>
 										<span class="listTextStrong"><span class="label label-info">'.$ItemPrice.'</span></span>
-									</div>
-								</div>
-								
-								<div class="col-md-2 col-sm-6">
-									<div class="listRowInner">
-										<span class="listTextStrong">Total Art.</span>
-										<span class="listTextStrong"><span class="label label-success">'.$ItemTotal.'</span></span>
 									</div>
 								</div>
 								'.$Stock.'
@@ -159,49 +174,43 @@ class ProviderOrder extends DataBase
 			}
 			$Items .='</div>';
 			
-			switch($Row->Data['delivery_status'])
-			{
-				case 'A': $DeliveryStatus = '<span class="label label-warning">En Proceso('.$ItemsReceived.'/'.$ItemsTotal.')<span>'; break;
-				case 'F': $DeliveryStatus = '<span class="label label-success">Si('.$ItemsReceived.'/'.$ItemsTotal.')<span>'; break;
-				default: $DeliveryStatus = '<span class="label label-danger">No('.$ItemsReceived.'/'.$ItemsTotal.')<span>'; break;
-			}
-			
-			$Restrict	= $Row->Data['delivery_status']=='P' && $Row->Data['payment_status']=='P'? '':' undeleteable ';
+			// $Restrict	= $Row->Data['delivery_status']=='P' && $Row->Data['payment_status']=='P'? '':' undeleteable ';
+			$Row->Data['number'] = InvoiceNumber($Row->Data['number']);
+			$Number = $Row->Data['prefix']>0? InvoicePrefixNumber($Row->Data['prefix']).'-'.$Row->Data['number']:$Row->Data['number'];
+			$Row->Data['entity'] = $Row->GetEntity();
 			switch(strtolower($Mode))
 			{
 				case "list":
-						$Extra = !$Row->Data['extra']? '': '<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
-										<div class="listRowInner">
-											<span class="emailTextResp">'.$Row->Data['extra'].'</span>
-										</div>
-									</div>';
+						// $Extra = !$Row->Data['extra']? '': '<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
+						// 				<div class="listRowInner">
+						// 					<span class="emailTextResp">'.$Row->Data['extra'].'</span>
+						// 				</div>
+						// 			</div>';
 									
 					$RowBackground = $i % 2 == 0? '':' listRow2 ';
 					
-					$Stock = $Row->Data['status']!="P" && $Row->Data['status']!="Z"? '<div class="col-lg-3 col-md-3 col-sm-2 hideMobile990">
-									<div class="listRowInner">
-										<span class="listTextStrong">Stock Recibido</span>
-										<span class="listTextStrong">'.$DeliveryStatus.'</span>
-									</div>
-								</div>' : '';
+					$TotalCol = $Row->Data['status']!="P"? '<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
+										<div class="listRowInner">
+											<span class="listTextStrong">Total</span>
+											<span class="emailTextResp"><span class="label label-success">'.$Row->Data['currency'].$Row->Data['total'].'</span></span>
+										</div>
+									</div>' : '';
 					
 					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="una orden de compra">
 									<div class="col-lg-3 col-md-5 col-sm-8 col-xs-10">
 										<div class="listRowInner">
 											<img class="img-circle" style="border-radius:0%!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['name'].'">
-											<span class="listTextStrong">'.$Row->Data['provider'].'</span>
-											<span class="smallDetails"><i class="fa fa-calendar"></i> '.$OrderDate.'</span>
+											<span class="listTextStrong">'.$Number.'</span>
+											<span class="smallDetails"><i class="fa fa-ticket"></i> '.$Row->Data['entity']['name'].'</span>
 										</div>
 									</div>
-									
 									<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
 										<div class="listRowInner">
-											<span class="listTextStrong">Total</span>
-											<span class="emailTextResp"><span class="label label-success">'.$Row->Data['items'][0]['currency'].' '.$Row->Data['total'].'</span></span>
+											<span class="listTextStrong">Sub-Total</span>
+											<span class="emailTextResp"><span class="label label-success">'.$Row->Data['currency'].$Row->Data['subtotal'].'</span></span>
 										</div>
 									</div>
-									'.$Stock.'
-									'.$Extra.'
+									'.$TotalCol.'
 									<div class="animated DetailedInformation Hidden col-md-12">
 										'.$Items.'
 									</div>
@@ -215,7 +224,7 @@ class ProviderOrder extends DataBase
 				$Regs	.= '<li id="grid_'.$Row->ID.'" class="RoundItemSelect roundItemBig'.$Restrict.'" title="'.$Row->Data['name'].'">
 						            <div class="flex-allCenter imgSelector">
 						              <div class="imgSelectorInner">
-						                <img src="'.$Row->GetImg().'" alt="'.$Row->Data['name'].'" class="img-responsive">
+						                <img src="'.$Row->GetImg().'" alt="'.$Row->Data['number'].'" class="img-responsive">
 						                <div class="imgSelectorContent">
 						                  <div class="roundItemBigActions">
 						                    '.$Actions.'
@@ -224,9 +233,8 @@ class ProviderOrder extends DataBase
 						                </div>
 						              </div>
 						              <div class="roundItemText">
-						                <p><b>'.$Row->Data['name'].'</b></p>
-						                <p>'.ucfirst($Row->Data['iibb']).'</p>
-						                <p>('.$Row->Data['cuit'].')</p>
+						                <p><b>'.$Row->Data['number'].'</b></p>
+						                <p>('.$Row->Data['currency'].$Row->Data['total'].')</p>
 						              </div>
 						            </div>
 						          </li>';
@@ -236,10 +244,9 @@ class ProviderOrder extends DataBase
         if(!$Regs)
         {
 			switch ($_REQUEST['status']) {
-				case 'A': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compra a proveedores en camino.</h4></div>'; break;
-				case 'Z': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron cotizaciones archivadas.</h4></div>'; break;
-				case 'F': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron ordenes de compra a proveedores finalizadas.</h4></div>'; break;
-				default: $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron cotizaciones de proveedores.</h4><p>Puede crear una cotizaci&oacute;n haciendo click <a href="new.php">aqui</a>.</p></div>'; break;
+				case 'A': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron facturas pendiente de pago.</h4></div>'; break;
+				case 'F': $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron facturas pagadas.</h4></div>'; break;
+				default: $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron facturas pendiente de carga.</h4></div>'; break;
         	}
         }
 		return $Regs;
@@ -247,30 +254,25 @@ class ProviderOrder extends DataBase
 	
 	protected function InsertSearchField()
 	{
-		return '<!-- Provider -->
+		return '<!-- Number -->
           <div class="input-group">
-            <span class="input-group-addon order-arrows" order="name" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('text','name','','form-control','placeholder="Proveedor"').'
+            <span class="input-group-addon order-arrows" order="number" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+            '.insertElement('text','number','','form-control','placeholder="Nro. Factura"').'
           </div>
-          <!-- Code -->
+          <!-- From Total -->
           <div class="input-group">
-            <span class="input-group-addon order-arrows" order="code" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('text','code','','form-control','placeholder="Art&iacute;culo"').'
+            <span class="input-group-addon order-arrows" order="from" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+            '.insertElement('select','from','','form-control','placeholder="Desde $"').'
           </div>
-          <!-- Agent -->
+          <!-- To Total -->
           <div class="input-group">
-            <span class="input-group-addon order-arrows" order="agent" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('text','agent','','form-control','placeholder="Contacto"').'
+            <span class="input-group-addon order-arrows" order="to" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+            '.insertElement('text','to','','form-control','placeholder="Hasta $"').'
           </div>
-          <!-- Delivery Date -->
+          <!-- Due Date -->
           <div class="input-group">
-            <span class="input-group-addon order-arrows sort-activated" order="delivery_date" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('text','delivery_date','','form-control delivery_date','placeholder="Entrega"').'
-          </div>
-          <!-- Extra -->
-          <div class="input-group">
-            <span class="input-group-addon order-arrows" order="extra" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.insertElement('text','extra','','form-control','placeholder="Info Extra"').'
+            <span class="input-group-addon order-arrows sort-activated" order="due_date" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+            '.insertElement('text','due_date','','form-control delivery_date','placeholder="Vencimiento"').'
           </div>
           ';
 	}
@@ -285,17 +287,17 @@ class ProviderOrder extends DataBase
 			$BtnText = 'Nueva Orden de Compra';	
 			$BtnIcon = 'ambulance';
 		}
-		$HTML =	'<!-- New Button --> 
-		    	<a href="new.php?status='.$_GET['status'].'"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-'.$BtnIcon.'"></i> '.$BtnText.'</button></a>
-		    	<!-- /New Button -->';
+		// $HTML =	'<!-- New Button --> 
+		//     	<a href="new.php?status='.$_GET['status'].'"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-'.$BtnIcon.'"></i> '.$BtnText.'</button></a>
+		//     	<!-- /New Button -->';
 		return $HTML;
 	}
 	
 	public function ConfigureSearchRequest()
 	{
-		$this->SetTable($this->Table.' a LEFT JOIN provider_order_item b ON (b.order_id=a.order_id) LEFT JOIN product c ON (b.product_id = c.product_id) LEFT JOIN provider d ON (d.provider_id=a.provider_id) LEFT JOIN provider_agent e ON (e.agent_id = a.agent_id)');
-		$this->SetFields('a.order_id,a.type,a.total,a.extra,a.status,a.payment_status,a.delivery_status,d.name as provider,SUM(b.quantity) as quantity');
-		$this->SetWhere("a.provider_id > 0 AND c.company_id=".$_SESSION['company_id']);
+		$this->SetTable($this->Table.' a LEFT JOIN invoice_detail b ON (b.invoice_id=a.invoice_id) INNER JOIN invoice_operation c ON (c.operation_id=a.operation_id)');
+		$this->SetFields('a.*,b.product_id,b.quantity,b.price,b.total as item_total');
+		$this->SetWhere("a.company_id=".$_SESSION['company_id']);
 		//$this->AddWhereString(" AND c.company_id = a.company_id");
 		//$this->SetOrder('a.delivery_date');
 		$this->SetGroupBy("a.".$this->TableID);
@@ -305,21 +307,24 @@ class ProviderOrder extends DataBase
 			$_POST[$Key] = $Value;
 		}
 			
-		if($_POST['name']) $this->SetWhereCondition("d.name","LIKE","%".$_POST['name']."%");
-		if($_POST['agent']) $this->SetWhereCondition("e.name","LIKE","%".$_POST['agent']."%");
-		if($_POST['code']) $this->SetWhereCondition("c.code","LIKE","%".$_POST['code']."%");
-		if($_POST['extra']) $this->SetWhereCondition("a.extra","LIKE","%".$_POST['extra']."%");
-		if($_POST['delivery_date'])
-		{
-			$_POST['delivery_date'] = implode("-",array_reverse(explode("/",$_POST['delivery_date'])));
-			$this->AddWhereString(" AND (a.delivery_date = '".$_POST['delivery_date']."' OR b.delivery_date='".$_POST['delivery_date']."')");
-		}
+		if($_POST['from']) $this->SetWhereCondition("a.total",">=",$_POST['from']);
+		if($_POST['to']) $this->SetWhereCondition("a.total","=<",$_POST['to']);
+		if($_POST['number']) $this->SetWhereCondition("a.number","=",$_POST['agent']);
+		// if($_POST['code']) $this->SetWhereCondition("c.code","LIKE","%".$_POST['code']."%");
+		// if($_POST['extra']) $this->SetWhereCondition("a.extra","LIKE","%".$_POST['extra']."%");
+		if($_POST['due_date']) $this->SetWhereCondition("a.due_date","=",$_POST['due_date']);
 		
+		
+		if($_REQUEST['operation'])
+		{
+			if($_POST['operation']) $this->SetWhereCondition("a.operation_id","=", strtoupper($_POST['operation']));
+			if($_GET['operation']) $this->SetWhereCondition("a.operation_id","=", strtoupper($_GET['operation']));	
+		}
 		
 		if($_REQUEST['status'])
 		{
-			if($_POST['status']) $this->SetWhereCondition("a.status","=", $_POST['status']);
-			if($_GET['status']) $this->SetWhereCondition("a.status","=", $_GET['status']);	
+			if($_POST['status']) $this->SetWhereCondition("a.status","=", strtoupper($_POST['status']));
+			if($_GET['status']) $this->SetWhereCondition("a.status","=", strtoupper($_GET['status']));	
 		}else{
 			$this->SetWhereCondition("a.status","=","P");
 		}
@@ -345,7 +350,7 @@ class ProviderOrder extends DataBase
 				$Prefix = "e.";
 			break;
 			default:
-				$Order = 'delivery_date';
+				$Order = 'due_date';
 				$Prefix = "a.";		
 			break;
 		}
@@ -412,7 +417,7 @@ class ProviderOrder extends DataBase
 		$Insert			= $this->execQuery('insert',$this->Table,'type,provider_id,agent_id,currency_id,extra,total,delivery_date,status,creation_date,created_by,company_id',"'".$Type."',".$ProviderID.",".$AgentID.",".$CurrencyID.",'".$Extra."',".$Total.",'".$Date."','".$Status."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
 		//echo $this->lastQuery();
 		$NewID 		= $this->GetInsertId();
-		$New 	= new ProviderOrder($NewID);
+		$New 	= new Invoice($NewID);
 		
 		// INSERT ITEMS
 		foreach($Items as $Item)
@@ -429,7 +434,7 @@ class ProviderOrder extends DataBase
 	public function Update()
 	{
 		$ID 	= $_POST['id'];
-		$Edit	= new ProviderOrder($ID);
+		$Edit	= new Invoice($ID);
 		$Status = $Edit->Data['status'];
 		if($Status!='P')
 		{
@@ -494,7 +499,7 @@ class ProviderOrder extends DataBase
 	public function Activate()
 	{
 		$ID	= $_POST['id'];
-		$Order = new ProviderOrder($ID);
+		$Order = new Invoice($ID);
 		$Status = $Order->Data['status'] == 'I'? 'P' : 'A';
 		$this->execQuery('update',$this->Table,"status = '".$Status."'",$this->TableID."=".$ID);
 	}
@@ -513,9 +518,8 @@ class ProviderOrder extends DataBase
 		$Invoice = $_POST['invoice_number'];
 		$SubTotal = $_POST['total'];
 		
-		$Provider = $this->fetchAssoc("provider","name","provider_id=".$ProviderID);
 		
-		$this->execQuery('INSERT','invoice','entity_id,operation_id,entity_name,currency_id,subtotal,number,status,creation_date,created_by,company_id',$ProviderID.",2,'".$Provider[0]['name']."',".$Currency.",".$SubTotal.",".$Invoice.",'P',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
+		$this->execQuery('INSERT','invoice','entity_id,currency_id,subtotal,number,operation,status,creation_date,created_by,company_id',$ProviderID.",".$Currency.",".$SubTotal.",".$Invoice.",'I','P',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
 		//echo $this->lastQuery()." *****/";
 		$InvoiceID = $this->GetInsertId();
 		
@@ -586,7 +590,7 @@ class ProviderOrder extends DataBase
 			$ID	= $_POST['id'];
 			if($ID)
 			{
-				$New = new ProviderOrder($ID);
+				$New = new Invoice($ID);
 				if($_POST['newimage']!=$New->GetImg() && file_exists($_POST['newimage']))
 					unlink($_POST['newimage']);
 				$TempDir= $this->ImgGalDir;
@@ -642,7 +646,8 @@ class ProviderOrder extends DataBase
                 <form id="item_form_'.$ID.'">
                 <div class="col-xs-4 txC">
                 	<span id="Item'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.insertElement('select','item_'.$ID,'','ItemField'.$ID.' form-control chosenSelect','validateEmpty="Seleccione un Art&iacute;culo" data-placeholder="Seleccione un Art&iacute;culo"',$this->fetchAssoc('product','product_id,code',"status='A' AND company_id=".$_SESSION['company_id'],'code'),' ','').'
+                  '.insertElement('select','items_'.$ID,'','ItemField'.$ID.' form-control select2 selectTags','',$this->fetchAssoc('product','product_id,code',"status='A' AND company_id=".$_SESSION['company_id'],'code'),'','Seleccione un Art&iacute;culo').'
+                  '.insertElement("text","item_".$ID,'','Hidden','validateEmpty="Seleccione un Art&iacute;culo"').'
                 </div>
                 <div class="col-xs-1 txC">
                 	<span id="Price'.$ID.'" class="Hidden ItemText'.$ID.'"></span>

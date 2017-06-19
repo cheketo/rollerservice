@@ -7,7 +7,7 @@
     $Head->setTitle($Data['code']);
     $Head->setSubTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setHead();
     
     
@@ -110,8 +110,8 @@
               <!--</div>-->
               <div class="col-xs-12 col-sm-12">
                 <label for="brand_select">Marca:</label>
-                <?php echo insertElement('select','brand_select',$Data['brand_id'],'form-control  select2 selectTags','validateEmpty="Ingrese una marca." style="width:100%;height:auto!important;"',$DB->fetchAssoc("product_brand","brand_id,name","status='A' AND company_id=".$_SESSION['company_id']),'','Seleccionar Marca') ?>
-                <?php echo insertElement("hidden","brand",$Data['brand_id']); ?>
+                <?php echo insertElement('select','brand',$Data['brand_id'],'form-control  chosenSelect','validateEmpty="Ingrese una marca." data-placeholder="Seleccionar Marca"',$DB->fetchAssoc("product_brand","brand_id,name","status='A' AND company_id=".$_SESSION['company_id']),' ','') ?>
+                
               </div>
             </div>
             <div class="form-group">
@@ -174,6 +174,6 @@
 $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
 $Foot->setScript('../../../vendors/jquery-mask/src/jquery.mask.js');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 include('../../includes/inc.bottom.php');
 ?>

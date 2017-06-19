@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $New = new ProviderOrder();
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
@@ -20,23 +20,20 @@
             <h4 class="subTitleB"><i class="fa fa-building"></i> Proveedor</h4>
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12">
-                  <?php echo insertElement('select','providers','','form-control select2 selectTags','',$DB->fetchAssoc('provider','provider_id,name',"status='A' AND company_id=".$_SESSION['company_id'],'name'),'','Seleccione un Proveedor'); ?>
-                  <?php echo insertElement("text","provider",'','Hidden','validateEmpty="Seleccione un Proveedor"'); ?>
+                  <?php echo insertElement('select','provider','','form-control chosenSelect','validateEmpty="Seleccione un Proveedor" data-placeholder="Seleccione un Proveedor"',$DB->fetchAssoc('provider','provider_id,name',"status='A' AND company_id=".$_SESSION['company_id'],'name'),' ',''); ?>
               </div>
             </div>
             <h4 class="subTitleB"><i class="fa fa-male"></i> Contacto</h4>
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12">
-                  <div id="agent-wrapper"><?php echo insertElement('select','agents','','form-control select2 selectTags','','','0','Sin Contacto'); ?></div>
-                  <?php echo insertElement("text","agent",'','Hidden','validateEmpty="Seleccione un Contacto"'); ?>
+                  <div id="agent-wrapper"><?php echo insertElement('select','agent','','form-control chosenSelect','validateEmpty="Seleccione un Contacto" data-placeholder="Sin Contacto"','',' ',''); ?></div>
               </div>
             </div>
             
             <h4 class="subTitleB"><i class="fa fa-money"></i> Moneda</h4>
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12">
-                <?php echo insertElement('select','currency_selector','','form-control',' ',$DB->fetchAssoc('currency','currency_id,title',"",'title DESC'),'','Seleccione una Moneda'); ?>
-                <?php echo insertElement("text","currency",'','Hidden','validateEmpty="Seleccione un Moneda"'); ?>
+                <?php echo insertElement('select','currency','','form-control chosenSelect','validateEmpty="Seleccione una Moneda" data-placeholder="Seleccione una Moneda"',$DB->fetchAssoc('currency','currency_id,title',"",'title DESC'),' ',''); ?>
               </div>
             </div>
             <br>
@@ -71,12 +68,12 @@
                   <form id="item_form_1" name="item_form_1">
                   <div class="col-xs-4 txC">
                     <span id="Item1" class="Hidden ItemText1"></span>
-                    <?php echo insertElement('select','items_1','','ItemField1 form-control select2 selectTags itemSelect','item="1"',$DB->fetchAssoc('product','product_id,code',"status='A'",'code'),'','Seleccione un Art&iacute;culo'); ?>
-                    <?php echo insertElement("text","item_1",'','Hidden','validateEmpty="Seleccione un Art&iacute;culo"'); ?>
+                    <?php echo insertElement('select','item_1','','ItemField1 form-control chosenSelect itemSelect','validateEmpty="Seleccione un Art&iacute;culo" item="1" data-placeholder="Seleccione un Art&iacute;culo"',$DB->fetchAssoc('product','product_id,code',"status='A'",'code'),' ',''); ?>
+                    <?php //echo insertElement("text","item_1",'','Hidden',''); ?>
                   </div>
                   <div class="col-xs-1 txC">
                     <span id="Price1" class="Hidden ItemText1"></span>
-                    <?php echo insertElement('text','price_1','','ItemField1 form-control calcable','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"'); ?>
+                    <?php echo insertElement('text','price_1','','ItemField1 form-control inputMask calcable','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"'); ?>
                   </div>
                   <div class="col-xs-1 txC">
                     <span id="Quantity1" class="Hidden ItemText1"></span>
@@ -146,7 +143,7 @@
   </div><!-- box -->
 <?php
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 $Foot->setScript('../../../vendors/datepicker/bootstrap-datepicker.js');
 include('../../includes/inc.bottom.php');
 ?>

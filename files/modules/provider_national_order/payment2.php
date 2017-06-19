@@ -7,7 +7,7 @@
     ValidateID($Data['order_id']);
     $Status = $Edit->Data['status'];
     $View   = strtolower($_GET['view']);
-    if($Status!='A' || $Edit->Data['payment_status']=='F')
+    if($Status=='A')
     {
       header('Location: list.php?error=status');
 	    die();

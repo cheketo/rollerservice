@@ -7,63 +7,71 @@
     $Data   = $Edit->GetData();
     ValidateID($Data['order_id']);
     $Status = $Edit->Data['status'];
-    if($Status=='P')
+    if($Status!='A')
     {
-        header('Location: list.php?status=A&error=status');
+        header('Location: list.php?status='.$Status.'&error=invoice');
 	    die();
     }
     
     $Items        = $Data['items'];//$DB->fetchAssoc('provider_order_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*,(a.price * a.quantity) AS total',"order_id=".$ID);
-    $ItemsHistory = $DB->fetchAssoc('provider_payment_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*',"order_id=".$ID,'creation_date DESC');
+    //$ItemsHistory = $DB->fetchAssoc('provider_payment_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*',"order_id=".$ID,'creation_date DESC');
     
     //echo $DB->lastQuery();
     
     $Currency = $Items[0]['currency'];
+    $CurrencyID = $Items[0]['currency_id'];
     
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
-    $Head->setTitle("Pagar Compra a ".$Data['provider']);
-    $Head->setSubTitle($Menu->GetTitle());
+    $Head->setTitle($Menu->GetTitle());
+    $Head->setIcon($Menu->GetHTMLicon());
+    $Head->setSubTitle($Data['provider']);
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
+<?php echo insertElement("hidden","action",'generateinvoice'); ?>
+<?php echo insertElement("hidden","id",$ID); ?>
+<?php echo insertElement("hidden","provider",$Data['provider_id']); ?>
+<?php echo insertElement("hidden","currency",$CurrencyID); ?>
+<?php echo insertElement("hidden","type",'N'); ?>
   <div class="box animated fadeIn">
     <div class="box-header flex-justify-center">
       <div class="col-xs-12">
         
           <div class="innerContainer main_form">
             <!--<form id="new_order">-->
-            <?php echo insertElement("hidden","action",'payorder'); ?>
-            <?php echo insertElement("hidden","id",$ID); ?>
-            <?php echo insertElement("hidden","provider",$Data['provider_id']); ?>
-            <?php echo insertElement("hidden","type",'N'); ?>
             
             
             
-            <?php if($View!='F'){ ?>
-            <h4 class="subTitleB"><i class="fa fa-cubes"></i> Pagar art&iacute;culos a <?php echo $Data['provider'] ?></h4>
+            <h4 class="subTitleB"><i class="fa fa-file"></i> Datos de la Factura</h4>
+            <div class="row">
+              <div class="col-sm-6 col-xs-12"><span>Proveedor:</span> <strong><?php echo $Data['provider'] ?></strong></div>
+              <div class="col-sm-6 col-xs-12"><span>Nro. Factura:</span> <?php echo insertElement('text','invoice_number','','txC inputMask','data-inputmask="\'mask\': \'99999999\'" autofocus validateEmpty="Ingrese un n&uacute;mero de factura"'); ?></div>
+            </div>
+            
+            <h4 class="subTitleB"><i class="fa fa-cubes"></i> Art&iacute;culos de la Factura</h4>
             <div style="margin:0px 10px;">
               <div class="row form-group inline-form-custom bg-primary" style="margin-bottom:0px!important;padding:10px 0px!important;">
                 
                 <div class="col-xs-4 txC">
                   <strong>Art&iacute;culo</strong>
                 </div>
-                <div class="col-xs-1 txC">
+                <div class="col-xs-2 txC">
                   <strong>Precio</strong>
                 </div>
-                <div class="col-xs-1 txC">
+                <div class="col-xs-2 txC">
                   <strong>Cantidad</strong>
                 </div>
-                <div class="col-xs-1 txC">
-                  <strong>Entrega</strong>
-                </div>
-                <div class="col-xs-2 txC">
-                  <strong>Recibido</strong>
-                </div>
+                <!--<div class="col-xs-1 txC">-->
+                <!--  <strong>Entrega</strong>-->
+                <!--</div>-->
+                <!--<div class="col-xs-2 txC">-->
+                <!--  <strong>Recibido</strong>-->
+                <!--</div>-->
                 <div class="col-xs-2 txC">
                   <strong>Total</strong>
                 </div>
-                <div class="col-xs-1 txC">
-                  <strong>Pagar</strong>
+                <div class="col-xs-2 txC">
+                  <strong>Facturar</strong>
                 </div>
               </div>
               <hr style="margin-top:0px!important;margin-bottom:0px!important;">
@@ -72,36 +80,37 @@
                 <?php 
                     $I = 1; 
                     $Total = 0;
-                    $TotalDelivered = 0;
                 ?>
                 <?php foreach($Items as $Item)
                       {
                         if($Item['payment_status']!='F')
                         {
-                            $TotalDelivered += ($Item['quantity_received']*$Item['price']);
-                            switch ($Item['status']) {
-                                case 'F': 
-                                    $Received = '<span class="label label-success">Si</span>';
-                                break;
-                                case 'A': 
-                                    $Received = '<span class="label label-warning">En Proceso ('.$Item['quantity_received'].'/'.$Item['quantity'].')</span>'; 
-                                break;
-                                default: 
-                                    $Received = '<span class="label label-danger">No</span>'; 
-                                break;
-                            }
+                          // $TotalDelivered += ($Item['quantity_received']*$Item['price']);
+                          // switch ($Item['status'])
+                          // {
+                          //   case 'F': 
+                          //       $Received = '<span class="label label-success">Si ('.$Item['quantity_received'].'/'.$Item['quantity'].')</span>';
+                          //   break;
+                          //   case 'A': 
+                          //       $Received = '<span class="label label-warning">En Proceso ('.$Item['quantity_received'].'/'.$Item['quantity'].')</span>'; 
+                          //   break;
+                          //   default: 
+                          //       $Received = '<span class="label label-danger">No ('.$Item['quantity_received'].'/'.$Item['quantity'].')</span>'; 
+                          //   break;
+                          // }
                 ?>
                 <!--- NEW ITEM --->
                 <?php 
-                  $Date = explode(" ",$Item['delivery_date']); 
-                  $Date = implode("/",array_reverse(explode("-",$Date[0]))); 
+                  // $Date = explode(" ",$Item['delivery_date']); 
+                  // $Date = implode("/",array_reverse(explode("-",$Date[0]))); 
                   if($Class=='bg-gray-light')
                     $Class='';
                   else
                     $Class='bg-gray-light';
                     
-                    $TotalItem = $Item['price']*$Item['quantity'];
-                    
+                    // $TotalItem = $Item['price']*$Item['quantity'];
+                    $Quantity = $Item['quantity'] - $Item['quantity_paid'];
+                    $TotalItem = $Quantity * $Item['price'];
                     $Total += $TotalItem;
                 ?>
                     <div id="item_row_<?php echo $I ?>" item="<?php echo $I ?>" class="row form-group inline-form-custom ItemRow ItemsToPay <?php echo $Class ?>" style="margin-bottom:0px!important;padding:10px 0px!important;">
@@ -110,64 +119,62 @@
                             <span id="Item<?php echo $I ?>" class=" ItemText<?php echo $I ?>"><span class="label bg-navy"><?php echo $Item['code'] ?></span></span>
                         </div>
                         
-                        <div class="col-xs-1 txC">
-                            <span id="Price<?php echo $I ?>" class="ItemText<?php echo $I ?>"><?php echo $Item['currency'].' '.$Item['price'] ?></span>
+                        <div class="col-xs-2 txC">
+                            <span id="ItemPrice<?php echo $I ?>" class="ItemText<?php echo $I ?>"><?php echo $Currency?> <span id="Price<?php echo $I ?>"><?php echo $Item['price']; ?></span></span>
                         </div>
                           
-                        <div class="col-xs-1 txC">
-                            <span id="Quantity<?php echo $I ?>" class="ItemText<?php echo $I ?>"><?php echo $Item['quantity'] ?></span>
+                        <div class="col-xs-2 txC">
+                            <!--<span id="Quantity<?php echo $I ?>" class="ItemText<?php echo $I ?>"><?php echo insertElement('text',$Item['quantity']); ?></span>-->
+                            <?php echo insertElement('text','quantity_'.$I,$Quantity,'ItemField'.$I.' form-control calcable txC inputMask QuantityField','item="'.$I.'"data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateMaxValue="'.$Quantity.'///Ingrese un n&uacute;mero menor o igual a '.$Quantity.'" validateMinValue="1///Ingrese un n&uacute;mero mayor o igual a 1" validateEmpty="Ingrese una cantidad"'); ?>
                         </div>
                           
-                        <div class="col-xs-1 txC">
-                            <span id="Date<?php echo $I ?>" class="ItemText<?php echo $I ?> OrderDate"><span class="label label-default"><?php echo $Date ?></span></span>
-                        </div>
+                        <!--<div class="col-xs-1 txC">-->
+                        <!--    <span id="Date<?php echo $I ?>" class="ItemText<?php echo $I ?> OrderDate"><span class="label label-default"><?php echo $Date ?></span></span>-->
+                        <!--</div>-->
+                        
+                        <!--<div class="col-xs-2 txC">-->
+                        <!--    <span id="Received<?php echo $I ?>" class="ItemText<?php echo $I ?>"><?php echo $Received ?></span>-->
+                        <!--</div>-->
+                          
                         
                         <div class="col-xs-2 txC">
-                            <span id="Received<?php echo $I ?>" class="ItemText<?php echo $I ?>"><?php echo $Received ?></span>
+                          <!--<span class="label btnBlue"><?php echo $Item['currency'] ?><span id="total_payment<?php echo $I ?>"><?php echo $TotalItem; ?></span></span>-->
+                          <span id="Total<?php echo $I ?>" class="ItemText<?php echo $I ?>"><span class="label label-success"><?php echo $Currency ?> <span id="TotalPrice<?php echo $I ?>"><?php echo $Total; ?></span></span></span>
+                          <?php echo insertElement('hidden','id'.$I); ?>
+                          <?php echo insertElement('hidden','item'.$I,$Item['item_id']); ?>
+                          <?php echo insertElement('hidden','description'.$I,$Item['code']); ?>
+                          <?php echo insertElement('hidden','price'.$I,$Item['price']); ?>
+                          <?php echo insertElement('hidden','product'.$I,$Item['product_id']); ?>
+                          <?php echo insertElement('hidden','total'.$I,$TotalItem); ?>
+                          <?php echo insertElement('hidden','total_quantity'.$I,$Item['quantity']); ?>
+                          <?php echo insertElement('hidden','quantity_paid'.$I,$Item['quantity_paid']); ?>
                         </div>
-                          
-                        
                         <div class="col-xs-2 txC">
-                            <span class="label btnBlue">
-                                <?php echo $Item['currency'] ?>
-                                <span id="total_payment<?php echo $I ?>"><?php echo $TotalItem; ?></span>
-                            </span>
-                            <?php echo insertElement('hidden','paid'.$I,$Item['item_id']); ?>
-                            <?php echo insertElement('hidden','product'.$I,$Item['product_id']); ?>
-                            <?php echo insertElement('hidden','total_amount'.$I,$TotalItem); ?>
-                            <?php echo insertElement('hidden','total_quantity'.$I,$Item['quantity']); ?>
-                            <?php echo insertElement('hidden','received_quantity'.$I,$Item['quantity_received']); ?>
-              			</div>
-              			
-              			<div class="col-xs-1 txC">
-                            <input type="checkbox" id="<?php echo $Item['item_id']; ?>" item="<?php echo $I ?>" value="<?php echo $Item['item_id']; ?>" class="iCheckbox" name="received[]" mustBeChecked="1///Seleccione al menos un art&iacute;culo" checked />
+                          <?php $MustBeChecked = $I==1? 'mustBeChecked="1///Seleccione al menos un art&iacute;culo"' : ''; ?>
+                          <input type="checkbox" id="<?php echo $Item['item_id']; ?>" item="<?php echo $I ?>" value="<?php echo $Item['item_id']; ?>" class="iCheckbox" name="received[]" <?php echo $MustBeChecked; ?> />
                         </div>
                 </div>
                 <!--- NEW ITEM --->
                 <?php $I++;}} $I--;?>
                 <?php echo insertElement('hidden','total_items',$I); ?>
                 <div class="row bg-primary" style="padding:10px 0px!important;">
-                    <div class="col-xs-5 text-right"><strong>Total Entregado: <?php echo $Items[0]['currency'].' '.$TotalDelivered; ?></strong></div>
-                    <div class="col-xs-4 text-right"><strong>Total a Pagar:</strong></div>
+                    <!--<div class="col-xs-5 text-right"><strong>Total Entregado: <?php echo $Items[0]['currency'].' '.$TotalDelivered; ?></strong></div>-->
+                    <div class="col-xs-8 text-right"><strong>Sub-total:</strong></div>
                     <div class="col-xs-2 txC">
-                    <span class="label bg-green"><span id="total_currency"><?php echo $Currency; ?> </span><span id="total_payment"><?php echo $Total; ?></span></span>
+                    <span class="label bg-green"><span id="total_currency"><?php echo $Currency; ?> </span><span id="total_payment">0.00<?php //echo $Total; ?></span></span>
+                    <?php echo insertElement('hidden','total',"0"); ?>
                     </div>
-                    <div class="col-xs-1"></div>
+                    <div class="col-xs-2"></div>
                 </div>
               </div>
             </div>
-            <?php } ?>
             
-            <?php if($View!='F') echo '<br>';  ?>
+            <br>
             
             
             <!--- HISTORIAL --->
-            <?php if(count($ItemsHistory) || $View=='F'){ ?>
-            <?php if($View!='F'){  ?>
-              <h4 class="subTitleB"><i class="fa fa-hourglass"></i> Art&iacute;culos pagados a <?php echo $Data['provider'] ?></h4>
-            <?php }else{ ?>
-              <h4 class="subTitleB"><i class="fa fa-hourglass"></i> Estado de pagos a <?php echo $Data['provider'] ?></h4>
-            <?php } ?>
+            <?php if(count($ItemsHistory) && 1==2){ ?>
+              <h4 class="subTitleB"><i class="fa fa-hourglass"></i> Art&iacute;culos facturados a <?php echo $Data['provider'] ?></h4>
               <div style="margin:0px 10px;">
               <div class="row form-group inline-form-custom bg-gray" style="margin-bottom:0px!important;">
                 
@@ -267,24 +274,10 @@
               </div>
             </div>
             <?php } ?>
-            
-            
-            
-            <?php if($Edit->Data['extra'] && $View!='F'){ ?>
-            <h4 class="subTitleB"><i class="fa fa-info-circle"></i> Informaci&oacute;n Extra</h4><div class="row form-group inline-form-custom">
-              <div class="col-xs-12">
-                  <p><?php echo $Edit->Data['extra'] ?></p>
-              </div>
-            </div>
-            <?php } ?>
           <hr>
           <div class="row txC">
-          <?php if($View!='F') { ?>
-            <button type="button" class="btn btn-success btnGreen" id="BtnAdd"><i class="fa fa-dollar"></i> Pagar</button>
+            <button type="button" class="btn btn-success btnGreen" id="BtnAdd"><i class="fa fa-file-text"></i> Generar Factura</button>
             <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
-          <?php }else{ ?>
-            <button type="button" class="btn btn-primary" id="BtnCancel"><i class="fa fa-arrow-circle-left"></i> Regresar</button>
-          <?php } ?>
           </div>
           <!--</form>-->
         </div>
@@ -294,5 +287,6 @@
   </div><!-- box -->
 <?php
     $Foot->setScript('../../../vendors/datepicker/bootstrap-datepicker.js');
+    $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
     include('../../includes/inc.bottom.php');
 ?>

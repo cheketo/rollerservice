@@ -8,7 +8,7 @@ class Stock extends DataBase
 	var $Table			= "provider_order";
 	var $TableID		= "order_id";
 	
-	const DEFAULTIMG	= "../../../skin/images/providers/default/order.png";
+	const DEFAULTIMG	= "../../../skin/images/providers/default/supplier.png";
 
 	public function __construct($ID=0)
 	{
@@ -100,7 +100,7 @@ public function MakeRegs($Mode="List")
 								<div class="col-md-3 hideMobile990">
 									<div class="listRowInner">
 										<span class="listTextStrong">Cantidad</span>
-										<span class="listTextStrong"><span class="label label-primary">'.$Item['quantity'].'</span></span>
+										<span class="listTextStrong"><span class="label label-primary">'.$Item['quantity_received'].'/'.$Item['quantity'].'</span></span>
 									</div>
 								</div>
 								<div class="col-md-3 col-sm-6">
@@ -329,41 +329,59 @@ public function MakeRegs($Mode="List")
 	    $ID 		= $_POST['id'];
 	    $TotalItems = $_POST['total_items'];
 	    $ProviderID = $_POST['provider'];
-	    $Status 	= $_POST['status'];
+	    $Status		= $this->fetchAssoc('provider_order','status,payment_status',"order_id=".$ID);
+	   
+	    $OrderStatus 	= $Status[0]['status'];
+	    $PaymentStatus 	= $Status[0]['payment_status'];
 	    $Items = array();
 	    
-		for($I=1;$I<=$TotalItems;$I++)
-		{
-		    $Item = $_POST['received'.$I];
-		    if($Item)
-		    {
-		    	$Received = $_POST['quantity'.$I]+$_POST['received_quantity'.$I];	
-		    	if($Received==$_POST['total_quantity'.$I])
-		        	$Items[] = $Item;
-		        else
-		        	$this->execQuery('update','provider_order_item',"status='A',quantity_received=quantity_received+".$_POST['quantity'.$I].",verified_by='".$_SESSION['admin_id']."'","item_id = ".$Item);	
-		        $this->execQuery('update','product',"stock=stock+".$_POST['quantity'.$I],"product_id = ".$_POST['product'.$I]);
-		        $this->execQuery('insert','stock_entrance',"item_id,order_id,product_id,provider_id,quantity,creation_date,created_by,company_id",$Item.",".$ID.",".$_POST['product'.$I].",".$ProviderID.",".$_POST['quantity'.$I].",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
-		        //echo $this->lastQuery();
-		    }
-		}
-		if(count($Items))
-		{
-			$ItemsQ = implode(",",$Items);
-			$this->execQuery('update','provider_order_item',"status='F',quantity_received=quantity,actual_delivery_date=NOW(),verified_by='".$_SESSION['admin_id']."'","item_id IN (".$ItemsQ.")");	
-		}
-		if($TotalItems<=count($Items))
-		{
-			// $PaymentStatus = $this->fetchAssoc($this->Table,'payment_status',"order_id=".$ID);
-			// $PaymentStatus = $PaymentStatus[0]['payment_status'];
-			if($Status=='A')
-				$UpdateStatus = ",status='S'";
-			else
-				$UpdateStatus = ",status='F'";
-			$this->execQuery('update','provider_order',"delivery_status='F'".$UpdateStatus.",actual_delivery_date=NOW(),updated_by='".$_SESSION['admin_id']."'","order_id=".$ID);
-		}else{
-			$this->execQuery('update','provider_order',"delivery_status='A',updated_by='".$_SESSION['admin_id']."'","order_id=".$ID);
-		}
+	    if($OrderStatus=='A')
+	    {
+	    	
+	    	for($I=1;$I<=$TotalItems;$I++)
+			{
+				if($_POST['received'.$I])
+				{
+		    		$TotalQuantity += $_POST['quantity'.$I];
+				}
+			}
+			
+			$this->execQuery('insert','stock_entrance','order_id,provider_id,quantity,creation_date,created_by,company_id',$ID.",".$ProviderID.",".$TotalQuantity.",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
+			$EntranceID = $this->GetInsertId();
+			
+			for($I=1;$I<=$TotalItems;$I++)
+			{
+			    $Item = $_POST['received'.$I];
+			    if($Item)
+			    {
+			    	$Received = $_POST['quantity'.$I]+$_POST['received_quantity'.$I];	
+			    	if($Received==$_POST['total_quantity'.$I])
+			        	$Items[] = $Item;
+			        else
+			        	$this->execQuery('update','provider_order_item',"delivery_status='A',quantity_received=quantity_received+".$_POST['quantity'.$I],"item_id = ".$Item);	
+			        $this->execQuery('update','product',"stock=stock+".$_POST['quantity'.$I],"product_id = ".$_POST['product'.$I]);
+			        $this->execQuery('insert','stock_entrance_item',"entrance_id,item_id,order_id,product_id,provider_id,quantity,creation_date,created_by,company_id",$EntranceID.",".$Item.",".$ID.",".$_POST['product'.$I].",".$ProviderID.",".$_POST['quantity'.$I].",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
+			        //echo $this->lastQuery();
+			    }
+			}
+			if(count($Items))
+			{
+				$ItemsQ = implode(",",$Items);
+				$this->execQuery('update','provider_order_item',"delivery_status='F',quantity_received=quantity,actual_delivery_date=NOW()","item_id IN (".$ItemsQ.")");
+			}
+			if($TotalItems<=count($Items))
+			{
+				// $PaymentStatus = $this->fetchAssoc($this->Table,'payment_status',"order_id=".$ID);
+				// $PaymentStatus = $PaymentStatus[0]['payment_status'];
+				if($PaymentStatus=='F')
+					$UpdateStatus = ",status='F'";
+				$this->execQuery('update','provider_order',"delivery_status='F'".$UpdateStatus.",actual_delivery_date=NOW(),updated_by='".$_SESSION['admin_id']."'","order_id=".$ID);
+			}else{
+				$this->execQuery('update','provider_order',"delivery_status='A',updated_by='".$_SESSION['admin_id']."'","order_id=".$ID);
+			}
+	    }else{
+	    	echo 'La orden se encuentra en estado "'.$OrderStatus.'" por lo cual no puede ser procesado el ingreso de stock.';
+	    }
 		
 	}
 	

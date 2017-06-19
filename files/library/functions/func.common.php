@@ -133,6 +133,21 @@
 		return $Array;
 	}
 	
+	function InvoiceNumber($Number)
+	{
+		return sprintf("%08d",$Number);
+	}
+	
+	function InvoicePrefixNumber($Number)
+	{
+		return sprintf("%04d",$Number);
+	}
+	
+	function CUITFormat($Number)
+	{
+		return substr($Number,0,2)."-".substr($Number,2,8)."-".substr($Number,10,1);
+	}
+	
 	function DateTimeFormat($DateTime,$Mode='')
 	// Returns a formated date
 	{

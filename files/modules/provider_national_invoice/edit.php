@@ -20,7 +20,7 @@
     $Head->setSubTitle($Menu->GetTitle());
     $Head->setTitle("Editar Orden de ".$Data['provider']);
     $Head->setSubTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
@@ -39,8 +39,7 @@
           <h4 class="subTitleB"><i class="fa fa-building"></i> Proveedor</h4>
           <div class="row form-group inline-form-custom">
             <div class="col-xs-12">
-                <?php echo insertElement('select','providers',$Edit->Data['provider_id'],'form-control select2 selectTags','',$DB->fetchAssoc('provider','provider_id,name',"status='A' AND company_id=".$_SESSION['company_id'],'name'),'','Seleccione un Proveedor'); ?>
-                <?php echo insertElement("text","provider",$Edit->Data['provider_id'],'Hidden','validateEmpty="Seleccione un Proveedor"'); ?>
+                <?php echo insertElement('select','provider',$Edit->Data['provider_id'],'form-control chosenSelect','data-placeholder="Seleccione un Proveedor" validateEmpty="Seleccione un Proveedor"',$DB->fetchAssoc('provider','provider_id,name',"status='A' AND company_id=".$_SESSION['company_id'],'name'),' ',''); ?>
             </div>
           </div>
           
@@ -51,14 +50,14 @@
                   <?php if(empty($Agents))
                         {
                           echo '<div id="agent-wrapper">
-                                  <select id="agents" class="form-control select2 selectTags" disabled="disabled" style="width: 100%;">
+                                  <select id="agent" class="form-control chosenSelect" disabled="disabled" style="width: 100%;">
                                     <option value="0">Sin Contacto</option></select></div>';
                         }else{
                           echo '<div id="agent-wrapper">';
-                          echo insertElement('select','agents',$Edit->Data['agent_id'],'form-control select2 selectTags','',$Agents);  
+                          echo insertElement('select','agent',$Edit->Data['agent_id'],'form-control chosenSelect','',$Agents);  
                           echo '</div>';
                         }
-                        echo insertElement("text","agent",$Edit->Data['agent_id'],'Hidden');
+                        // echo insertElement("text","agent",$Edit->Data['agent_id'],'Hidden');
                    ?>
                 </div>
             </div>
@@ -66,8 +65,7 @@
           <h4 class="subTitleB"><i class="fa fa-money"></i> Moneda</h4>
           <div class="row form-group inline-form-custom">
             <div class="col-xs-12">
-              <?php echo insertElement('select','currency_selector',$Edit->Data['currency_id'],'form-control',' ',$DB->fetchAssoc('currency','currency_id,title',"",'title DESC'),'','Seleccione una Moneda'); ?>
-              <?php echo insertElement("text","currency",$Edit->Data['currency_id'],'Hidden','validateEmpty="Seleccione un Moneda"'); ?>
+              <?php echo insertElement('select','currency',$Edit->Data['currency_id'],'form-control chosenSelect','validateEmpty="Seleccione una Moneda" data-placeholder="Seleccione una Moneda"',$DB->fetchAssoc('currency','currency_id,title',"",'title DESC'),' ',''); ?>
             </div>
           </div>
           <br>
@@ -108,16 +106,16 @@
                 <form id="item_form_<?php echo $I ?>" name="item_form_<?php echo $I ?>">
                 <div class="col-xs-4 txC">
                   <span id="Item<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?>"><?php echo $Item['product'] ?></span>
-                  <?php echo insertElement('select','items_'.$I,$Item['product_id'],'ItemField'.$I.'form-control select2 selectTags itemSelect','item="'.$I.'"',$DB->fetchAssoc('product','product_id,code',"status='A'",'code'),'','Seleccione un Art&iacute;culo'); ?>
-                  <?php echo insertElement("text","item_".$I,$Item['product_id'],'Hidden','validateEmpty="Seleccione un Art&iacute;culo"'); ?>
+                  <?php echo insertElement('select','item_'.$I,$Item['product_id'],'ItemField'.$I.'form-control chosenSelect itemSelect','validateEmpty="Seleccione un Art&iacute;culo" item="'.$I.'" data-placeholder="Seleccione un Art&iacute;culo"',$DB->fetchAssoc('product','product_id,code',"status='A'",'code'),' ',''); ?>
+                  
                 </div>
                 <div class="col-xs-1 txC">
                   <span id="Price<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?>">$ <?php echo $Item['price'] ?></span>
-                  <?php echo insertElement('text','price_'.$I,$Item['price'],'ItemField'.$I.' form-control calcable','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"'); ?>
+                  <?php echo insertElement('text','price_'.$I,$Item['price'],'ItemField'.$I.' form-control calcable inputMask','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"'); ?>
                 </div>
                 <div class="col-xs-1 txC">
                   <span id="Quantity<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?>"><?php echo $Item['quantity'] ?></span>
-                  <?php echo insertElement('text','quantity_'.$I,$Item['quantity'],'ItemField'.$I.' form-control calcable QuantityItem','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"'); ?>
+                  <?php echo insertElement('text','quantity_'.$I,$Item['quantity'],'ItemField'.$I.' form-control calcable QuantityItem inputMask','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"'); ?>
                 </div>
                 <div class="col-xs-2 txC">
                   <span id="Date<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?> OrderDate"><?php echo $Date ?></span>
@@ -185,7 +183,7 @@
   </div><!-- box -->
 <?php
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 $Foot->setScript('../../../vendors/datepicker/bootstrap-datepicker.js');
 include('../../includes/inc.bottom.php');
 ?>

@@ -7,7 +7,7 @@
     ValidateID($Data['order_id']);
     $Status = $Edit->Data['status'];
     $View   = strtolower($_GET['view']);
-    if($Status!='A' && $Status!='C'  && $Edit->Data['delivery_status']!='P' && $Edit->Data['delivery_status']!='A')
+    if($Status!='A'  && $Edit->Data['delivery_status']=='F')
     {
       if($View=='order')
         header('Location: ../provider_national_order/list.php?error=status');
@@ -17,11 +17,12 @@
     }
     
     $Items        = $DB->fetchAssoc('provider_order_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*,(a.price * a.quantity) AS total',"order_id=".$ID);
-    $ItemsHistory = $DB->fetchAssoc('stock_entrance a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*',"order_id=".$ID,'creation_date DESC');
+    $ItemsHistory = $DB->fetchAssoc('stock_entrance_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*',"order_id=".$ID,'creation_date DESC');
     
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
-    $Head->setTitle("Ingresar Stock de ".$Data['provider']);
-    $Head->setSubTitle($Menu->GetTitle());
+    $Head->setTitle($Menu->GetTitle());
+    $Head->setSubTitle($Data['provider']);
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
@@ -138,7 +139,7 @@
                 ?>
                 <!--- OLD ITEM --->
                 <?php 
-                  $Date = explode(" ",$Item['delivery_date']); 
+                  $Date = explode(" ",$Item['creation_date']); 
                   $Date = implode("/",array_reverse(explode("-",$Date[0])))." ".$Date[1]; 
                   if($Class=='bg-gray-light')
                     $Class='';
@@ -161,14 +162,14 @@
                           
                         <div class="col-xs-3 txC">
                           <?php
-                            if($Item['movement_type']=='I')
-                            {
+                            // if($Item['movement_type']=='I')
+                            // {
                               $Status = 'Recibido';
                               $BG     = 'success';
-                            }else{
-                              $Status = 'Devuelto';
-                              $BG     = 'danger';
-                            }
+                            // }else{
+                            //   $Status = 'Devuelto';
+                            //   $BG     = 'danger';
+                            // }
                           ?>
                           <span class="label label-<?php echo $BG ?>"><?php echo $Status ?></span>
               			    </div>

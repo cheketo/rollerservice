@@ -376,8 +376,16 @@ public function MakeRegs($Mode="List")
 		$Website 		= strtolower($_POST['website']);
 		$Fax			= $_POST['fax'];
 		
+		//VALIDATIONS
+		if(!$Name) echo 'Falta Nombre';
+		if(!$Type) echo 'Tipo incompleto';
+		if(!$CUIT) echo 'CUIT incompleto';
+		if(!$IVA) echo 'IVA incompleto';
+		// if(!$GrossIncome) echo 'IIBB incompleto';
+		
 		$Insert			= $this->execQuery('insert',$this->Table,'type,name,cuit,iva,gross_income_tax,country_id,province_id,region_id,zone_id,address,postal_code,lat,lng,email,phone,website,fax,creation_date,created_by,company_id',"'".$Type."','".$Name."',".$CUIT.",'".$IVA."',".$GrossIncome.",".$CountryID.",".$ProvinceID.",".$RegionID.",".$ZoneID.",'".$Address."','".$PostalCode."',".$Lat.",".$Lng.",'".$Email."','".$Phone."','".$Website."','".$Fax."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
 		//echo $this->lastQuery();
+		Tax::SetIVA($CUIT,$IVA);
 		$NewID 		= $this->GetInsertId();
 		$New 	= new Provider($NewID);
 		$Dir 	= array_reverse(explode("/",$Image));

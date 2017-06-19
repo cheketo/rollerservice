@@ -7,7 +7,7 @@
     
     $Head->setTitle($Menu->GetTitle());
     $Head->setIcon($Menu->GetHTMLicon());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setHead();
     
     
@@ -31,7 +31,7 @@
   <?php echo insertElement("hidden","action",'update'); ?>
   <?php echo insertElement("hidden","id",$ID); ?>
   <?php echo insertElement("hidden","menues",$Menues); ?>
-  <?php echo insertElement("hidden","groups",$Groups); ?>
+  <?php //echo insertElement("hidden","groups",$Groups); ?>
   <?php echo insertElement("hidden","newimage",$Edit->Img); ?>
 
    <div class="box"> <!--box-success-->
@@ -73,14 +73,15 @@
               <div class="col-lg-6 col-md-12">
                 <div class="form-group">
                   <h4 class="subTitleB"><i class="fa fa-eye"></i> Perfiles</h4>
-                  <?php echo insertElement('select','profile',$Data['profile_id'],'form-control','validateEmpty="El perfil es obligatorio." tabindex="7"',Utf8EncodeArray($DB->fetchAssoc('admin_profile','profile_id,title',"status='A' AND company_id=".$_SESSION['company_id'])),'',"Seleccione un perfil.."); ?>
+                  <?php echo insertElement('select','profile',$Data['profile_id'],'form-control chosenSelect','validateEmpty="El perfil es obligatorio." data-placeholder="Seleccione un Perfil" tabindex="7"',$DB->fetchAssoc('admin_profile','profile_id,title',"status='A' AND company_id=".$_SESSION['company_id']),' ',""); ?>
                 </div>
               </div>
               <!-- Groups -->
               <div class="col-lg-6 col-md-12">
                 <div class="form-group" id="groups-wrapper">
                   <h4 class="subTitleB"><i class="fa fa-users"></i> Grupos</h4>
-                  <select id="group" class="form-control select2 selectTags" multiple="multiple" data-placeholder="Seleccione los grupos" style="width: 100%;">
+                  <?php echo insertElement('multiple','groups',$Groups,'form-control chosenSelect','data-placeholder="Seleccione Grupos"'); ?>
+                  <!--<select id="group" class="form-control chosenSelect" multiple="multiple" >-->
                   </select>
                 </div>
               </div>
@@ -177,7 +178,7 @@
 <?php
 // Select Inputs With Tags
 // DOCUMENTATION > https://select2.github.io/examples.html
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 // ----
 // Tree With Checkbox
 // DOCUMENTATION >  http://www.jquery-az.com/jquery-treeview-with-checkboxes-2-examples-with-bootstrap

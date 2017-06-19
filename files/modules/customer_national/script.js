@@ -1,47 +1,8 @@
 $(document).ready(function(){
-	
-	if($("#cuit").length>0)
-		$("#cuit").inputmask();  //static mask
-
 	DeleteAgent();
 	CancelAgent();
-	if($('.selectTags').length>0)
-	{
-		$('#iva_select').select2({placeholder: {id: '',text: 'Seleccione IVA'}});
-		$('#iva_select').on("select2:select", function (e) { $("#iva").val(e.params.data.id); });
-		$('#iva_select').on("select2:unselect", function (e) { $("#iva").val(''); });
-		
-		select2Broker();
-		
-		select2Focus();
-	}
 });
 
-function select2Broker()
-{
-	$('.BrokerSelect').select2({
-		tags: true
-	});
-	$('.BrokerSelect').on("change", function (e) { 
-		var id = $(this).attr("branch");
-		SelectBrokers(id);
-	});
-}
-
-function SelectBrokers(id)
-{
-	var brokers = "0";
-	$("#select_broker_"+id).next('span').children('span').children('span').children('ul').children('.select2-selection__choice').each(function(){
-		var optionName = $(this).attr("title");
-		$("#select_broker_"+id).children("option").each(function(){
-			if($(this).html()==optionName)
-			{
-				brokers += ","+$(this).attr("value");
-			}
-		});
-	});
-	$("#brokers_"+id).val(brokers);
-}
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
 	$("#BtnCreate,#BtnCreateNext").on("click",function(e){
@@ -196,7 +157,7 @@ $(function(){
 	});
 	
 	$("#image").change(function(){
-		var process		= '../../library/processes/proc.common.php?action=newimage&object=Provider';
+		var process		= '../../library/processes/proc.common.php?action=newimage&object=Customer';
 		var haveData	= function(returningData)
 		{
 			$('#newimage').val(returningData);
@@ -249,7 +210,6 @@ function ShowErrorMapDiv()
 //////////////////////////// ADD BRANCH ///////////////////////////////////////
 function addBranchModal()
 {
-		
 		var process		= '../../library/processes/proc.common.php?object=Customer&action=Getbranchmodal';
 		var haveData	= function(returningData)
 		{
@@ -257,10 +217,11 @@ function addBranchModal()
 			$("#ModalBranchesContainer").append(returningData);
 			$("#branch_modal_"+$("#total_branches").val()).show();
 			EditBranch();
-			select2Broker();
+			// select2Broker();
 			CancelBranchEdition();
 			SaveBranchEdition();
 			validateMap();
+			chosenSelect();
 			ShowAgentForm();
 			AddAgent();
 			CancelAgent();

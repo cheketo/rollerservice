@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $New = new Provider();
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
     include('../../includes/inc.top.php');
@@ -30,8 +30,7 @@
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-book"></i></span>
-                  <?php echo insertElement('select','iva_select','','form-control select2 selectTags','',$DB->fetchAssoc('config_iva_type','type_id,name',"status='A'",'name'),'0','Seleccione una Opci&oacute;n'); ?>
-                  <?php echo insertElement("hidden","iva"); ?>
+                  <?php echo insertElement('select','iva_select','','form-control select2 selectTags','data-placeholder="Seleccione IVA"',$DB->fetchAssoc('tax_iva_type','type_id,name',"status='A'",'name'),' ',''); ?>
                 </span>
               </div>
             </div>
@@ -39,7 +38,7 @@
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-file-text-o"></i></span>
-                  <?php echo insertElement('text','cuit','','form-control','data-inputmask="\'mask\': \'99-99999999-9\'" placeholder="N&uacute;mero CUIT" validateEmpty="Ingrese un CUIT."'); ?>
+                  <?php echo insertElement('text','cuit','','form-control inputMask','data-inputmask="\'mask\': \'99-99999999-9\'" placeholder="N&uacute;mero CUIT" validateEmpty="Ingrese un CUIT."'); ?>
                 </span>
               </div>
               <div class="col-xs-12 col-sm-6">
@@ -193,6 +192,6 @@
 $Foot->setScript('../../js/script.map.autolocation.js');
 $Foot->setScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyCuMB_Fpcn6USQEoumEHZB_s31XSQeKQc0&libraries=places&callback=initMaps&language=es','async defer');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 include('../../includes/inc.bottom.php');
 ?>

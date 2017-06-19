@@ -1,11 +1,27 @@
                                             ////// JavaScript Document //////
-// $(document).ready(function(){
-//   var sidebarMenu = getCookie("sidebarmenu");
-//   if(sidebarMenu)
-//   {
-//     $("body").addClass(sidebarMenu);
-//   }
-// });
+$(document).ready(function(){
+  // var sidebarMenu = getCookie("sidebarmenu");
+  // if(sidebarMenu)
+  // {
+  //   $("body").addClass(sidebarMenu);
+  // }
+  inputMask();
+	chosenSelect();
+});
+
+///////// CHOSEN FOR SELECT INPUTS ////////
+function chosenSelect()
+{
+  if($('.chosenSelect').length>0)
+	  $('.chosenSelect').chosen({disable_search_threshold: 5});
+}
+
+///////// INPUT MASK FOR TEXT INPUTS /////////
+function inputMask()
+{
+	if($(".inputMask").length>0)
+		$(".inputMask").inputmask();  //static mask
+}
 
 //////////////////////////////////////////////////// Notify //////////////////////////////////////////////////////
 function notifyError(msgNotify)
@@ -588,6 +604,8 @@ $(document).ajaxStart(function(){
 $(document).ajaxComplete(function(){
     // $(".loader").addClass("Hidden");
     // $('html').css({ 'overflow-Y': 'scroll', 'height': '100%' });
+    chosenSelect();
+    inputMask();
     toggleLoader();
 });
 

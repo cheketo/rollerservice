@@ -83,13 +83,13 @@ class GroupData extends DataBase
 	public function GetUsers()
 	{
 		if(!$this->Users)
-			$this->Users = $this->fetchAssoc('admin_user','*',"admin_id IN (SELECT admin_id FROM relation_admin_group WHERE group_id=".$this->ID.") AND status <> 'I'");
+			$this->Users = $this->fetchAssoc('admin_user a INNER JOIN relation_admin_group b ON (a.admin_id=b.admin_id)','a.*',"b.group_id=".$this->ID." AND a.status <> 'I'");
 		return $this->Users;
 	}
 
 	public function GetGroups($ProfileID=0,$AdminID=0)
 	{
-		$HTML 				= '<h4 class="subTitleB"><i class="fa fa-users"></i> Grupos</h4><select id="group" class="form-control select2 selectTags" multiple="multiple" data-placeholder="Seleccione los grupos" style="width: 100%;">';
+		$HTML 				= '<h4 class="subTitleB"><i class="fa fa-users"></i> Grupos</h4><select id="group" class="form-control chosenSelect" multiple="multiple" data-placeholder="Seleccione los grupos">';
 		if($ProfileID!=0)
 		{
 			$CheckedGroups 	= $this->GetAdminGroups($AdminID);
@@ -302,7 +302,7 @@ public function MakeRegs($Mode="List")
 		$Title		= ucfirst($_POST['title']);
 		$Profiles	= $_POST['profiles'] ? explode(",",$_POST['profiles']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
-		//$Users		= $_POST['users'] ? explode(",",$_POST['users']) : array();
+		$Users		= $_POST['users'] ? explode(",",$_POST['users']) : array();
 		$Insert		= $this->execQuery('insert','admin_group','company_id,title,creation_date',$_SESSION['company_id'].",'".$Title."',NOW()");
 		$NewID 		= $this->GetInsertId();
 		$New 		= new GroupData($NewID);
@@ -332,13 +332,13 @@ public function MakeRegs($Mode="List")
 				$Values .= !$Values? $NewID.",".$Menu : "),(".$NewID.",".$Menu;
 		}
 		$this->execQuery('insert','relation_menu_group','group_id,menu_id',$Values);
-		// $Values = "";
-		// foreach($Users as $User)
-		// {
-		// 	if(intval($User)>0)
-		// 		$Values .= !$Values? $NewID.",".$User : "),(".$NewID.",".$User;
-		// }
-		// $this->execQuery('insert','relation_admin_group','group_id,admin_id',$Values);
+		$Values = "";
+		foreach($Users as $User)
+		{
+			if(intval($User)>0)
+				$Values .= !$Values? $NewID.",".$User : "),(".$NewID.",".$User;
+		}
+		$this->execQuery('insert','relation_admin_group','group_id,admin_id',$Values);
 	}
 	
 	public function Update()
@@ -359,13 +359,13 @@ public function MakeRegs($Mode="List")
 		$Title		= ucfirst($_POST['title']);
 		$Profiles	= $_POST['profiles'] ? explode(",",$_POST['profiles']) : array();
 		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
-		//$Users		= $_POST['users'] ? explode(",",$_POST['users']) : array();
+		$Users		= $_POST['users'] ? explode(",",$_POST['users']) : array();
 		
 		$Update		= $this->execQuery('update','admin_group',"title='".$Title."',image='".$Image."'","group_id=".$ID);
 		//echo $this->lastQuery();
 		$this->execQuery('delete','relation_group_profile',"group_id = ".$ID);
 		$this->execQuery('delete','relation_menu_group',"group_id = ".$ID);
-		//$this->execQuery('delete','relation_admin_group',"group_id = ".$ID);
+		$this->execQuery('delete','relation_admin_group',"group_id = ".$ID);
 		foreach($Profiles as $Profile)
 		{
 			if(intval($Profile)>0)
@@ -379,13 +379,13 @@ public function MakeRegs($Mode="List")
 				$Values .= !$Values? $ID.",".$Menu : "),(".$ID.",".$Menu;
 		}
 		$this->execQuery('insert','relation_menu_group','group_id,menu_id',$Values);
-		// $Values = "";
-		// foreach($Users as $User)
-		// {
-		// 	if(intval($User)>0)
-		// 		$Values .= !$Values? $NewID.",".$User : "),(".$NewID.",".$User;
-		// }
-		// $this->execQuery('insert','relation_admin_group','group_id,admin_id',$Values);
+		$Values = "";
+		foreach($Users as $User)
+		{
+			if(intval($User)>0)
+				$Values .= !$Values? $ID.",".$User : "),(".$ID.",".$User;
+		}
+		$this->execQuery('insert','relation_admin_group','group_id,admin_id',$Values);
 	}
 	
 	public function Activate()

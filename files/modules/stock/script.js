@@ -89,7 +89,7 @@ $(function(){
 					if(get['view']=='order')
 						var target		= '../provider_national_order/list.php?status=A&msg=addok';
 					else
-						var target		= 'stock_pending_entrance.php?msg=addok';
+						var target		= 'stock_pending.php?msg=addok';
 					
 					var haveData	= function(returningData)
 					{

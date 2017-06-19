@@ -7,7 +7,7 @@
     
     $Head->setTitle($Menu->GetTitle());
     $Head->setIcon($Menu->GetHTMLicon());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
@@ -68,7 +68,7 @@
 <?php
 // Select Inputs With Tags
 // DOCUMENTATION > https://select2.github.io/examples.html
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 // ----
 // Tree With Checkbox
 // DOCUMENTATION >  http://www.jquery-az.com/jquery-treeview-with-checkboxes-2-examples-with-bootstrap

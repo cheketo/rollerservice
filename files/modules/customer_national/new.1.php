@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $New = new Customer();
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     //$Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
     include('../../includes/inc.top.php');
@@ -223,6 +223,6 @@
 // $Foot->setScript('../../../vendors/inputmask3/inputmask.min.js');
 // $Foot->setScript('../../../vendors/inputmask3/inputmask.numeric.extensions.min.js');
 $Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 include('../../includes/inc.bottom.php');
 ?>

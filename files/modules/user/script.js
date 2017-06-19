@@ -96,21 +96,6 @@ $(function(){
 	});
 });
 
-function setGroups()
-{
-	var groups = "0";
-	$(".select2-selection__choice").each(function(){
-		var optionName = $(this).attr("title");
-		$("#group").children("option").each(function(){
-			if($(this).html()==optionName)
-			{
-				groups += ","+$(this).attr("value");
-			}
-		});
-	});
-	$("#groups").val(groups);
-}
-
 function fillGroups()
 {
 	var profile = $('#profile').val();
@@ -130,14 +115,15 @@ function fillGroups()
             {
                 $('#groups-wrapper').html(data);
             }else{
-                $('#groups-wrapper').html('<h4 class="subTitleB"><i class="fa fa-users"></i> Grupos</h4><select id="group" class="form-control select2 selectTags" multiple="multiple" disabled="disabled" data-placeholder="Seleccione los grupos" style="width: 100%;"></select>');
+                $('#groups-wrapper').html('<h4 class="subTitleB"><i class="fa fa-users"></i> Grupos</h4><select id="group" class="form-control chosenSelect" multiple="multiple" disabled="disabled" data-placeholder="Seleccione los grupos"></select>');
             }
-            if($('.selectTags').length)
-			{
-				$('.selectTags').select2();
-	            $('.selectTags').on("change", function () { setGroups(); });
-	            setGroups();
-			}
+            chosenSelect();
+   //         if($('.selectTags').length)
+			// {
+			// 	$('.selectTags').select2();
+	  //          $('.selectTags').on("change", function () { setGroups(); });
+	  //          setGroups();
+			// }
         }
     });
 }

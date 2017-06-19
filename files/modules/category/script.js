@@ -1,11 +1,3 @@
-$(document).ready(function(){
-	if($('.selectTags').length>0)
-	{
-		$('.selectTags').select2({placeholder: {id: '0',text: 'Línea Principal'},allowClear: true});
-		$('.selectTags').on("select2:select", function (e) { $("#parent").val(e.params.data.id); });
-		$('.selectTags').on("select2:unselect", function (e) { $("#parent").val(''); });
-	}
-});
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
 	$("#BtnCreate,#BtnCreateNext").click(function(){

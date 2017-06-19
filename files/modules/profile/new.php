@@ -2,14 +2,13 @@
     include("../../includes/inc.main.php");
     $Profile  = new ProfileData();
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
   <?php echo insertElement("hidden","action",'insert'); ?>
   <?php echo insertElement("hidden","menues",""); ?>
-  <?php echo insertElement("hidden","groups",""); ?>
   <?php echo insertElement("hidden","newimage",$Profile->GetDefaultImg()); ?>
   <div class="box animated fadeIn">
     <div class="box-header flex-justify-center">
@@ -24,13 +23,13 @@
               <div class="col-xs-12 col-sm-6 inner">
                 <label for="">Grupos</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo insertElement('multiple','group','','form-control select2 selectGroupTags','data-placeholder="Seleccione Grupos" style="width: 100%;"',Utf8EncodeArray($DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id']))); ?>
+                  <?php echo insertElement('multiple','groups','','form-control chosenSelect','data-placeholder="Seleccione Grupos"',$DB->fetchAssoc('admin_group','group_id,title',"status<>'I' AND company_id = ".$_SESSION['company_id'])); ?>
                 </div>
               </div>
               <!--<div class="col-xs-12 col-sm-12 inner">-->
               <!--  <label for="">Usuarios</label>-->
               <!--  <div class="form-group" id="groups-wrapper">-->
-              <!--    <?php //echo insertElement('multiple','user','','form-control select2 selectUserTags','data-placeholder="Seleccione Usuarios" style="width: 100%;"',$DB->fetchAssoc('admin_user','admin_id,user',"status='A' AND company_id = ".$_SESSION['company_id'])); ?>-->
+              <!--    <?php //echo insertElement('multiple','users','','form-control chosenSelect','data-placeholder="Seleccione Usuarios"',$DB->fetchAssoc('admin_user','admin_id,user',"status='A' AND company_id = ".$_SESSION['company_id'])); ?>-->
               <!--  </div>-->
               <!--</div>-->
               <div class="col-xs-12 col-sm-6 inner">
@@ -76,7 +75,7 @@
 
 <?php
   $Foot->setScript('../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
-  $Foot->setScript('../../../vendors/select2/select2.min.js');
+  $Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
   $Foot->setScript('../../../vendors/treemultiselect/logger.min.js');
   $Foot->setScript('../../../vendors/treemultiselect/treeview.min.js');
   include('../../includes/inc.bottom.php');

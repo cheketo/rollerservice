@@ -2,13 +2,13 @@
     include("../../includes/inc.main.php");
     $Head->setTitle($Menu->GetTitle());
     $Head->setIcon($Menu->GetHTMLicon());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
   <?php echo insertElement("hidden","action",'insert'); ?>
   <?php echo insertElement("hidden","menues",""); ?>
-  <?php echo insertElement("hidden","groups",""); ?>
+  <?php //echo insertElement("hidden","groups",""); ?>
   <?php echo insertElement("hidden","newimage",$Admin->DefaultImg); ?>
 
    <div class="box"> <!--box-success-->
@@ -57,8 +57,8 @@
               <div class="col-lg-6 col-md-12">
                 <div class="form-group" id="groups-wrapper">
                   <h4 class="subTitleB"><i class="fa fa-users"></i> Grupos</h4>
-
-                  <select id="group" class="form-control select2 selectTags" multiple="multiple" data-placeholder="Seleccione los grupos" style="width: 100%;">
+                  <?php echo insertElement('multiple','groups','','form-control chosenSelect','data-placeholder="Seleccione Grupos"'); ?>
+                  <!--<select id="group" class="form-control select2 selectTags" multiple="multiple" data-placeholder="Seleccione los grupos" style="width: 100%;">-->
                   </select>
 
                 </div>
@@ -153,7 +153,7 @@
 <?php
 // Select Inputs With Tags
 // DOCUMENTATION > https://select2.github.io/examples.html
-$Foot->setScript('../../../vendors/select2/select2.min.js');
+$Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
 // ----
 // Tree With Checkbox
 // DOCUMENTATION >  http://www.jquery-az.com/jquery-treeview-with-checkboxes-2-examples-with-bootstrap

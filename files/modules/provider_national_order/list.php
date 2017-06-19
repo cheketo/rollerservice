@@ -2,18 +2,15 @@
   include('../../includes/inc.main.php');
   
   $Status = $_GET['status'] ? $_GET['status'] : 'P';
-  switch ($Status) {
+  switch (strtoupper($Status)) {
     case 'P':
-        $Title = "Ord. de Compra a Prov. Sin Confirmar";
+        $Title = "Cotizaciones";
     break;
     case 'A':
         $Title = "Ord. de Compra Encargadas a Prov.";
     break;
-    case 'S':
-        $Title = "Ord. de Compra a Prov. a Controlar";
-    break;
-    case 'C':
-        $Title = "Ord. de Compra a Prov. Pend. de Ingreso";
+    case 'Z':
+        $Title = "Archivo";
     break;
     case 'F':
         $Title = "Historial de Ordenes de Compra a Prov.";

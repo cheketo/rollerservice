@@ -2,12 +2,11 @@
     include("../../includes/inc.main.php");
     //$Head->setTitle("Nuevo Usuario");
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/select2/select2.min.css'); // Select Inputs With Tags
+    $Head->setStyle('../../../vendors/chosen-js/bootstrap-chosen.css'); // Select Inputs With Tags
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
   <?php echo insertElement("hidden","action",'insert'); ?>
-  <?php echo insertElement("hidden","country"); ?>
   <div class="box animated fadeIn">
     <div class="box-header flex-justify-center">
       <div class="col-lg-8 col-sm-12">
@@ -20,7 +19,7 @@
               </div>
               <div class="col-xs-12 col-sm-6 inner">
                 <label>Origen</label>
-                <?php echo insertElement('select','country_select','','form-control select2 selectTags',' style="width: 100%;height:auto!important;"',$DB->fetchAssoc('admin_country','country_id,title',"status<>'I'"),'0','Seleccione un pa&iacute;s'); ?>
+                <?php echo insertElement('select','country','','form-control chosenSelect','data-placeholder="Seleccione un pa&iacute;s"',$DB->fetchAssoc('admin_country','country_id,title',"status<>'I'"),' ',''); ?>
                 <!--<select id="country" class="form-control select2 selectTags select2-hidden-accessible" ></select>-->
               </div>
             </div><!-- inline-form -->
@@ -35,6 +34,6 @@
     </div>
   </div>
 <?php
-  $Foot->setScript('../../../vendors/select2/select2.min.js');
+  $Foot->setScript('../../../vendors/chosen-js/chosen.jquery.js');
   include('../../includes/inc.bottom.php');
 ?>

@@ -13,10 +13,10 @@
         $Title = "Finalizadas";
       break;
     case 'I':
-        $Title = "Eliminadas";
+        $Title = "Rechazadas";
       break;
   }
-  $List = new ProviderInvoice();
+  $List = new Invoice();
   $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
   $Head->setTitle("Facturas de Proveedores ".$Title);
   $Head->setIcon($Menu->GetHTMLicon());

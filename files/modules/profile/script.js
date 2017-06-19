@@ -80,34 +80,6 @@ function fillCheckboxTree()
 	});
 }
 
-///////////////// SELECT GROUPS /////////////////////
-$(function(){
-	$('.selectGroupTags').select2();
-
-	if($('.selectGroupTags').length)
-	{
-		$('.selectGroupTags').select2({
-			tags: true
-		});
-		$('.selectGroupTags').on("change", function (e) { selectGroups(); });
-	}
-});
-
-function selectGroups()
-{
-	var groups = "0";
-	$("#group").next('span').children('span').children('span').children('ul').children('.select2-selection__choice').each(function(){
-		var optionName = $(this).attr("title");
-		$("#group").children("option").each(function(){
-			if($(this).html()==optionName)
-			{
-				groups += ","+$(this).attr("value");
-			}
-		});
-	});
-	$("#groups").val(groups);
-}
-
 ///////////////////////////// UPLOAD IMAGE /////////////////////////////////////
 $(function(){
 	$("#image").change(function(){

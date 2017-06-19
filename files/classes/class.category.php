@@ -351,11 +351,12 @@ public function MakeRegs($Mode="List")
 	{
 		$Name 			= $_POST['title'];
 		$ActualName 	= $_POST['titlename'];
+		$ParentID		= $_POST['parent'];
 
 	    if($ActualName)
-	    	$TotalRegs  = $this->numRows($this->Table,'*',"title = '".$Name."' AND title<> '".$ActualName."'");
+	    	$TotalRegs  = $this->numRows($this->Table,'*',"parent_id = ".$ParentID." AND title = '".$Name."' AND title<> '".$ActualName."'");
     	else
-		    $TotalRegs  = $this->numRows($this->Table,'*',"title = '".$Name."'");
+		    $TotalRegs  = $this->numRows($this->Table,'*',"parent_id = ".$ParentID." AND title = '".$Name."'");
 		if($TotalRegs>0) echo $TotalRegs;
 	}
 }
