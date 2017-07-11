@@ -8,6 +8,7 @@
     $Branches = $DB->fetchAssoc('customer_branch a, geolocation_country b, geolocation_province c, geolocation_region d, geolocation_zone e','a.*,b.name as country, c.name as province, d.name as region, e.name as zone','a.country_id = b.country_id AND a.province_id = c.province_id AND a.region_id = d.region_id AND a.zone_id = e.zone_id AND customer_id='.$ID,'a.branch_id');
     
     $Head->setTitle($Data['name']);
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setSubTitle($Menu->GetTitle());
      
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
@@ -94,10 +95,10 @@
                 <img class="img" style="margin-top:5px!important;" src="../../../skin/images/body/pictures/<?php echo $Image; ?>" alt="Sucursal" title="Sucursal">
               </div>
             </div>
-            <div class="col-lg-9 col-md-7 col-sm-8 flex-justify-center">
+            <div class="col-lg-9 col-md-7 col-sm-5 col-xs-7 flex-justify-center" style="margin-right:0px;">
               <span class="listTextStrong" style="margin-top:15px!important;" id="branch_row_name_<?php echo $I ?>">Sucursal <?php echo $Branch['name']; ?></span>
             </div>
-            <div class="col-lg-1 col-md-2 col-sm-4 flex-justify-center">
+            <div class="col-lg-1 col-md-2 col-sm-3 col-xs-5 flex-justify-center" style="margin-left:0px;">
               <button type="button" branch="<?php echo $I ?>" id="EditBranch<?php echo $I ?>" class="btn btnBlue EditBranch LoadedMap"><i class="fa fa-pencil"></i></button>
               <?php if($I>1){ ?>
               &nbsp;

@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $New = new ProviderOrder();
     $Head->setTitle($Menu->GetTitle());
-     
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();

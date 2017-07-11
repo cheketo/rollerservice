@@ -44,8 +44,17 @@
             
             <h4 class="subTitleB"><i class="fa fa-file"></i> Datos de la Factura</h4>
             <div class="row">
-              <div class="col-sm-6 col-xs-12"><span>Proveedor:</span> <strong><?php echo $Data['provider'] ?></strong></div>
-              <div class="col-sm-6 col-xs-12"><span>Nro. Factura:</span> <?php echo insertElement('text','invoice_number','','txC inputMask','data-inputmask="\'mask\': \'99999999\'" autofocus validateEmpty="Ingrese un n&uacute;mero de factura"'); ?></div>
+              <div class="col-sm-4 col-xs-12" style="margin-top:1em;"><span>Proveedor:</span> <strong><?php echo $Data['provider'] ?></strong></div>
+              <div class="col-sm-4 col-xs-12" style="margin-top:1em;"><span>Nro. Factura:</span> <?php echo insertElement('text','invoice_number','','txC inputMask','data-inputmask="\'mask\': \'99999999\'" autofocus validateEmpty="Ingrese un n&uacute;mero de factura"'); ?></div>
+              <div class="col-sm-4 col-xs-12">
+                <!--<div class="row">-->
+                <!--  <div class="col-xs-12 col-sm-5"><span style="margin-top:7px;">Tipo de Factura:</span></div>-->
+                <!--  <div class="col-xs-12 col-sm-7"><?php echo insertElement('select','invoice_type','','chosenSelect txC','validateEmpty="Seleccione un tipo de factura"',$DB->fetchAssoc('invoice_type','type_id,name',"type_id IN (1,3,25)","name"),' ',''); ?></div>-->
+                <!--</div>-->
+                
+                  <span>Tipo de Factura:</span>
+                  <?php echo insertElement('select','invoice_type','','chosenSelect txC','validateEmpty="Seleccione un tipo de factura"',$DB->fetchAssoc('invoice_type','type_id,name',"type_id IN (1,3,25)","name"),' ',''); ?>
+              </div>
             </div>
             
             <h4 class="subTitleB"><i class="fa fa-cubes"></i> Art&iacute;culos de la Factura</h4>
@@ -83,26 +92,11 @@
                 ?>
                 <?php foreach($Items as $Item)
                       {
-                        if($Item['payment_status']!='F')
+                        if($Item['payment_status']!='F' && $Item['quantity_paid']<$Item['quantity'])
                         {
-                          // $TotalDelivered += ($Item['quantity_received']*$Item['price']);
-                          // switch ($Item['status'])
-                          // {
-                          //   case 'F': 
-                          //       $Received = '<span class="label label-success">Si ('.$Item['quantity_received'].'/'.$Item['quantity'].')</span>';
-                          //   break;
-                          //   case 'A': 
-                          //       $Received = '<span class="label label-warning">En Proceso ('.$Item['quantity_received'].'/'.$Item['quantity'].')</span>'; 
-                          //   break;
-                          //   default: 
-                          //       $Received = '<span class="label label-danger">No ('.$Item['quantity_received'].'/'.$Item['quantity'].')</span>'; 
-                          //   break;
-                          // }
                 ?>
                 <!--- NEW ITEM --->
                 <?php 
-                  // $Date = explode(" ",$Item['delivery_date']); 
-                  // $Date = implode("/",array_reverse(explode("-",$Date[0]))); 
                   if($Class=='bg-gray-light')
                     $Class='';
                   else

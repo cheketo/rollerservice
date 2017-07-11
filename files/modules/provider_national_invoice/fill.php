@@ -10,11 +10,13 @@
     $Data['taxes']  = $Invoice->GetTaxes();
     
     $Head->setTitle($Menu->GetTitle());
-    $Head->setStyle('../../../vendors/chosen-js/chosen.css'); // Chosen Select Input
+    $Head->setSubTitle('de Proveedor');
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
     $Head->setHead();
     include('../../includes/inc.top.php');
-    echo insertElement("hidden","action",'generateprovider');
+    echo insertElement("hidden","action",'update');
+    echo insertElement("hidden","id",$ID);
 ?>
     <section class="invoice">
       <!-- title row -->
@@ -22,11 +24,12 @@
       <div class="row">
         <div class="col-sm-9 col-xs-12">
           
-            <i class="fa fa-globe"></i> Roller Service S.A.
+            <i class="fa fa-globe"></i> <?php echo $Data['entity']['name'] ?>
+            <!--Roller Service S.A.-->
           
         </div>
         <div class="col-sm-3 col-xs-12">
-          <small class="pull-right"><b>Tipo factura:</b><?php echo insertElement('select','type','','form-control chosenSelect','',$DB->fetchAssoc('invoice_type','type_id,name'),' ',''); ?><br></small>
+          <small><b>Tipo factura:</b><?php echo insertElement('select','type',$Data['type_id'],'chosenSelect','',$DB->fetchAssoc('invoice_type','type_id,name'),' ',''); ?></small>
         </div>
         <!-- /.col -->
       </div>
@@ -36,7 +39,7 @@
         <div class="col-sm-4 invoice-col">
           De
           <address>
-            <strong><?php echo $Data['entity_name'] ?></strong><br>
+            <strong><?php echo $Data['entity']['name'] ?></strong><br>
             <?php echo $Data['entity']['address'] ?><br>
             <?php echo $Data['entity']['province'].', CP '.$Data['entity']['postal_code'] ?><br>
             CUIT <b><?php echo CUITFormat($Data['entity']['cuit']) ?></b><br>
@@ -47,7 +50,7 @@
           Para
           <address>
             <strong>Roller Service S.A.</strong><br>
-            Av. Caseros 3217
+            Av. Caseros 3217<br>
             CABA, CP 1263<br>
             CUIT 33-64765677-9
             
@@ -60,16 +63,15 @@
               <b>N&uacute;mero:</b>
             </div>
             <div class="col-xs-2" style="margin:0px;padding-left:0px;padding-right:3px;">
-              <?php echo insertElement('text','prefix','0000','txC inputMask','style="width:100%!important;" data-inputmask="\'mask\': \'9999\'"'); ?>
+              <?php echo insertElement('text','prefix','0000','txC inputMask','style="width:100%!important;" data-inputmask="\'mask\': \'9999\'" validateMinValue="1///Ingrese un n&uacute;mero mayor a 0."'); ?>
             </div>
             <div class="col-xs-6" style="margin:0px;padding:0px;">
               <?php echo " - ".InvoiceNumber($Data['number']) ?>
             </div>
               <br>
           </div>
-          <b>Order ID:</b> 4F3S8J<br>
-          <b>Payment Due:</b> 2/22/2014<br>
-          <b>Account:</b> 968-34567
+          <b>Fecha Emisión:</b> <?php echo insertElement('text','from_date','','txC datePicker'); ?><br>
+          <b>Vencimiento:</b> a <?php echo insertElement('text','due',30,'txC','style="max-width:30px;"'); ?> d&iacute;as<br>
         </div>
         <!-- /.col -->
       </div>
@@ -105,21 +107,39 @@
 
       <div class="row">
         <!-- accepted payments column -->
-        <div class="col-xs-6">
-          <p class="lead">Payment Methods:</p>
-          <img src="../../dist/img/credit/visa.png" alt="Visa">
-          <img src="../../dist/img/credit/mastercard.png" alt="Mastercard">
-          <img src="../../dist/img/credit/american-express.png" alt="American Express">
-          <img src="../../dist/img/credit/paypal2.png" alt="Paypal">
-
-          <p class="text-muted well well-sm no-shadow" style="margin-top: 10px;">
-            Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem plugg
-            dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
-          </p>
+        <div class="col-sm-6 col-xs-12">
+          <?php
+            $TotalTax = 0;
+            $TotalTaxPercentage = 0;
+            if(count($Data['taxes'])>0)
+            {
+          ?>
+          <p class="lead">Impuestos</p>
+          <div class="table-responsive">
+            <table class="table">
+              <?php
+                foreach($Data['taxes'] as $Tax)
+                {
+                  $TotalTax += $Tax['amount'];
+                  $TotalTaxPercentage += $Tax['percentage'];
+              ?>
+              <tr>
+                <th><?php echo $Tax['name']; ?></th>
+                <td><?php echo $Data['currency'].$Tax['amount'].' ('.decimal_number($Tax['percentage'], 3).'%)'; ?></td>
+              </tr>
+              <?php } ?>
+              <tr>
+                <th>Total Impuestos:</th>
+                <td><?php echo $Data['currency'].$TotalTax.' ('.$TotalTaxPercentage.'%)'; ?></td>
+              </tr>
+            </table>
+          </div>
+        <?php } ?>
         </div>
         <!-- /.col -->
-        <div class="col-xs-6">
-          <p class="lead">Amount Due 2/22/2014</p>
+        <div class="col-sm-6 col-xs-12">
+          <p class="lead">Importe</p>
+          <!--<p class="lead">Vencimiento <?php echo insertElement('text','due_date','','datePicker'); ?></p>-->
 
           <div class="table-responsive">
             <table class="table">
@@ -128,16 +148,12 @@
                 <td><?php echo $Data['currency'].$Data['subtotal'] ?></td>
               </tr>
               <tr>
-                <th>Tax (9.3%)</th>
-                <td>$10.34</td>
-              </tr>
-              <tr>
-                <th>Shipping:</th>
-                <td>$5.80</td>
+                <th>Impuestos</th>
+                <td><?php echo $Data['currency'].$TotalTax.' ('.$TotalTaxPercentage.'%)'; ?></td>
               </tr>
               <tr>
                 <th>Total:</th>
-                <td>$265.24</td>
+                <th><?php echo $Data['currency'].$Data['total']; ?></th>
               </tr>
             </table>
           </div>
@@ -148,20 +164,18 @@
 
       <!-- this row will not appear when printing -->
       <div class="row no-print">
-        <div class="col-xs-12">
-          <a href="invoice-print.html" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Imprimir</a>
-          <button type="button" class="btn btn-primary" style="margin-right: 5px;">
-            <i class="fa fa-file-pdf-o"></i> Generar PDF
-          </button>
-          <button type="button" class="btn btn-success pull-right"><i class="fa fa-download"></i> Guardar
+        <div class="col-xs-12 txC">
+          <!--<a href="invoice-print.html" target="_blank" class="btn btn-default"><i class="fa fa-print"></i> Imprimir</a>-->
+          <!--<button type="button" class="btn btn-primary" style="margin-right: 5px;">-->
+          <!--  <i class="fa fa-file-pdf-o"></i> Generar PDF-->
+          <!--</button>-->
+          <button type="button" class="btn btn-primary"><i class="fa fa-download"></i> Terminar Carga
           </button>
         </div>
       </div>
     </section>
   
 <?php
-$Foot->setScript('../../../vendors/inputmask3/jquery.inputmask.bundle.min.js'); // Input Mask
- // Chosen Select Input
 $Foot->setScript('../../../vendors/datepicker/bootstrap-datepicker.js'); // Date Picker Calendar
 include('../../includes/inc.bottom.php');
 ?>

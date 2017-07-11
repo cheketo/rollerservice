@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $New = new Provider();
     $Head->setTitle($Menu->GetTitle());
-     
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
     include('../../includes/inc.top.php');

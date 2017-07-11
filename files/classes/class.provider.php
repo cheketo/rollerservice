@@ -317,50 +317,10 @@ public function MakeRegs($Mode="List")
 		$Country		= $_POST['map1_country'];
 		
 		// INSERT LOCATIONS
-		
-		// COUNTRY
-		$DBQ = $this->fetchAssoc('geolocation_country','country_id as id',"name='".$Country."'");
-		if($DBQ[0]['id'])
-		{
-			$CountryID = $DBQ[0]['id'];
-		}else{
-			// INSERT NEW COUNTRY
-			$this->execQuery('INSERT','geolocation_country','name,short_name',"'".$Country."','".$CountryShort."'");
-			$CountryID = $this->GetInsertId();
-		}
-		
-		//PROVINCE
-		$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$CountryID." AND short_name='".$ProvinceShort."'");
-		if($DBQ[0]['id'])
-		{
-			$ProvinceID = $DBQ[0]['id'];
-		}else{
-			// INSERT NEW PROVINCE
-			$this->execQuery('INSERT','geolocation_province','name,short_name,country_id',"'".$Province."','".$ProvinceShort."',".$CountryID);
-			$ProvinceID = $this->GetInsertId();
-		}
-		
-		//REGION
-		$DBQ = $this->fetchAssoc('geolocation_region','region_id as id',"country_id = ".$CountryID." AND province_id = ".$ProvinceID." AND name='".$Region."'");
-		if($DBQ[0]['id'])
-		{
-			$RegionID = $DBQ[0]['id'];
-		}else{
-			// INSERT NEW REGION
-			$this->execQuery('INSERT','geolocation_region','name,short_name,country_id,province_id',"'".$Region."','".$RegionShort."',".$CountryID.",".$ProvinceID);
-			$RegionID = $this->GetInsertId();
-		}
-		
-		//ZONE
-		$DBQ = $this->fetchAssoc('geolocation_zone','zone_id as id',"country_id = ".$CountryID." AND province_id = ".$ProvinceID." AND region_id = ".$RegionID." AND name='".$Zone."'");
-		if($DBQ[0]['id'])
-		{
-			$ZoneID = $DBQ[0]['id'];
-		}else{
-			// INSERT NEW ZONE
-			$this->execQuery('INSERT','geolocation_zone','name,short_name,country_id,province_id,region_id',"'".$Zone."','".$ZoneShort."',".$CountryID.",".$ProvinceID.",".$RegionID);
-			$ZoneID = $this->GetInsertId();
-		}
+		$CountryID	= Geolocation::InsertCountry($Country,$CountryShort,$this);
+		$ProvinceID = Geolocation::InsertProvince($Province,$ProvinceShort,$this);
+		$RegionID	= Geolocation::InsertRegion($Region,$RegionShort,$this);
+		$ZoneID 	= Geolocation::InsertZone($Zone,$ZoneShort,$this);
 		
 		
 		// Basic Data
@@ -446,50 +406,10 @@ public function MakeRegs($Mode="List")
 		//echo $Address." asdasd";
 		
 		// INSERT LOCATIONS
-		
-		// COUNTRY
-		$DBQ = $this->fetchAssoc('geolocation_country','country_id as id',"name='".$Country."'");
-		if($DBQ[0]['id'])
-		{
-			$CountryID = $DBQ[0]['id'];
-		}else{
-			// INSERT NEW COUNTRY
-			$this->execQuery('INSERT','geolocation_country','name,short_name',"'".$Country."','".$CountryShort."'");
-			$CountryID = $this->GetInsertId();
-		}
-		
-		//PROVINCE
-		$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$CountryID." AND short_name='".$ProvinceShort."'");
-		if($DBQ[0]['id'])
-		{
-			$ProvinceID = $DBQ[0]['id'];
-		}else{
-			// INSERT NEW PROVINCE
-			$this->execQuery('INSERT','geolocation_province','name,short_name,country_id',"'".$Province."','".$ProvinceShort."',".$CountryID);
-			$ProvinceID = $this->GetInsertId();
-		}
-		
-		//REGION
-		$DBQ = $this->fetchAssoc('geolocation_region','region_id as id',"country_id = ".$CountryID." AND province_id = ".$ProvinceID." AND name='".$Region."'");
-		if($DBQ[0]['id'])
-		{
-			$RegionID = $DBQ[0]['id'];
-		}else{
-			// INSERT NEW REGION
-			$this->execQuery('INSERT','geolocation_region','name,short_name,country_id,province_id',"'".$Region."','".$RegionShort."',".$CountryID.",".$ProvinceID);
-			$RegionID = $this->GetInsertId();
-		}
-		
-		//ZONE
-		$DBQ = $this->fetchAssoc('geolocation_zone','zone_id as id',"country_id = ".$CountryID." AND province_id = ".$ProvinceID." AND region_id = ".$RegionID." AND name='".$Zone."'");
-		if($DBQ[0]['id'])
-		{
-			$ZoneID = $DBQ[0]['id'];
-		}else{
-			// INSERT NEW ZONE
-			$this->execQuery('INSERT','geolocation_zone','name,short_name,country_id,province_id,region_id',"'".$Zone."','".$ZoneShort."',".$CountryID.",".$ProvinceID.",".$RegionID);
-			$ZoneID = $this->GetInsertId();
-		}
+		$CountryID	= Geolocation::InsertCountry($Country,$CountryShort,$this);
+		$ProvinceID = Geolocation::InsertProvince($Province,$ProvinceShort,$this);
+		$RegionID	= Geolocation::InsertRegion($Region,$RegionShort,$this);
+		$ZoneID 	= Geolocation::InsertZone($Zone,$ZoneShort,$this);
 		
 		
 		// Basic Data
@@ -520,6 +440,8 @@ public function MakeRegs($Mode="List")
 		
 		$Update		= $this->execQuery('update','provider',"name='".$Name."',postal_code='".$PostalCode."',address='".$Address."',cuit=".$CUIT.",iva='".$IVA."',gross_income_tax='".$GrossIncome."',email='".$Email."',fax='".$Fax."',phone='".$Phone."',website='".$Website."',country_id=".$CountryID.",province_id='".$ProvinceID."',region_id=".$RegionID.",zone_id='".$ZoneID."',lat=".$Lat.",lng=".$Lng.",logo='".$Image."',updated_by=".$_SESSION['admin_id'],"provider_id=".$ID);
 		//echo $this->lastQuery();
+		
+		Tax::SetIVA($CUIT,$IVA);		
 		
 		// PROCESS AGENTS
 		$Agents = array();

@@ -6,6 +6,7 @@
     
     $Head->setTitle($Data['code']);
     $Head->setSubTitle($Menu->GetTitle());
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
      
     $Head->setHead();

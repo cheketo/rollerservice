@@ -18,8 +18,7 @@
     
     $Head->setTitle("Editar Orden de ".$Data['provider']);
     $Head->setSubTitle($Menu->GetTitle());
-    $Head->setTitle("Editar Orden de ".$Data['provider']);
-    $Head->setSubTitle($Menu->GetTitle());
+    $Head->setIcon($Menu->GetHTMLicon());
      
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS

@@ -16,9 +16,9 @@ $(document).ready(function(){
 	}
 	
 	
-	////// PAYMENT FUNCTIONS////////
-	updateTotalPrice()
-	
+	////// INVOICE FUNCTIONS////////
+	updateTotalPrice();
+	removeInvoice();
 	
 	////// ORDER FUNCTIONS ////////
 	addOrderItem();
@@ -29,7 +29,7 @@ $(document).ready(function(){
 	countItems();
 	calculateTotalOrderPrice();
 	calculateTotalOrderQuantity();
-	
+	deleteItem();
 	setDatePicker();
 	priceImputMask(1);
 });
@@ -52,17 +52,26 @@ function setDatePicker()
 		    weekStart: 1
 		};
 		
-		$(".delivery_date").datepicker({
-			autoclose:true,
-			todayHighlight: true,
-			language: 'es'
-		});
+		// $(".delivery_date").datepicker({
+		// 	autoclose:true,
+		// 	todayHighlight: true,
+		// 	language: 'es'
+		// });
+		
+		setADatePicker();
 	}
 }
 
-function setADatePicker(element)
+// function setADatePicker(element)
+function setADatePicker()
 {
-	$(element).datepicker({
+	// $(element).datepicker({
+	// 	autoclose:true,
+	// 	todayHighlight: true,
+	// 	language: 'es'
+	// });
+	
+	$(".delivery_date").datepicker({
 		autoclose:true,
 		todayHighlight: true,
 		language: 'es'
@@ -79,6 +88,40 @@ function priceImputMask(id)
 			$("#price_"+id).val(decimal[0]+".00");
 		}
 	});	
+}
+//////////////////////////// REMOVE INVOICE //////////////////////////////////
+function removeInvoice()
+{
+	$(".RemoveInvoice").on('click',function(){
+		var id=$(this).attr('invoice');
+		var invoice = $("#invoice_text_"+id).html();
+		alertify.confirm(utf8_decode('Está a punto de anula la factura N°'+invoice+' ¿Desea continuar?'), function(e)
+		{
+			if(e)
+			{
+				var order=$("#id").val();
+				var process = '../../library/processes/proc.common.php';
+				var string	= 'order='+order+'&id='+ id +'&action=degenerateinvoice&object=ProviderOrder';
+				$.ajax({
+					type: "POST",
+					url: process,
+					data: string,
+					cache: false,
+					success: function(data)
+					{
+						if(!data)
+						{
+							// $("#row_invoice_"+id).remove();
+							$("#invoice_span_"+id).html('<span class="label label-danger">Anulada</span>');
+							$("#actions_span_"+id).html('');
+						}else{
+							console.log(data);
+						}
+					}
+				});
+			}
+		});
+	});
 }
 
 //////////////////////////// ORDER ITEMS //////////////////////////////////
@@ -103,7 +146,8 @@ function addOrderItem()
 	                saveItem();
 	                editItem();
 	                deleteItem();
-	                setADatePicker("#date_"+id);
+	                // setADatePicker("#date_"+id);
+	                setADatePicker();
 	                validateDivChange();
 	                countItems();
 	                calculateRowPrice();
@@ -232,13 +276,15 @@ function changeDates()
 		var date = $("#change_date").val();
 		alertify.confirm(utf8_decode('¿Desea aplicar la fecha '+date+' a todos los art&iacute;culos ?'), function(e){
 		if(e)
-		{
+		{	
 			$(".delivery_date").each(function(){
-				$(this).val(date);
+				if(!$(this).hasClass('Restricted'))
+					$(this).val(date);
 			});
 			
 			$(".OrderDate").each(function(){
-				$(this).html(date);
+				if(!$(this).hasClass('Restricted'))
+					$(this).html(date);
 			});
 		}
 		});
@@ -348,8 +394,8 @@ function fillAgentSelect()
 
 ///////////////////////////////////////////// LIST FUNCTIONS //////////////////////////////////////
 
+//STORE ORDER
 $(function(){
-	
 	$(".storeElement").click(function(){
 		var ID = $(this).attr('id').split("_");
 		ID = ID[1];
@@ -375,13 +421,6 @@ $(function(){
 	});
 	
 	
-// 	$("#BtnContinue").click(function(){
-// 		$("#ItemSelection").addClass('Hidden');
-// 		$("#FillData").removeClass('Hidden');
-// 		//$("#BtnCancel").removeClass('Hidden');
-// 	});
-	
-	
 // 	////////////////////////////////// Checkbox ////////////////////////////////
 	$(".iCheckbox").on('ifChecked', function(){
 		var id = $(this).attr("id");
@@ -396,7 +435,8 @@ $(function(){
 		updateTotalAmount();
 	});
 	
-// 	////////////////// BILLING PROCESS ///////////
+////////////////////// BILLING PROCESS ///////////
+// GENERATE INVOICE
 	$("#BtnAdd").on("click",function(e){
 		e.preventDefault();
 		if(validate.validateFields('*'))

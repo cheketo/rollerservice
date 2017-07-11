@@ -40,7 +40,6 @@
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12">
                 <?php echo insertElement('select','currency','','form-control chosenSelect','validateEmpty="Seleccione una Moneda" data-placeholder="Seleccione una Moneda"',$DB->fetchAssoc('currency','currency_id,title',"",'title DESC'),' ',''); ?>
-                <?php //echo insertElement("text","currency",'','Hidden',''); ?>
               </div>
             </div>
             <br>
@@ -80,15 +79,15 @@
                   </div>
                   <div class="col-xs-1 txC">
                     <span id="Price1" class="Hidden ItemText1"></span>
-                    <?php echo insertElement('text','price_1','','ItemField1 form-control calcable inputMask','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"'); ?>
+                    <?php echo insertElement('text','price_1','','ItemField1 form-control txC calcable inputMask','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"'); ?>
                   </div>
                   <div class="col-xs-1 txC">
                     <span id="Quantity1" class="Hidden ItemText1"></span>
-                    <?php echo insertElement('text','quantity_1','','ItemField1 form-control calcable QuantityItem inputMask','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"'); ?>
+                    <?php echo insertElement('text','quantity_1','','ItemField1 form-control txC calcable QuantityItem inputMask','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"'); ?>
                   </div>
                   <div class="col-xs-2 txC">
                     <span id="Date1" class="Hidden ItemText1 OrderDate"></span>
-                    <?php echo insertElement('text','date_1','','ItemField1 form-control delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"'); ?>
+                    <?php echo insertElement('text','date_1','','ItemField1 form-control txC delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"'); ?>
                   </div>
                   <div id="item_number_1" class="col-xs-1 txC item_number" total="0" item="1">$ 0.00</div>
                   <div class="col-xs-3 txC">

@@ -6,6 +6,7 @@
     ValidateID($Data);
     
     $Head->setTitle($Menu->GetTitle());
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>

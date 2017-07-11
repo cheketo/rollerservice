@@ -16,6 +16,11 @@
             $DB->Connect();
             return $DB;
         }
+        
+        public static function TaxableType($Type)
+        {
+            return ($Type==1 || $Type==3);
+        }
     }
 
 ?>

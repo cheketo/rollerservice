@@ -62,25 +62,25 @@ class ProviderOrder extends DataBase
 		for($i=0;$i<count($Rows);$i++)
 		{
 			$Row	=	new ProviderOrder($Rows[$i][$this->TableID]);
-			$Actions	= 	'<span class="roundItemActionsGroup"><a title="M&aacute;s informaci&oacute;n" alt="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a> ';
+			$Actions	= 	'<span class="roundItemActionsGroup"><a class="hint--bottom hint--bounce " aria-label="Ver M&aacute;s"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a> ';
 			
 			if($Row->Data['status']=="P")
 			{
-				$Actions	.= '<a title="Archivar" alt="Archivar" class="storeElement" process="../../library/processes/proc.common.php" id="store_'.$Row->ID.'"><button type="button" class="btn btn-primary"><i class="fa fa-archive"></i></button></a>';	
+				$Actions	.= '<a class="hint--bottom hint--bounce hint--info storeElement" aria-label="Archivar" process="../../library/processes/proc.common.php" id="store_'.$Row->ID.'"><button type="button" class="btn btn-primary"><i class="fa fa-archive"></i></button></a>';	
 			}
 			
 			if($Row->Data['status']=="P" || $Row->Data['status']=="I")
 			{
-				$Actions	.= '<a title="Confirmar" alt="Confirmar" class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
+				$Actions	.= '<a class="hint--bottom hint--bounce hint--success activateElement" aria-label="Activar" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
 			}
 			
 			if($Row->Data['status']=="A" && $Row->Data['payment_status']!="F")
 			{
-				$Actions	.= '<a href="invoice.php?id='.$Row->ID.'" title="Cargar Factura" alt="Cargar Factura" class="Invoice" status="'.$Row->Data['status'].'" id="payment_'.$Row->ID.'"><button type="button" class="btn bg-olive"><i class="fa fa-file-text"></i></button></a> ';
+				$Actions	.= '<a class="hint--bottom hint--bounce hint--success Invoice" aria-label="Controlar Factura" href="invoice.php?id='.$Row->ID.'" status="'.$Row->Data['status'].'" id="payment_'.$Row->ID.'"><button type="button" class="btn bg-olive"><i class="fa fa-file-text"></i></button></a> ';
 			}
 			
 			if($Row->Data['status']!="P" && $Row->Data['status']!="Z"){
-				$Actions	.= '<a title="Ver Detalle" alt="Ver Detalle" href="view.php?id='.$Row->ID.'" id="payment_'.$Row->ID.'"><button type="button" class="btn btn-github"><i class="fa fa-eye"></i></button></a> ';
+				$Actions	.= '<a class="hint--bottom hint--bounce" aria-label="Ver Detalle" href="view.php?id='.$Row->ID.'" id="payment_'.$Row->ID.'"><button type="button" class="btn btn-github"><i class="fa fa-eye"></i></button></a> ';
 			}
 			
 			// if($Row->Data['status']=="A" || $Row->Data['status']=="C")
@@ -90,12 +90,12 @@ class ProviderOrder extends DataBase
 			
 			if($Row->Data['status']!="F" && $Row->Data['status']!="Z")
 			{
-				$Actions	.= '<a title="Editar" alt="Editar" href="edit.php?status='.$Row->Data['status'].'&id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
+				$Actions	.= '<a class="hint--bottom hint--bounce hint--info" aria-label="Editar" href="edit.php?status='.$Row->Data['status'].'&id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
 			}
 			
 			if($Row->Data['payment_status']=="P" && $Row->Data['delivery_status']=="P" && $Row->Data['status']!="Z")
 			{
-				$Actions	.= '<a title="Eliminar" alt="Eliminar" class="deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
+				$Actions	.= '<a aria-label="Eliminar" class="hint--bottom hint--bounce hint--error deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
 				
 			}
 			$Actions	.= '</span>';
@@ -185,7 +185,7 @@ class ProviderOrder extends DataBase
 									</div>
 								</div>' : '';
 					
-					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="una orden de compra">
+					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'">
 									<div class="col-lg-3 col-md-5 col-sm-8 col-xs-10">
 										<div class="listRowInner">
 											<img class="img-circle" style="border-radius:0%!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['name'].'">
@@ -286,7 +286,7 @@ class ProviderOrder extends DataBase
 			$BtnIcon = 'ambulance';
 		}
 		$HTML =	'<!-- New Button --> 
-		    	<a href="new.php?status='.$_GET['status'].'"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-'.$BtnIcon.'"></i> '.$BtnText.'</button></a>
+		    	<a class="hint--bottom hint--bounce hint--success" aria-label="'.$BtnText.'" href="new.php?status='.$_GET['status'].'"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-'.$BtnIcon.'"></i></button></a>
 		    	<!-- /New Button -->';
 		return $HTML;
 	}
@@ -410,9 +410,9 @@ class ProviderOrder extends DataBase
 		$Status			= $_POST['status'];
 		
 		$Insert			= $this->execQuery('insert',$this->Table,'type,provider_id,agent_id,currency_id,extra,total,delivery_date,status,creation_date,created_by,company_id',"'".$Type."',".$ProviderID.",".$AgentID.",".$CurrencyID.",'".$Extra."',".$Total.",'".$Date."','".$Status."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
-		//echo $this->lastQuery();
+		// echo $this->lastQuery();
 		$NewID 		= $this->GetInsertId();
-		$New 	= new ProviderOrder($NewID);
+		$New 		= new ProviderOrder($NewID);
 		
 		// INSERT ITEMS
 		foreach($Items as $Item)
@@ -422,7 +422,7 @@ class ProviderOrder extends DataBase
 			$Fields .= $NewID.",".$ProviderID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",'".$Item['delivery_date']."',".$CurrencyID.",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id'];
 		}
 		$this->execQuery('insert','provider_order_item','order_id,provider_id,product_id,price,quantity,delivery_date,currency_id,creation_date,created_by,company_id',$Fields);
-		//echo $this->lastQuery();
+		// echo $this->lastQuery();
 		
 	}
 	
@@ -431,9 +431,10 @@ class ProviderOrder extends DataBase
 		$ID 	= $_POST['id'];
 		$Edit	= new ProviderOrder($ID);
 		$Status = $Edit->Data['status'];
-		if($Status!='P')
+		if($Status!='P' && $Status!='A')
 		{
 			echo "403";
+			die();
 		}
 		// ITEMS DATA
 		$Items = array();
@@ -442,7 +443,13 @@ class ProviderOrder extends DataBase
 			if($_POST['item_'.$I])
 			{
 				$ItemDate = implode("-",array_reverse(explode("/",$_POST['date_'.$I])));
-				$Items[] = array('id'=>$_POST['item_'.$I],'price'=>$_POST['price_'.$I],'quantity'=>$_POST['quantity_'.$I], 'delivery_date'=>$ItemDate );
+				$PaymentStatus = $_POST['payment_status_'.$I]? strtoupper($_POST['payment_status_'.$I]):'P';
+				$DeliveryStatus = $_POST['delivery_status_'.$I]? strtoupper($_POST['delivery_status_'.$I]):'P';
+				$CreationDate = $_POST['creation_date_'.$I]? "'".$_POST['creation_date_'.$I]."'" : "NOW()";
+				$ActualDate = $_POST['actual_delivery_date_'.$I]?$_POST['actual_delivery_date_'.$I]:"0000-00-00";
+				$QuantityPaid = $_POST['quantity_paid_'.$I]? strtoupper($_POST['quantity_paid_'.$I]):"'0'";
+				$QuantityReceived = $_POST['quantity_received_'.$I]? strtoupper($_POST['quantity_received_'.$I]):"'0'";
+				$Items[] = array('id'=>$_POST['item_'.$I],'price'=>$_POST['price_'.$I],'quantity'=>$_POST['quantity_'.$I], 'delivery_date'=>$ItemDate, 'payment_status'=>$PaymentStatus, 'delivery_status'=>$DeliveryStatus,'actual_delivery_date'=>$ActualDate,'creation_date'=>$CreationDate, 'quantity_received'=>$QuantityReceived,'quantity_paid'=>$QuantityPaid );
 				if(!$Date)
 				{
 					$Date = $ItemDate;
@@ -486,9 +493,10 @@ class ProviderOrder extends DataBase
 		{
 			if($Fields)
 				$Fields .= "),(";
-			$Fields .= $ID.",".$ProviderID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",'".$Item['delivery_date']."',".$CurrencyID.",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id'];
+			$Fields .= $ID.",".$ProviderID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",".$Item['quantity_paid'].",".$Item['quantity_received'].",'".$Item['delivery_date']."','".$Item['actual_delivery_date']."','".$Item['payment_status']."','".$Item['delivery_status']."',".$CurrencyID.",".$Item['creation_date'].",".$_SESSION['admin_id'].",".$_SESSION['company_id'];
 		}
-		$this->execQuery('insert','provider_order_item','order_id,provider_id,product_id,price,quantity,delivery_date,currency_id,creation_date,created_by,company_id',$Fields);
+		$this->execQuery('insert','provider_order_item','order_id,provider_id,product_id,price,quantity,quantity_paid,quantity_received,delivery_date,actual_delivery_date,payment_status,delivery_status,currency_id,creation_date,created_by,company_id',$Fields);
+		// echo $this->lastQuery();
 	}
 	
 	public function Activate()
@@ -507,17 +515,53 @@ class ProviderOrder extends DataBase
 	
 	public function Generateinvoice()
 	{
-		$ID	= $_POST['id'];
+		$ID			= $_POST['id'];
 		$ProviderID = $_POST['provider'];
-		$Currency = $_POST['currency'];
-		$Invoice = $_POST['invoice_number'];
-		$SubTotal = $_POST['total'];
+		$Currency	= $_POST['currency'];
+		$Invoice	= $_POST['invoice_number'];
+		$TypeID		= $_POST['invoice_type'];
+		$SubTotal	= $_POST['total'];
+		$Total		= $SubTotal;
+		$InvoiceTax = array();
+		$Taxes		= 0;
+		$AddTaxes	= Tax::TaxableType($TypeID);
+		$Operation	= 2;
 		
-		$Provider = $this->fetchAssoc("provider","name","provider_id=".$ProviderID);
+		$Provider	= $this->fetchAssoc("provider a INNER JOIN view_cuit_operation_tax b ON (a.cuit=b.cuit)","a.name,a.cuit,b.name as tax,b.tax_id, b.percentage, b.base_amount","b.operation_id = ".$Operation." AND a.provider_id=".$ProviderID);
+		$CUIT		= $Provider[0]['cuit'];
+		$Name		= $Provider[0]['name'];
 		
-		$this->execQuery('INSERT','invoice','entity_id,operation_id,entity_name,currency_id,subtotal,number,status,creation_date,created_by,company_id',$ProviderID.",2,'".$Provider[0]['name']."',".$Currency.",".$SubTotal.",".$Invoice.",'P',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
-		//echo $this->lastQuery()." *****/";
+		if($AddTaxes)
+		{
+			foreach($Provider as $Key=>$Tax)
+			{
+				if($SubTotal>=$Tax['base_amount'])
+				{
+					$TaxAmount = round(($SubTotal*$Tax['percentage'])/100,2);
+					$Total += $TaxAmount;
+					$Taxes += $TaxAmount;
+					$Provider[$Key]['amount'] = $TaxAmount;
+					$InvoiceTax[] = $Provider[$Key];
+				}
+			}
+		}
+		
+		$this->execQuery('INSERT','invoice','entity_id,type_id,operation_id,entity_name,currency_id,total,subtotal,tax,number,status,creation_date,created_by,company_id',$ProviderID.",".$TypeID.",".$Operation.",'".$Name."',".$Currency.",".$Total.",".$SubTotal.",".$Taxes.",".$Invoice.",'P',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
+		// echo $this->lastQuery()." *****/";
 		$InvoiceID = $this->GetInsertId();
+		
+		if($AddTaxes)
+		{
+			// INSERT TAXES
+			foreach($InvoiceTax as $Key=>$Tax)
+			{
+				$InvoiceTax[$Key] = $InvoiceID.",".$Tax['tax_id'].",".$Tax['amount'].",".$Tax['percentage'];
+			}
+			$InvoiceTaxes = implode("),(",$InvoiceTax);
+			$this->execQuery('INSERT','relation_invoice_tax','invoice_id,tax_id,amount,percentage',$InvoiceTaxes);
+			// echo $this->lastQuery()." *****/";
+		}
+		
 		
 		// ITEMS DATA
 		$Items = array();
@@ -526,11 +570,11 @@ class ProviderOrder extends DataBase
 			if($_POST['id'.$I])
 			{
 				$Separator = $I>1? "),(":"";
-					
 				$QueryFields .= $Separator.$InvoiceID.",".$_POST['product'.$I].",'".$_POST['description'.$I]."',".$_POST['quantity_'.$I].",".$_POST['price'.$I].",".$_POST['total'.$I].",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id'];
 				//$Items[] = array('id'=>$_POST['product'.$I],'description'=>$_POST['description'.$I],'price'=>$_POST['price'.$I],'quantity'=>$_POST['quantity_'.$I], 'total'=>$_POST['total'.$I]);
 				$QuantityPaid = $_POST['quantity_'.$I] + $_POST['quantity_paid'.$I];
-				$this->execQuery('UPDATE',"provider_order_item","payment_status='A', quantity_paid=".$QuantityPaid,"item_id=".$_POST['item'.$I]);
+				$ItemPaymentStatus = $_POST['total_quantity'.$I]==$QuantityPaid? 'F':'A';
+				$this->execQuery('UPDATE',"provider_order_item","payment_status='".$ItemPaymentStatus."', quantity_paid=".$QuantityPaid,"item_id=".$_POST['item'.$I]);
 				//echo "----".$this->lastQuery()."----";
 			}
 		}
@@ -538,20 +582,47 @@ class ProviderOrder extends DataBase
 		
 		$OrderStatus = $this->fetchAssoc($this->Table.'_item',"SUM(quantity_paid) AS quantity_paid,SUM(quantity) AS quantity",$this->TableID."=".$ID);
 		$OrderStatus = $OrderStatus[0];
-		$Status = $OrderStatus['quantity']==$OrderStatus['quantity_paid']? 'F':'A';
-		// $Order = $this->fetchAssoc($this->Table,"payment_status,delivery_status",$this->TableID."=".$ID);
-		// $Order = $Order[0];
-		// $Upadte = $Order['payment_status']=='F' && $Order['delivery_status']=='F'? ",status='F'":"";
-		$this->execQuery('UPDATE',$this->Table,"payment_status='".$Status."'".$Upadte,$this->TableID."=".$ID);
+		$PaymentStatus = $OrderStatus['quantity']==$OrderStatus['quantity_paid']? 'F':'A';
+		$Status = 'A';
+		if($PaymentStatus=='F')
+		{
+			$Order = $this->fetchAssoc($this->Table,"delivery_status",$this->TableID."=".$ID);
+			if($Order[0]['delivery_status']=='F')
+				$Status = 'F';
+		}
+		$this->execQuery('UPDATE',$this->Table,"status='".$Status."',payment_status='".$PaymentStatus."'",$this->TableID."=".$ID);
 		
 		$this->execQuery('INSERT','relation_invoice_order','invoice_id,order_id,amount',$InvoiceID.",".$ID.",".$SubTotal);
 		//echo $this->lastQuery()." \\n\\n";
 	}
 	
+	public function Degenerateinvoice($ID=0)
+	{
+		if(!$ID)
+			$ID	= $_POST['id'];
+		$Items = $this->fetchAssoc('invoice a INNER JOIN relation_invoice_order b ON (a.invoice_id=b.invoice_id) INNER JOIN provider_order_item c ON (b.order_id=c.order_id) INNER JOIN invoice_detail d ON (d.invoice_id=a.invoice_id)',"a.invoice_id,b.order_id,c.product_id,c.item_id,d.detail_id,d.price,c.quantity_paid,d.quantity","c.product_id = d.product_id  AND c.price=d.price AND c.quantity_paid>=d.quantity AND a.invoice_id=".$ID);
+		$Order = $Items[0]['order_id'];
+		// ROLLBACK ITEM STATUS AND QUANTITIES
+		foreach($Items as $Item)
+		{
+			$QuantityPaid = $Item['quantity_paid']-$Item['quantity'];
+			$Status = $QuantityPaid>0? 'A':'P';
+			// UPDATE QUANTITIES AND STATUS FROM ORDER_ITEM
+			$this->execQuery('UPDATE','provider_order_item',"quantity_paid=".$QuantityPaid.", payment_status='".$Status."'","item_id=".$Item['item_id']);
+		}
+		$ActiveItems = $this->fetchAssoc('provider_order_item','quantity_paid',"quantity_paid>0 AND order_id=".$Order);
+		
+		// UPDATE STATUS AND PAYMENT_STATUS FROM ORDER
+		$PaymentOrderStatus = empty($ActiveItems) || !$ActiveItems[0]['quantity_paid']? 'P' : 'A';
+		$this->execQuery('UPDATE',$this->Table,"status='A', payment_status='".$PaymentOrderStatus."'",$this->TableID."=".$Order);
+		// SET INVOICE STATUS 'I'
+		$this->execQuery('UPDATE','invoice',"status='I'","invoice_id=".$ID);
+	}
+	
 	public function Delete()
 	{
 		$ID	= $_POST['id'];
-		$Order = $this->fetchAssoc($this->Table,'*',$this->TableID."=".$ID);
+		$Order = $this->fetchAssoc($this->Table.' a LEFT JOIN relation_invoice_order b ON (b.order_id=a.order_id)','a.*,b.invoice_id','a.'.$this->TableID."=".$ID);
 		if($Order[0]['payment_status']=='P' && $Order[0]['delivery_status']=='P')
 		{
 			$Status = $Order[0]['status'];
@@ -646,15 +717,15 @@ class ProviderOrder extends DataBase
                 </div>
                 <div class="col-xs-1 txC">
                 	<span id="Price'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.insertElement('text','price_'.$ID,'','ItemField'.$ID.' form-control calcable','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"').'
+                  '.insertElement('text','price_'.$ID,'','ItemField'.$ID.' form-control txC calcable inputMask','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"').'
                 </div>
                 <div class="col-xs-1 txC">
                 	<span id="Quantity'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.insertElement('text','quantity_'.$ID,'','ItemField'.$ID.' form-control calcable QuantityItem','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"').'
+                  '.insertElement('text','quantity_'.$ID,'','ItemField'.$ID.' form-control txC calcable QuantityItem inputMask','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"').'
                 </div>
                 <div class="col-xs-2 txC">
                   <span id="Date'.$ID.'" class="Hidden ItemText'.$ID.' OrderDate"></span>
-                  '.insertElement('text','date_'.$ID,'','ItemField'.$ID.' form-control delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"').'
+                  '.insertElement('text','date_'.$ID,'','ItemField'.$ID.' form-control txC delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"').'
                 </div>
                 <div  id="item_number_'.$ID.'" class="col-xs-1 txC item_number" total="0" item="'.$ID.'">'.$TotalPrice.'</div>
                 <div class="col-xs-3 txC">

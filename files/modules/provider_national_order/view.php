@@ -6,11 +6,6 @@
     $Data   = $View->GetData();
     ValidateID($Data['order_id']);
     $Status = $View->Data['status'];
-//     if($Status=='F' || $Status=='Z')
-//     {
-//       header('Location: list.php?error=status');
-// 			die();
-//     }
     
     $Items  = $View->GetItems();
     $Currency = $Items[0]['currency'];
@@ -39,9 +34,15 @@
         break;
     }
     
+    foreach($Invoices as $Invoice)
+    {
+        if($Invoice['type_id']!=25 && $Invoice['status']!='I')
+            $TotalInvoice += $Invoice['total'];
+    }
+    
     $Head->setTitle($Menu->GetTitle());
     $Head->setIcon($Menu->GetHTMLicon());
-    $Head->setSubTitle("Orden");
+    $Head->setSubTitle("Orden de Compra a Proveedor");
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>
@@ -57,15 +58,16 @@
         </div><!-- /.box-header -->
         <div class="box-body">
             <div class="row">
-                <h4><div class="col-xs-12 col col-sm-4">Estado: <span class="<?php echo $ClassStatus ?>"><strong><?php echo $TextStatus ?></strong></span></div></h4>
-                <h4><div class="col-xs-12 col col-sm-4">Total: <span class="label bg-olive"><strong><?php echo $Currency.$Data['total'] ?></strong></span></div></h4>
-                <h4><div class="col-xs-12 col col-sm-4">Contacto: <span class="<?php echo $Class ?>"><strong><?php echo $Agent ?></strong></span></div></h4>
+                <h4><div class="col-xs-6 col col-sm-3">Estado: <span class="<?php echo $ClassStatus ?>"><strong><?php echo $TextStatus ?></strong></span></div></h4>
+                <h4><div class="col-xs-6 col col-sm-3">Facturado a hoy: <span class="label bg-teal"><strong><?php echo $Currency.$TotalInvoice ?></strong></span></div></h4>
+                <h4><div class="col-xs-6 col col-sm-3 margin-top1em">Total Mercader&iacute;a: <span class="label bg-olive"><strong><?php echo $Currency.$Data['total'] ?></strong></span></div></h4>
+                <h4><div class="col-xs-6 col col-sm-3 margin-top1em">Contacto: <span class="<?php echo $Class ?>"><strong><?php echo $Agent ?></strong></span></div></h4>
             </div>
         </div><!-- /.box-header -->
         <hr>
         <div class="box-body">
             <h3 class="subTitleA"><i class="fa fa-cubes"></i> Art&iacute;culos</h3>
-            <div class="innerContainer" style="border:0px;">
+            <div class="innerContainer" style="border:0px;padding-top:0px!important;margin:-10px 0px!important;">
                 <div class="row bg-black" style="margin-bottom:0px!important;padding:5px 0px;">
                     <div class="col-xs-4 txC">
                         <strong>Art&iacute;culo</strong>
@@ -111,7 +113,7 @@
             </div>
             <hr>
             <h3 class="subTitleA"><i class="fa fa-truck"></i> Entregas</h3>
-            <div class="innerContainer" style="border:0px;">
+            <div class="innerContainer" style="border:0px;padding-top:0px!important;margin:-10px 0px!important;">
                 <div class="row bg-red" style="margin-bottom:0px!important;padding:5px 0px;">
                     <div class="col-xs-4 txC">
                         <strong>Art&iacute;culo</strong>
@@ -160,57 +162,74 @@
             </div>
             <hr>
             <h3 class="subTitleA"><i class="fa fa-file-text"></i> Facturas</h3>
-            <div class="innerContainer" style="border:0px;">
+            <div class="innerContainer" style="border:0px;padding-top:0px!important;margin:-10px 0px!important;">
                 <div class="row bg-blue" style="margin-bottom:0px!important;padding:5px 0px;">
-                    <div class="col-xs-4 txC">
+                    <div class="col-xs-2 txC">
                         <strong>Nro.</strong>
                     </div>
                     <div class="col-xs-2 txC">
-                        <strong>Sub-Total</strong>
+                        <strong>Total</strong>
                     </div>
-                    <div class="col-xs-2 txC">
+                    <div class="col-xs-3 txC">
                         <strong>Fecha Control</strong>
                     </div>
-                    <div class="col-xs-4 txC">
+                    <div class="col-xs-3 txC">
                         <strong>Estado</strong>
                     </div>
+                    <div class="col-xs-2 txC">
+                        <strong>Acciones</strong>
+                    </div>
                 </div>
-                <?php 
+                <?php
                     foreach($Invoices as $Invoice)
                     {
                         $Class = $Class=='bg-gray'? 'bg-gray-light' : 'bg-gray';
+                        $BackBtn ='<button invoice="'.$Invoice['invoice_id'].'" aria-label="Anular Factura" class="RemoveInvoice btn label label-danger hint--top hint--bounce hint--error"><i class="fa fa-times"></i></button>';
+                        $CreditBtn ='<button invoice="'.$Invoice['invoice_id'].'" aria-label="Generar Nota de Cr&eacute;dito" class="GenerateCreditNote btn label label-warning hint--top hint--bounce hint--warning"><i class="fa fa-file-text"></i></button>';   
                         
                         $Date = explode(" ",$Invoice['creation_date']);
                         $Date = implode("/",array_reverse(explode("-",$Date[0])))." ".$Date[1];
                         switch ($Invoice['status']) {
                             case 'P':
                                 $Status = 'Pendiente Carga';
-                                $Label = 'danger';
+                                $Label = 'info';
+                                $Actions = $CreditBtn." ".$BackBtn;
                             break;
                             
                             case 'A':
                                 $Status = 'Pendiente Pago';
                                 $Label = 'warning';
+                                $Actions = $CreditBtn." ".$BackBtn;
                             break;
                             
                             case 'F':
                                 $Status = 'Pagada';
                                 $Label = 'primary';
+                                $Actions = $CreditBtn;
+                            break;
+                            
+                            case 'I':
+                                $Status = 'Anulada';
+                                $Label = 'danger';
+                                // $Actions = $CreditBtn;
                             break;
                         }
                 ?>
-                <div class="row <?php echo $Class ?>" style="padding:5px 0px;">
-                    <div class="col-xs-4 txC">
-                        <span class="label label-info"><?php echo sprintf("%08d", $Invoice['number']); ?></span>
+                <div id="row_invoice_<?php echo $Invoice['invoice_id']; ?>" class="row <?php echo $Class ?>" style="padding:5px 0px;">
+                    <div class="col-xs-2 txC">
+                        <span class="label label-info" id="invoice_text_<?php echo $Invoice['invoice_id']; ?>"><?php echo sprintf("%08d", $Invoice['number']); ?></span>
                     </div>
                     <div class="col-xs-2 txC">
-                        <span class="label bg-teal"><?php echo $Currency.$Invoice['subtotal'] ?></span>
+                        <span class="text-green"><strong><?php echo $Currency.$Invoice['total'] ?></span></strong>
                     </div>
-                    <div class="col-xs-2 txC">
+                    <div class="col-xs-3 txC">
                         <?php echo $Date ?>
                     </div>
-                    <div class="col-xs-4 txC">
+                    <div class="col-xs-3 txC" id="invoice_span_<?php echo $Invoice['invoice_id'] ?>">
                         <span class="label label-<?php echo $Label ?>"><?php echo $Status ?></span>
+                    </div>
+                    <div class="col-xs-2 txC" id="actions_span_<?php echo $Invoice['invoice_id'] ?>">
+                        <?php echo $Actions ?>
                     </div>
                 </div>
                 <?php } ?>
@@ -220,7 +239,7 @@
             </div>
         </div><!-- /.box-body -->
         <div class="box-footer txC">
-            <button type="button" class="btn btn-error btnBlue" id="BtnCancel"><i class="fa fa-arrow-left"></i> Regresar</button>
+            <a href="list.php?status=A"><button type="button" class="btn btn-error btnBlue"><i class="fa fa-arrow-left"></i> Regresar</button></a>
         </div><!-- box-footer -->
     </div><!-- /.box -->
   

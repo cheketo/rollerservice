@@ -2,6 +2,7 @@
     include("../../includes/inc.main.php");
     $New = new Customer();
     $Head->setTitle($Menu->GetTitle());
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setStyle('../../../skin/css/maps.css'); // Google Maps CSS
     $Head->setHead();
     include('../../includes/inc.top.php');
@@ -72,15 +73,15 @@
           <div id="branches_container">
             
             <div class="row branch_row listRow2 bg-gray" style="margin:0px!important;">
-              <div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center hideMobile990">
+              <div class="col-lg-1 col-md-2 col-sm-3 col-xs-0 flex-justify-center hideMobile990">
 									<div class="listRowInner">
 										<img class="img" style="margin-top:5px!important;" src="../../../skin/images/body/pictures/coal_power_plant.png" alt="Sucursal" title="Sucursal">
 									</div>
 								</div>
-								<div class="col-lg-9 col-md-7 col-sm-5 flex-justify-center">
+								<div class="col-lg-9 col-md-7 col-sm-5 col-xs-7 flex-justify-center" style="margin-right:0px;">
 										<span class="listTextStrong" style="margin-top:15px!important;">Sucursal Central</span>
 								</div>
-								<div class="col-lg-1 col-md-2 col-sm-3 flex-justify-center">
+								<div class="col-lg-1 col-md-2 col-sm-3 col-xs-5 flex-justify-center" style="margin-left:0px;">
 									  <button type="button" class="btn btnBlue EditBranch LoadedMap" branch="1"><i class="fa fa-pencil"></i></button>
 								</div>
 							</div>

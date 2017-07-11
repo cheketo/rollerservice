@@ -79,7 +79,7 @@ public function MakeRegs($Mode="List")
 			// 	$Groups .= '<span class="label label-warning">'.$Group['title'].'</span> ';
 			// }
 			// if(!$Groups) $Groups = 'Ninguno';
-			$Actions	= 	'<span class="roundItemActionsGroup"><a><button type="button" class="btn btnGreen ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a>';
+			$Actions	= $Mode=="List"? '<span class="roundItemActionsGroup"><a><button type="button" class="btn btnGreen ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a>':'<span class="roundItemActionsGroup">';
 			$Actions	.= 	'<a href="edit.php?id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
 			if($Row->Data['status']=="A")
 			{
@@ -126,22 +126,30 @@ public function MakeRegs($Mode="List")
 			switch(strtolower($Mode))
 			{
 				case "list":
+					
+					if(IsMobile())
+					{
+			    		$ItemsMarginTop = ' style="margin-top:50px;" ';
+					}else{
+						$ItemsMarginTop = '';
+					}
+			    	
 					$RowBackground = $i % 2 == 0? '':' listRow2 ';
 					$Phone = $Row->Data['branches'][0]['phone']? '<span class="smallDetails"><i class="fa fa-phone"></i> '.$Row->Data['branches'][0]['phone'].'</span>':'';
 					
 					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="'.$Row->Data['name'].'">
-									<div class="col-lg-3 col-md-5 col-sm-8 col-xs-10">
+									<div class="col-lg-3 col-md-5 col-sm-8 col-xs-7">
 										<div class="listRowInner">
-											<img class="img-circle" src="'.$Row->GetImg().'" alt="'.$Row->Data['name'].'">
+											<img class="img-circle hideMobile990" src="'.$Row->GetImg().'" alt="'.$Row->Data['name'].'">
 											<span class="listTextStrong">'.$Row->Data['name'].'</span>
 											<span class="smallDetails"><i class="fa fa-map-marker"></i> '.$Row->Data['branches'][0]['address'].', '.$Row->Data['branches'][0]['zone'].'</span>
 											'.$Phone.'
 										</div>
 									</div>
-									<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
+									<div class="col-lg-2 col-md-3 col-sm-2 col-xs-5">
 										<div class="listRowInner">
 											<span class="listTextStrong">Saldo</span>
-											<span class="emailTextResp"><span class="label label-success">$ 712.32</span>
+											<span class="label label-success">$ 712.32</span>
 										</div>
 									</div>
 									<div class="col-lg-3 col-md-3 col-sm-2 hideMobile990">
@@ -150,7 +158,7 @@ public function MakeRegs($Mode="List")
 											<span class="listTextStrong"><span class="label label-primary">'.$Rows[$i]['type'].'</span></span>
 										</div>
 									</div>
-									<div class="animated DetailedInformation Hidden col-md-12">
+									<div class="animated DetailedInformation Hidden col-md-12" '.$ItemsMarginTop.'>
 										'.$Branches.'
 									</div>
 									<div class="listActions flex-justify-center Hidden">
@@ -223,7 +231,7 @@ public function MakeRegs($Mode="List")
 	protected function InsertSearchButtons()
 	{
 		return '<!-- New Button -->
-		    	<a href="new.php"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-user-plus"></i> Nuevo Cliente</button></a>
+		    	<a href="new.php" class="hint--bottom hint--bounce hint--success" aria-label="Nuevo Cliente"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-plus"></i></button></a>
 		    	<!-- /New Button -->';
 	}
 	
@@ -358,6 +366,9 @@ public function MakeRegs($Mode="List")
 		
 		$Insert			= $this->execQuery('INSERT',$this->Table,'type_id,name,cuit,iva,iibb,international,logo,creation_date,created_by,company_id',"'".$Type."','".$Name."',".$CUIT.",".$IVA.",".$GrossIncome.",'".$International."','".$Image."',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
 		//echo $this->lastQuery();
+		
+		Tax::SetIVA($CUIT,$IVA);
+		
 		$NewID 		= $this->GetInsertId();
 		$New 	= new Customer($NewID);
 		$Dir 	= array_reverse(explode("/",$Image));
@@ -402,6 +413,9 @@ public function MakeRegs($Mode="List")
 		
 		$Update		= $this->execQuery('update',$this->Table,"name='".$Name."',type_id='".$Type."',cuit=".$CUIT.",iva='".$IVA."',iibb='".$GrossIncome."', logo='".$Image."',updated_by=".$_SESSION['admin_id'],$this->TableID."=".$ID);
 		//echo $this->lastQuery();
+		
+		Tax::SetIVA($CUIT,$IVA);
+		
 		$Edit->InsertBranchInfo(1);
 		
 	}
@@ -510,50 +524,10 @@ public function MakeRegs($Mode="List")
 				$Branches[$I]['country']		= $_POST['map'.$I.'_country'];
 			
 				// INSERT NEW LOCATIONS
-				
-				// COUNTRY
-				$DBQ = $this->fetchAssoc('geolocation_country','country_id as id',"name='".$Branches[$I]['country']."'");
-				if($DBQ[0]['id'])
-				{
-					$Branches[$I]['country_id'] = $DBQ[0]['id'];
-				}else{
-					// INSERT NEW COUNTRY
-					$this->execQuery('INSERT','geolocation_country','name,short_name',"'".$Branches[$I]['country']."','".$Branches[$I]['country_short']."'");
-					$Branches[$I]['country_id'] = $this->GetInsertId();
-				}
-				
-				//PROVINCE
-				$DBQ = $this->fetchAssoc('geolocation_province','province_id as id',"country_id = ".$Branches[$I]['country_id']." AND short_name='".$Branches[$I]['province_short']."'");
-				if($DBQ[0]['id'])
-				{
-					$Branches[$I]['province_id'] = $DBQ[0]['id'];
-				}else{
-					// INSERT NEW PROVINCE
-					$this->execQuery('INSERT','geolocation_province','name,short_name,country_id',"'".$Branches[$I]['province']."','".$Branches[$I]['province_short']."',".$Branches[$I]['country_id']);
-					$Branches[$I]['province_id'] = $this->GetInsertId();
-				}
-				
-				//REGION
-				$DBQ = $this->fetchAssoc('geolocation_region','region_id as id',"country_id = ".$Branches[$I]['country_id']." AND province_id = ".$Branches[$I]['province_id']." AND name='".$Branches[$I]['region']."'");
-				if($DBQ[0]['id'])
-				{
-					$Branches[$I]['region_id'] = $DBQ[0]['id'];
-				}else{
-					// INSERT NEW REGION
-					$this->execQuery('INSERT','geolocation_region','name,short_name,country_id,province_id',"'".$Branches[$I]['region']."','".$Branches[$I]['region_short']."',".$Branches[$I]['country_id'].",".$Branches[$I]['province_id']);
-					$Branches[$I]['region_id'] = $this->GetInsertId();
-				}
-				
-				//ZONE
-				$DBQ = $this->fetchAssoc('geolocation_zone','zone_id as id',"country_id = ".$Branches[$I]['country_id']." AND province_id = ".$Branches[$I]['province_id']." AND region_id = ".$Branches[$I]['region_id']." AND name='".$Branches[$I]['zone']."'");
-				if($DBQ[0]['id'])
-				{
-					$Branches[$I]['zone_id'] = $DBQ[0]['id'];
-				}else{
-					// INSERT NEW ZONE
-					$this->execQuery('INSERT','geolocation_zone','name,short_name,country_id,province_id,region_id',"'".$Branches[$I]['zone']."','".$Branches[$I]['zone_short']."',".$Branches[$I]['country_id'].",".$Branches[$I]['province_id'].",".$Branches[$I]['region_id']);
-					$Branches[$I]['zone_id'] = $this->GetInsertId();
-				}
+				$Branches[$I]['country_id']		= Geolocation::InsertCountry($Branches[$I]['country'],$Branches[$I]['country_short'],$this);
+				$Branches[$I]['province_id']	= Geolocation::InsertProvince($Branches[$I]['province'],$Branches[$I]['province_short'],$this);
+				$Branches[$I]['region_id']		= Geolocation::InsertRegion($Branches[$I]['region'],$Branches[$I]['region_short'],$this);
+				$Branches[$I]['zone_id']		= Geolocation::InsertZone($Branches[$I]['zone'],$Branches[$I]['zone_short'],$this);
 				
 				$this->execQuery("INSERT","customer_branch","customer_id,country_id,province_id,region_id,zone_id,name,address,phone,email,website,fax,postal_code,main_branch,lat,lng,creation_date,created_by,company_id",$this->ID.",".$Branches[$I]['country_id'].",".$Branches[$I]['province_id'].",".$Branches[$I]['region_id'].",".$Branches[$I]['zone_id'].",'".$Branches[$I]['name']."','".$Branches[$I]['address']."','".$Branches[$I]['phone']."','".$Branches[$I]['email']."','".$Branches[$I]['website']."','".$Branches[$I]['fax']."','".$Branches[$I]['postal_code']."','".$Branches[$I]['main_branch']."',".$Branches[$I]['lat'].",".$Branches[$I]['lng'].",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
 				//echo $this->lastQuery();
@@ -658,20 +632,29 @@ public function MakeRegs($Mode="List")
     		$BranchNameHTML = insertElement('hidden','branch_name_'.$ID,$BranchName);
     	}
     	
+    	if(IsMobile())
+    	{
+    		$TopEm = 7;
+    		$BodyEm = 24;
+    	}else{
+    		$TopEm = 11;
+    		$BodyEm = 41;
+    	}
+    	
         $HTML .= '
         <!-- //// BEGIN BRANCH MODAL '.$ID.' //// -->
         <div id="branch_modal_'.$ID.'" class="modal fade '.$NewClass.'" role="dialog" style="opacity:1!important;">
-            <div class="modal-dialog" style="top:12em;">
+            <div class="modal-dialog" style="top:'.$TopEm.'em;">
                 
                 <div class="modal-content">
                     <div class="modal-header">
                         <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
                         <h4 class="modal-title" id="BranchTitle'.$ID.'">Editar Sucursal '.$BranchName.'</i></h4>
                     </div>
-                    <div class="modal-body" style="max-height:35em;overflow-y:scroll;">
+                    <div class="modal-body" style="max-height:'.$BodyEm.'em;overflow-y:scroll;">
                     <form id="branch_form_'.$ID.'" name="branch_form_'.$ID.'">
                             '.$BranchNameHTML.'
-                        <h4 class="subTitleB"><i class="fa fa-globe"></i> Geolocalizaci&oacute;n</h4>
+                        <h4 class="subTitleB" style="margin-top:0px;"><i class="fa fa-globe"></i> Geolocalizaci&oacute;n</h4>
                         <div class="row form-group inline-form-custom">
                             <div class="col-xs-12 col-sm-6">
                                 <span class="input-group">
@@ -679,7 +662,7 @@ public function MakeRegs($Mode="List")
                                     '.insertElement('text','address_'.$ID,$Data['address'],'form-control','disabled="disabled" placeholder="Direcci&oacute;n" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."').'
                                 </span>
                             </div>
-                            <div class="col-xs-12 col-sm-6">
+                            <div class="col-xs-12 col-sm-6 margin-top1em">
                                 <span class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-bookmark"></i></span>
                                     '.insertElement('text','postal_code_'.$ID,$Data['postal_code'],'form-control','disabled="disabled" placeholder="C&oacute;digo Postal" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."').'
@@ -701,7 +684,7 @@ public function MakeRegs($Mode="List")
                                     '.insertElement('text','email_'.$ID,$Data['email'],'form-control',' placeholder="Email"').'
                                 </span>
                             </div>
-                            <div class="col-sm-6 col-xs-12">
+                            <div class="col-sm-6 col-xs-12 margin-top1em">
                                 <span class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                     '.insertElement('text','phone_'.$ID,$Data['phone'],'form-control',' placeholder="Tel&eacute;fono"').'
@@ -715,7 +698,7 @@ public function MakeRegs($Mode="List")
                                     '.insertElement('text','website_'.$ID,$Data['website'],'form-control',' placeholder="Sitio Web"').'
                                 </span>
                             </div>
-                            <div class="col-sm-6 col-xs-12">
+                            <div class="col-sm-6 col-xs-12 margin-top1em">
                                 <span class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-fax"></i></span>
                                     '.insertElement('text','fax_'.$ID,$Data['fax'],'form-control',' placeholder="Fax"').'
@@ -748,7 +731,7 @@ public function MakeRegs($Mode="List")
                                                         '.insertElement('text','agentname_'.$ID,'','form-control',' placeholder="Nombre y Apellido" validateEmpty="Ingrese un nombre"').'
                                                     </span>
                                                 </div>
-                                                <div class="col-xs-12 col-sm-6">
+                                                <div class="col-xs-12 col-sm-6 margin-top1em">
                                                     <span class="input-group">
                                                         <span class="input-group-addon"><i class="fa fa-briefcase"></i></span>
                                                         '.insertElement('text','agentcharge_'.$ID,'','form-control',' placeholder="Cargo"').'
@@ -762,7 +745,7 @@ public function MakeRegs($Mode="List")
                                                         '.insertElement('text','agentemail_'.$ID,'','form-control',' placeholder="Email" validateEmail="Ingrese un email v&aacute;lido."').'
                                                     </span>
                                                 </div>
-                                                <div class="col-xs-12 col-sm-6">
+                                                <div class="col-xs-12 col-sm-6 margin-top1em">
                                                     <span class="input-group">
                                                         <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                                         '.insertElement('text','agentphone_'.$ID,'','form-control',' placeholder="Tel&eacute;fono"').'
@@ -792,10 +775,9 @@ public function MakeRegs($Mode="List")
                         <div id="agent_list_'.$ID.'" branch="'.$ID.'" class="row">
                             <div class="col-xs-12">
                                 '.insertElement('multiple','brokers_'.$ID,$Brokers,'form-control chosenSelect BrokerSelect','data-placeholder="Seleccionar Corredores" branch="'.$ID.'"',$this->fetchAssoc('admin_user',"admin_id,CONCAT(first_name,' ',last_name) as name","status='A' AND profile_id = 361",'name'),' ','').'
-                                
                             </div>
                         </div>
-                    
+                        <br>
                     </div>
                     <div class="modal-footer txC" style="background-color:#6f69bd!important;">
 						<button type="button" name="button" class="btn btn-success btnBlue SaveBranchEdition" id="SaveBranchEdition'.$ID.'" data-dismiss="modal" branch="'.$ID.'">Guardar</button>

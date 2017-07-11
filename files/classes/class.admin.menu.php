@@ -34,7 +34,7 @@ class AdminMenu extends DataBase
 		if(count($this->MenuData)<1)
 		{
 			$Menues 		= $this->fetchAssoc('admin_menu','*',"link LIKE '../".$this->getLink()."%'");
-			$this->MenuData = $this->ChosenMenu($Menues);;
+			$this->MenuData = $this->ChosenMenu($Menues);
 
 		}
 		return $this->MenuData;

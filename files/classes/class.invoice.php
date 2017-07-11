@@ -28,10 +28,11 @@ class Invoice extends DataBase
 		{
 			if($this->Data['operation']=='I')
 			{
-				$Entity = $this->fetchAssoc('provider a INNER JOIN geolocation_province b ON (b.province_id=a.province_id)',"a.*,b.short_name as province","a.provider_id=".$this->Data['entity_id']);
+				$Entity = $this->fetchAssoc('provider a LEFT JOIN geolocation_province b ON (b.province_id=a.province_id)',"a.*,b.short_name as province","a.provider_id=".$this->Data['entity_id']);
 				// echo $this->lastQuery();
 			}else{
 				$Entity = $this->fetchAssoc('customer a INNER JOIN customer_branch b ON (b.customer_id=a.customer_id) INNER JOIN geolocation_province c ON (c.province_id=b.province_id)',"a.*,c.short_cname as province","a.customer_id=".$this->Data['entity_id']);
+				// echo $this->lastQuery();
 			}
 			$this->Data['entity'] = $Entity[0];
 		}
@@ -52,7 +53,7 @@ class Invoice extends DataBase
 	{
 		if(empty($this->Data['taxes']))
 		{
-			$Taxes = $this->fetchAssoc("relation_operation_tax a LEFT JOIN tax b ON (a.tax_id=b.tax_id)","*","a.operation_id=".$this->Data['operation_id']);
+			$Taxes = $this->fetchAssoc("relation_operation_tax a LEFT JOIN tax b ON (a.tax_id=b.tax_id) INNER JOIN relation_invoice_tax c ON (c.tax_id=b.tax_id)","b.name,c.amount,c.percentage","a.operation_id=".$this->Data['operation_id'].' AND c.invoice_id='.$this->ID);
 			// echo $this->lastQuery();
 			foreach($Taxes as $Key => $Tax)
 			{
@@ -89,24 +90,24 @@ class Invoice extends DataBase
 		{
 			$Row	=	new Invoice($Rows[$i][$this->TableID]);
 			$Actions	= 	'<span class="roundItemActionsGroup">';
-			$Actions	.=	'<a title="M&aacute;s informaci&oacute;n" alt="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a> ';
+			$Actions	.=	'<a class="hint--bottom hint--bounce" aria-label="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a> ';
 			
 			
 			if($Row->Data['status']=="A")
 			{
 				// $Actions	.= '<a title="Confirmar" alt="Confirmar" class="activateElement" process="../../library/processes/proc.common.php" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
-				$Actions	.= '<a title="Pagar" alt="Pagar" id="payment_'.$Row->ID.'"><button type="button" class="btn btn-success"><i class="fa fa-dollar"></i></button></a> ';
+				$Actions	.= '<a id="payment_'.$Row->ID.'" class="hint--bottom hint--bounce hint--success" aria-label="Pagar"><button type="button" class="btn btn-success"><i class="fa fa-dollar"></i></button></a> ';
 			}
 			
 			if($Row->Data['status']=="A" || $Row->Data['status']=="F")
 			{
-				$Actions	.= '<a href="invoice.php?id='.$Row->ID.'" title="Imprimir Factura" alt="Imprimir Factura" class="Print" status="'.$Row->Data['status'].'" id="print_'.$Row->ID.'"><button type="button" class="btn bg-aqua"><i class="fa fa-print"></i></button></a> ';
+				$Actions	.= '<a href="invoice.php?id='.$Row->ID.'" class="hint--bottom hint--bounce hint--info Print" aria-label="Imprimir" status="'.$Row->Data['status'].'" id="print_'.$Row->ID.'"><button type="button" class="btn bg-aqua"><i class="fa fa-print"></i></button></a> ';
 			}
 			
 			if($Row->Data['status']=="P" || $Row->Data['status']=="A")
 			{
-				$Actions	.= '<a title="Cargar" alt="Cargar" href="fill.php?id='.$Row->ID.'" id="store_'.$Row->ID.'"><button type="button" class="btn btn-primary"><i class="fa fa-edit"></i></button></a>';	
-				$Actions	.= '<a title="Rechazar" alt="Rechazar" class="deleteElement" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-times"></i></button></a>';
+				$Actions	.= '<a class="hint--bottom hint--bounce hint--info" aria-label="Cargar" href="fill.php?id='.$Row->ID.'" id="store_'.$Row->ID.'"><button type="button" class="btn btn-primary"><i class="fa fa-download"></i></button></a>';	
+				$Actions	.= '<a class="hint--bottom hint--bounce hint--error deleteElement" aria-label="Rechazar" process="../../library/processes/proc.common.php" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-times"></i></button></a>';
 			}
 			
 			// if($Row->Data['status']=="A" || $Row->Data['status']=="C")
@@ -189,14 +190,14 @@ class Invoice extends DataBase
 									
 					$RowBackground = $i % 2 == 0? '':' listRow2 ';
 					
-					$TotalCol = $Row->Data['status']!="P"? '<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
+					$TotalCol =  '<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
 										<div class="listRowInner">
 											<span class="listTextStrong">Total</span>
 											<span class="emailTextResp"><span class="label label-success">'.$Row->Data['currency'].$Row->Data['total'].'</span></span>
 										</div>
-									</div>' : '';
+									</div>';
 					
-					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="una orden de compra">
+					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="una factura">
 									<div class="col-lg-3 col-md-5 col-sm-8 col-xs-10">
 										<div class="listRowInner">
 											<img class="img-circle" style="border-radius:0%!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['name'].'">
@@ -510,71 +511,53 @@ class Invoice extends DataBase
 		$this->execQuery('update',$this->Table,"status = 'Z'",$this->TableID."=".$ID);
 	}
 	
-	public function Generateinvoice()
-	{
-		$ID	= $_POST['id'];
-		$ProviderID = $_POST['provider'];
-		$Currency = $_POST['currency'];
-		$Invoice = $_POST['invoice_number'];
-		$SubTotal = $_POST['total'];
+	// public function Generateinvoice()
+	// {
+	// 	$ID	= $_POST['id'];
+	// 	$ProviderID = $_POST['provider'];
+	// 	$Currency = $_POST['currency'];
+	// 	$Invoice = $_POST['invoice_number'];
+	// 	$SubTotal = $_POST['total'];
 		
 		
-		$this->execQuery('INSERT','invoice','entity_id,currency_id,subtotal,number,operation,status,creation_date,created_by,company_id',$ProviderID.",".$Currency.",".$SubTotal.",".$Invoice.",'I','P',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
-		//echo $this->lastQuery()." *****/";
-		$InvoiceID = $this->GetInsertId();
+	// 	$this->execQuery('INSERT','invoice','entity_id,currency_id,subtotal,number,operation,status,creation_date,created_by,company_id',$ProviderID.",".$Currency.",".$SubTotal.",".$Invoice.",'I','P',NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id']);
+	// 	//echo $this->lastQuery()." *****/";
+	// 	$InvoiceID = $this->GetInsertId();
 		
-		// ITEMS DATA
-		$Items = array();
-		for($I=1;$I<=$_POST['total_items'];$I++)
-		{
-			if($_POST['id'.$I])
-			{
-				$Separator = $I>1? "),(":"";
+	// 	// ITEMS DATA
+	// 	$Items = array();
+	// 	for($I=1;$I<=$_POST['total_items'];$I++)
+	// 	{
+	// 		if($_POST['id'.$I])
+	// 		{
+	// 			$Separator = $I>1? "),(":"";
 					
-				$QueryFields .= $Separator.$InvoiceID.",".$_POST['product'.$I].",'".$_POST['description'.$I]."',".$_POST['quantity_'.$I].",".$_POST['price'.$I].",".$_POST['total'.$I].",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id'];
-				//$Items[] = array('id'=>$_POST['product'.$I],'description'=>$_POST['description'.$I],'price'=>$_POST['price'.$I],'quantity'=>$_POST['quantity_'.$I], 'total'=>$_POST['total'.$I]);
-				$QuantityPaid = $_POST['quantity_'.$I] + $_POST['quantity_paid'.$I];
-				$this->execQuery('UPDATE',"provider_order_item","payment_status='A', quantity_paid=".$QuantityPaid,"item_id=".$_POST['item'.$I]);
-				//echo "----".$this->lastQuery()."----";
-			}
-		}
-		$this->execQuery('INSERT','invoice_detail','invoice_id,product_id,description,quantity,price,total,creation_date,created_by,company_id',$QueryFields);
+	// 			$QueryFields .= $Separator.$InvoiceID.",".$_POST['product'.$I].",'".$_POST['description'.$I]."',".$_POST['quantity_'.$I].",".$_POST['price'.$I].",".$_POST['total'.$I].",NOW(),".$_SESSION['admin_id'].",".$_SESSION['company_id'];
+	// 			//$Items[] = array('id'=>$_POST['product'.$I],'description'=>$_POST['description'.$I],'price'=>$_POST['price'.$I],'quantity'=>$_POST['quantity_'.$I], 'total'=>$_POST['total'.$I]);
+	// 			$QuantityPaid = $_POST['quantity_'.$I] + $_POST['quantity_paid'.$I];
+	// 			$this->execQuery('UPDATE',"provider_order_item","payment_status='".$Status."', quantity_paid=".$QuantityPaid,"item_id=".$_POST['item'.$I]);
+	// 			//echo "----".$this->lastQuery()."----";
+	// 		}
+	// 	}
+	// 	$this->execQuery('INSERT','invoice_detail','invoice_id,product_id,description,quantity,price,total,creation_date,created_by,company_id',$QueryFields);
 		
-		$OrderStatus = $this->fetchAssoc($this->Table.'_item',"SUM(quantity_paid) AS quantity_paid,SUM(quantity) AS quantity",$this->TableID."=".$ID);
-		$OrderStatus = $OrderStatus[0];
-		$Status = $OrderStatus['quantity']==$OrderStatus['quantity_paid']? 'F':'A';
-		// $Order = $this->fetchAssoc($this->Table,"payment_status,delivery_status",$this->TableID."=".$ID);
-		// $Order = $Order[0];
-		// $Upadte = $Order['payment_status']=='F' && $Order['delivery_status']=='F'? ",status='F'":"";
-		$this->execQuery('UPDATE',$this->Table,"payment_status='".$Status."'".$Upadte,$this->TableID."=".$ID);
+	// 	$OrderStatus = $this->fetchAssoc($this->Table.'_item',"SUM(quantity_paid) AS quantity_paid,SUM(quantity) AS quantity",$this->TableID."=".$ID);
+	// 	$OrderStatus = $OrderStatus[0];
+	// 	$Status = $OrderStatus['quantity']==$OrderStatus['quantity_paid']? 'F':'A';
+	// 	// $Order = $this->fetchAssoc($this->Table,"payment_status,delivery_status",$this->TableID."=".$ID);
+	// 	// $Order = $Order[0];
+	// 	// $Upadte = $Order['payment_status']=='F' && $Order['delivery_status']=='F'? ",status='F'":"";
+	// 	$this->execQuery('UPDATE',$this->Table,"payment_status='".$Status."'".$Upadte,$this->TableID."=".$ID);
 		
-		$this->execQuery('INSERT','relation_invoice_order','invoice_id,order_id,amount',$InvoiceID.",".$ID.",".$SubTotal);
-		//echo $this->lastQuery()." \\n\\n";
-	}
+	// 	$this->execQuery('INSERT','relation_invoice_order','invoice_id,order_id,amount',$InvoiceID.",".$ID.",".$SubTotal);
+	// 	//echo $this->lastQuery()." \\n\\n";
+	// }
 	
 	public function Delete()
 	{
-		$ID	= $_POST['id'];
-		$Order = $this->fetchAssoc($this->Table,'*',$this->TableID."=".$ID);
-		if($Order[0]['payment_status']=='P' && $Order[0]['delivery_status']=='P')
-		{
-			$Status = $Order[0]['status'];
-			switch ($Status)
-			{
-				case 'P':
-					$this->execQuery('update',$this->Table,"status = 'I'",$this->TableID."=".$ID);
-				break;
-				case 'A':
-					$this->execQuery('update',$this->Table,"status = 'P'",$this->TableID."=".$ID);
-				break;
-				
-				default:
-					echo 'No se puede borrar una orden que no esté en estado pendiente de aprovación';
-				break;
-			}
-		}else{
-			echo 'No se puede borrar una orden que haya sido entrgada o facturada';
-		}
+		$ID			= $_POST['id'];
+		$Order		= new ProviderOrder();
+		$Order->Degenerateinvoice($ID);
 	}
 	
 	public function Search()
@@ -633,42 +616,42 @@ class Invoice extends DataBase
 		echo $HTML;
 	}
 	
-	public function Addorderitem()
-	{
-		$ID = $_POST['item'];
-		$TotalPrice = "$ 0.00";
-		if($ID % 2 != 0)
-			$BgClass = "bg-gray";
-		else
-			$BgClass = "bg-gray-active";
-		$HTML = '
-			<div id="item_row_'.$ID.'" item="'.$ID.'" class="row form-group inline-form-custom ItemRow '.$BgClass.'" style="margin-bottom:0px!important;padding:10px 0px!important;">
-                <form id="item_form_'.$ID.'">
-                <div class="col-xs-4 txC">
-                	<span id="Item'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.insertElement('select','item_'.$ID,'','ItemField'.$ID.' form-control chosenSelect','validateEmpty="Seleccione un Art&iacute;culo" data-placeholder="Seleccione un Art&iacute;culo"',$this->fetchAssoc('product','product_id,code',"status='A' AND company_id=".$_SESSION['company_id'],'code'),' ','').'
-                </div>
-                <div class="col-xs-1 txC">
-                	<span id="Price'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.insertElement('text','price_'.$ID,'','ItemField'.$ID.' form-control calcable','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"').'
-                </div>
-                <div class="col-xs-1 txC">
-                	<span id="Quantity'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.insertElement('text','quantity_'.$ID,'','ItemField'.$ID.' form-control calcable QuantityItem','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"').'
-                </div>
-                <div class="col-xs-2 txC">
-                  <span id="Date'.$ID.'" class="Hidden ItemText'.$ID.' OrderDate"></span>
-                  '.insertElement('text','date_'.$ID,'','ItemField'.$ID.' form-control delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"').'
-                </div>
-                <div  id="item_number_'.$ID.'" class="col-xs-1 txC item_number" total="0" item="'.$ID.'">'.$TotalPrice.'</div>
-                <div class="col-xs-3 txC">
-				  <button type="button" id="SaveItem'.$ID.'" class="btn btnGreen SaveItem" style="margin:0px;" item="'.$ID.'"><i class="fa fa-check"></i></button>
-				  <button type="button" id="EditItem'.$ID.'" class="btn btnBlue EditItem Hidden" style="margin:0px;" item="'.$ID.'"><i class="fa fa-pencil"></i></button>
-				  <button type="button" id="DeleteItem'.$ID.'" class="btn btnRed DeleteItem" style="margin:0px;" item="'.$ID.'"><i class="fa fa-trash"></i></button>
-				</div>
-				</form>
-            </div>';
-            echo $HTML;
-	}
+	// public function Addorderitem()
+	// {
+	// 	$ID = $_POST['item'];
+	// 	$TotalPrice = "$ 0.00";
+	// 	if($ID % 2 != 0)
+	// 		$BgClass = "bg-gray";
+	// 	else
+	// 		$BgClass = "bg-gray-active";
+	// 	$HTML = '
+	// 		<div id="item_row_'.$ID.'" item="'.$ID.'" class="row form-group inline-form-custom ItemRow '.$BgClass.'" style="margin-bottom:0px!important;padding:10px 0px!important;">
+ //               <form id="item_form_'.$ID.'">
+ //               <div class="col-xs-4 txC">
+ //               	<span id="Item'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
+ //                 '.insertElement('select','item_'.$ID,'','ItemField'.$ID.' form-control chosenSelect','validateEmpty="Seleccione un Art&iacute;culo" data-placeholder="Seleccione un Art&iacute;culo"',$this->fetchAssoc('product','product_id,code',"status='A' AND company_id=".$_SESSION['company_id'],'code'),' ','').'
+ //               </div>
+ //               <div class="col-xs-1 txC">
+ //               	<span id="Price'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
+ //                 '.insertElement('text','price_'.$ID,'','ItemField'.$ID.' form-control calcable','data-inputmask="\'mask\': \'9{+}.99\'" placeholder="Precio" validateEmpty="Ingrese un precio"').'
+ //               </div>
+ //               <div class="col-xs-1 txC">
+ //               	<span id="Quantity'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
+ //                 '.insertElement('text','quantity_'.$ID,'','ItemField'.$ID.' form-control calcable QuantityItem','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"').'
+ //               </div>
+ //               <div class="col-xs-2 txC">
+ //                 <span id="Date'.$ID.'" class="Hidden ItemText'.$ID.' OrderDate"></span>
+ //                 '.insertElement('text','date_'.$ID,'','ItemField'.$ID.' form-control delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"').'
+ //               </div>
+ //               <div  id="item_number_'.$ID.'" class="col-xs-1 txC item_number" total="0" item="'.$ID.'">'.$TotalPrice.'</div>
+ //               <div class="col-xs-3 txC">
+	// 			  <button type="button" id="SaveItem'.$ID.'" class="btn btnGreen SaveItem" style="margin:0px;" item="'.$ID.'"><i class="fa fa-check"></i></button>
+	// 			  <button type="button" id="EditItem'.$ID.'" class="btn btnBlue EditItem Hidden" style="margin:0px;" item="'.$ID.'"><i class="fa fa-pencil"></i></button>
+	// 			  <button type="button" id="DeleteItem'.$ID.'" class="btn btnRed DeleteItem" style="margin:0px;" item="'.$ID.'"><i class="fa fa-trash"></i></button>
+	// 			</div>
+	// 			</form>
+ //           </div>';
+ //           echo $HTML;
+	// }
 }
 ?>

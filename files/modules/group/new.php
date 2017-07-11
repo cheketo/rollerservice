@@ -1,9 +1,8 @@
 <?php
     include("../../includes/inc.main.php");
-    //$Head->setTitle("Nuevo Usuario");
     $Group  = new GroupData();
     $Head->setTitle($Menu->GetTitle());
-     
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
     $Head->setHead();
     include('../../includes/inc.top.php');

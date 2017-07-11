@@ -7,7 +7,6 @@
     
     $Head->setTitle($Menu->GetTitle());
     $Head->setIcon($Menu->GetHTMLicon());
-     
     $Head->setHead();
     
     

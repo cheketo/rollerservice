@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $Head->setTitle($Menu->GetTitle());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
-     // Bootstrap Select Input
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setHead();
     
     $Category = new Category();

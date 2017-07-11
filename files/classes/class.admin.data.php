@@ -288,7 +288,7 @@ public function MakeRegs($Mode="List")
 	protected function InsertSearchButtons()
 	{
 		return '<!-- New User Button -->
-		    	<a href="new.php"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-user-plus"></i> Nuevo Usuario</button></a>
+		    	<a href="new.php" class="hint--bottom hint--bounce hint--success" aria-label="Nuevo Usuario"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-user-plus"></i></button></a>
 		    	<!-- /New User Button -->';
 	}
 	

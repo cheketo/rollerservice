@@ -443,18 +443,35 @@ class DataBase
     			'.$this->InsertDefaultSearchButtons().$this->InsertSearchButtons().'
 			      '.insertElement('hidden','selected_ids','').'
 			      <div class="changeView">
-			        <button class="ShowFilters SearchElement btn"><i class="fa fa-search"></i></button>
-			        <button class="ShowList GridElement btn Hidden"><i class="fa fa-list"></i></button>
-			        <button class="ShowGrid ListElement btn"><i class="fa fa-th-large"></i></button>
+			        <button aria-label="Buscar" class="ShowFilters SearchElement btn hint--bottom hint--bounce"><i class="fa fa-search"></i></button>
+			        <button aria-label="Ver listado" class="ShowList GridElement btn Hidden hint--bottom-left hint--bounce"><i class="fa fa-list"></i></button>
+			        <button aria-label="Ver grilla" class="ShowGrid ListElement btn hint--bottom-left hint--bounce"><i class="fa fa-th-large"></i></button>
 			      </div>
 			      '.$this->InsertSearchResults().'
 			    </div><!-- /.box-body -->
 			    <div class="box-footer clearfix">
 			      <!-- Paginator -->
-			      <div class="pull-left form-inline paginationLeft">
-			          <label for="RegsPerView" class="control-label">Mostrar </label>
-			          '.insertElement('select','regsperview',$this->GetRegsPerView(),'form-control','',array("5"=>"5","10"=>"10","25"=>"25","50"=>"50","100"=>"100")).'
-			          de <b><span id="TotalRegs">'.$this->GetTotalRegs().'</span></b>
+			      <div class="form-inline paginationLeft">
+			    	<div class="row">
+			    		<div class="col-xs-8 col-sm-4">
+					    	<div class="row">
+					    		<div class="col-xs-6 col-sm-3" style="margin:0px;padding:0px;margin-top:7px;">
+					    			<span class="pull-right">Mostrando&nbsp;</span>
+					    		</div>
+					    		<div class="col-xs-4  col-sm-2 txC" style="margin:0px;padding:0px;">
+					    			'.insertElement('select','regsperview',$this->GetRegsPerView(),'form-control chosenSelect','',array("5"=>"5","10"=>"10","25"=>"25","50"=>"50","100"=>"100")).'
+					    		</div>
+					    		<div class="col-xs-2  col-sm-1" style="margin:0px;padding:0px;margin-top:7px;">
+					    			&nbsp;de <b><span id="TotalRegs">'.$this->GetTotalRegs().'</span></b>
+					    		</div>
+					    	</div>
+				    	</div>
+				    	<div class="col-xs-4 col-sm-8">
+				    	</div>
+				    </div>
+			          
+			          
+			          
 			      </div>
 			      <ul class="paginationRight pagination no-margin pull-right">
 			      </ul>
@@ -489,14 +506,14 @@ class DataBase
 	public function InsertDefaultSearchButtons()
 	{
 		return '<!-- Select All -->
-		    	<button type="button" title="Seleccionar todos" id="SelectAll" class="btn animated fadeIn NewElementButton"><i class="fa fa-square-o"></i></button>
-		    	<button type="button" title="Deseleccionar todos" id="UnselectAll" class="btn animated fadeIn NewElementButton Hidden"><i class="fa fa-square"></i></button>
+		    	<button aria-label="Seleccionar todos" type="button" id="SelectAll" class="btn animated fadeIn NewElementButton hint--bottom-right hint--bounce"><i class="fa fa-square-o"></i></button>
+		    	<button type="button" aria-label="Deseleccionar todos" id="UnselectAll" class="btn animated fadeIn NewElementButton Hidden hint--bottom-right hint--bounce"><i class="fa fa-square"></i></button>
 		    	<!--/Select All -->
 		    	<!-- Remove All -->
-		    	<button type="button" title="Borrar registros seleccionados" class="btn bg-red animated fadeIn NewElementButton Hidden DeleteSelectedElements"><i class="fa fa-trash-o"></i></button>
+		    	<button type="button" aria-label="Eliminar Seleccionados" title="Borrar registros seleccionados" class="btn bg-red animated fadeIn NewElementButton Hidden DeleteSelectedElements hint--bottom hint--bounce hint--error"><i class="fa fa-trash-o"></i></button>
 		    	<!-- /Remove All -->
 		    	<!-- Activate All -->
-		    	<button type="button" title="Activar registros seleccionados" class="btn btnGreen animated fadeIn NewElementButton Hidden ActivateSelectedElements"><i class="fa fa-check-circle"></i></button>
+		    	<button type="button" aria-label="Activar Seleccionados" class="btn btnGreen animated fadeIn NewElementButton Hidden ActivateSelectedElements hint--bottom hint--bounce hint--success"><i class="fa fa-check-circle"></i></button>
 		    	<!-- /Activate All -->
 		    	';
 	}

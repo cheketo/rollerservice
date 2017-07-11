@@ -16,7 +16,7 @@
 	    die();
     }
     
-    $Items        = $DB->fetchAssoc('provider_order_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*,(a.price * a.quantity) AS total',"order_id=".$ID);
+    $Items        = $DB->fetchAssoc('provider_order_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*,(a.price * a.quantity) AS total',"quantity_received < quantity AND order_id=".$ID);
     $ItemsHistory = $DB->fetchAssoc('stock_entrance_item a INNER JOIN product b ON (a.product_id = b.product_id)','b.code AS product,a.*',"order_id=".$ID,'creation_date DESC');
     
     $Head->setStyle('../../../vendors/datepicker/datepicker3.css'); // Date Picker Calendar
@@ -43,10 +43,10 @@
             <div style="margin:0px 10px;">
               <div class="row form-group inline-form-custom bg-red" style="margin-bottom:0px!important;">
                 
-                <div class="col-xs-5 txC">
+                <div class="col-xs-4 txC">
                   <strong>Art&iacute;culo</strong>
                 </div>
-                <div class="col-xs-1 txC">
+                <div class="col-xs-2 txC">
                   <strong>Cantidad</strong>
                 </div>
                 <div class="col-xs-3 txC">
@@ -79,11 +79,11 @@
                 ?>
                     <div id="item_row_<?php echo $I ?>" item="<?php echo $I ?>" class="row form-group inline-form-custom ItemRow <?php echo $Class ?>" style="margin-bottom:0px!important;padding:10px 0px!important;">
                           
-                        <div class="col-xs-5 txC">
+                        <div class="col-xs-4 txC">
                             <span id="Item<?php echo $I ?>" class=" ItemText<?php echo $I ?>"><span class="label label-warning"><?php echo $Item['product'] ?></span></span>
                         </div>
                           
-                        <div class="col-xs-1 txC">
+                        <div class="col-xs-2 txC">
                             <span id="Quantity<?php echo $I ?>" class="ItemText<?php echo $I ?>"><?php echo insertElement('text','quantity'.$I,$Quantity,'form-control txC','validateMaxValue="'.$Quantity.'///Ingrese un n&uacute;mero menor o igual a '.$Quantity.'" validateOnlyNumbers="No puede ingresar letras o simbolos"') ?></span>
                         </div>
                           
@@ -114,10 +114,10 @@
               <div style="margin:0px 10px;">
               <div class="row form-group inline-form-custom bg-gray" style="margin-bottom:0px!important;">
                 
-                <div class="col-xs-5 txC">
+                <div class="col-xs-4 txC">
                   <strong>Art&iacute;culo</strong>
                 </div>
-                <div class="col-xs-1 txC">
+                <div class="col-xs-2 txC">
                   <strong>Cantidad</strong>
                 </div>
                 <div class="col-xs-3 txC">
@@ -148,11 +148,11 @@
                 ?>
                     <div id="item_row_<?php echo $I ?>" item="<?php echo $I ?>" class="row form-group inline-form-custom ItemRow <?php echo $Class ?>" style="margin-bottom:0px!important;padding:10px 0px!important;">
                           
-                        <div class="col-xs-5 txC">
+                        <div class="col-xs-4 txC">
                             <span class="label label-default"><?php echo $Item['product'] ?></span>
                         </div>
                           
-                        <div class="col-xs-1 txC">
+                        <div class="col-xs-2 txC">
                             <span class="label label-default"><?php echo $Item['quantity'] ?></span>
                         </div>
                           

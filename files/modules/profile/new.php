@@ -2,7 +2,7 @@
     include("../../includes/inc.main.php");
     $Profile  = new ProfileData();
     $Head->setTitle($Menu->GetTitle());
-     
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setStyle('../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
     $Head->setHead();
     include('../../includes/inc.top.php');

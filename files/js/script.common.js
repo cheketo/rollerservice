@@ -5,22 +5,67 @@ $(document).ready(function(){
   // {
   //   $("body").addClass(sidebarMenu);
   // }
+  setDatePicker();
   inputMask();
 	chosenSelect();
 });
+
+///////// DATE PICKER //////////////////////
+function datePicker(element)
+{
+  $(element).datepicker({
+    autoclose:true,
+    todayHighlight: true,
+    language: 'es'
+  });
+}
+
+function setDatePicker(element)
+{
+  if($(".datePicker").length>0)
+  {
+    $.fn.datepicker.dates['es'] = {
+      days: ["Domingo", "Lunes", "Martes", "Miércoles", "Juves", "Viernes", "Sábado"],
+      daysShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+      daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+      months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+      monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+      today: "Hoy",
+      clear: "Borrar",
+      format: "dd/mm/yyyy",
+      titleFormat: "MM yyyy", /* Leverages same syntax as 'format' */
+      weekStart: 1
+    };
+    
+    $(".datePicker").each(function(){
+      datePicker(this);
+    });
+  }
+	
+}
 
 ///////// CHOSEN FOR SELECT INPUTS ////////
 function chosenSelect()
 {
   if($('.chosenSelect').length>0)
-	  $('.chosenSelect').chosen({disable_search_threshold: 5});
+  {
+	  $('.chosenSelect').chosen({disable_search_threshold: 5,search_contains: true});
+	  $('select.chosenSelect').children("option[value=' ']").val('');
+  }
 }
 
 ///////// INPUT MASK FOR TEXT INPUTS /////////
 function inputMask()
 {
 	if($(".inputMask").length>0)
-		$(".inputMask").inputmask();  //static mask
+	{
+	  $(".inputMask").each(function(){
+	    if(!$(this).inputmask("hasMaskedValue"))
+	    {
+	      $(this).inputmask();  //static mask  
+	    }
+	  })
+	}
 }
 
 //////////////////////////////////////////////////// Notify //////////////////////////////////////////////////////

@@ -25,7 +25,7 @@
         <span class="fa fa-lock form-control-feedback"></span>
       </div>
       <div class="row">
-        <div class="col-xs-8">
+        <div class="col-xs-7">
           <div class="checkbox icheck">
             <label>
               <input type="checkbox" <?php echo $Checked ?> class="iCheckbox" name="rememberuser" id="rememberuser" value="1" > <span>Recordarme</span>
@@ -33,7 +33,7 @@
           </div>
         </div>
         <!-- /.col -->
-        <div class="col-xs-4">
+        <div class="col-xs-5">
           <button type="button" class="btn btn-primary btn-block btn-flat ButtonLogin">Ingresar</button>
         </div>
         <!-- /.col -->

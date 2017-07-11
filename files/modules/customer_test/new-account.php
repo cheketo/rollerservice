@@ -4,6 +4,7 @@
     $Menu   = new AdminMenu();
     $Group  = new GroupData();
     $Head->setTitle($Menu->GetTitle());
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setStyle('../../../vendors/daterangepicker/daterangepicker.css');
     $Head->setHead();
     include('../../includes/inc.top.php');

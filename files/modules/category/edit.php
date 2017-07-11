@@ -6,7 +6,7 @@
     ValidateID($Data);
     $Edit->Data = Utf8EncodeArray($Edit->Data);
     $Head->setTitle("Modificar L&iacute;nea ".$Data['title']);
-     
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setHead();
     
     include('../../includes/inc.top.php');

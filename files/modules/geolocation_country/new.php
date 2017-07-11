@@ -2,6 +2,7 @@
     include("../../includes/inc.main.php");
     //$Head->setTitle("Nuevo Usuario");
     $Head->setTitle($Menu->GetTitle());
+    $Head->setIcon($Menu->GetHTMLicon());
     $Head->setHead();
     include('../../includes/inc.top.php');
 ?>

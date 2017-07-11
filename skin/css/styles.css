@@ -197,7 +197,7 @@ html {
 
 @media (max-width: 990px) {
   .hideMobile990 {
-    display: none; } }
+    display: none!important; } }
 .main-wrapper {
   padding: 25px 5px; }
 
@@ -215,7 +215,8 @@ html {
   padding: 20px; }
 
 .contentContainer {
-  margin-top: 35px; }
+  /*margin-top: 35px; */
+}
 
 .col-centered {
   display: inline-block;
@@ -457,6 +458,12 @@ html {
   .inline-form-custom div {
     padding-left: 15px;
     padding-right: 15px; }
+  .inline-form-custom .iCheckbox_changeable {
+    padding-left: 0px!important;
+    padding-right: 0px!important; }
+  .margin-top1em{
+    margin-top: 1em;
+  }
   .inline-form-custom input {
     margin-bottom: 15px; }
   .inline-form-custom select {
@@ -743,7 +750,9 @@ html {
       font-size: 14px; } }
 @media (max-width: 370px) {
   .smallDetails {
-    display: none !important; }
+    /*display: none !important; */
+    
+  }
 
   .deleteSelectedAbs {
     padding: 5px;
@@ -1493,9 +1502,12 @@ html {
   color: #3c763d;
   border: 0;
   color: #fff;
-  max-width: 300px;
-  min-height: 100px;
-  padding: 30px;
+  /*max-width: 300px;*/
+  /*min-height: 100px;*/
+  /*padding: 30px;*/
+  max-width: 10em;
+  min-height: 1em;
+  padding: 1em;
   border-radius: 5px; }
   .alert-success .fa, .alert-info .fa, .alert-warning .fa {
     font-size: 50px; }
@@ -1756,7 +1768,9 @@ html {
   padding: 15px 10px 0; }
 
 .info-card-arrow {
-  width: 5px; }
+  /*width: 5px;*/
+  
+}
   .info-card-arrow .arrow-up {
     height: 0;
     border-right: 10px solid transparent;
