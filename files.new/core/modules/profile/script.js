@@ -1,49 +1,28 @@
+///////////////////////// ALERTS ////////////////////////////////////
+$(document).ready(function(){
+	if(get['msg']=='insert')
+		notifySuccess('El perfil <b>'+get['element']+'</b> ha sido creado correctamente.');
+	if(get['msg']=='update')
+		notifySuccess('El perfil <b>'+get['element']+'</b> ha sido modificado correctamente.');
+});
+
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
-	$("#BtnCreate,#BtnCreateNext").click(function(){
-		if(validate.validateFields(''))
-		{
-			var BtnID = $(this).attr("id")
-			if(get['id']>0)
-			{
-				confirmText = "modificar";
-				procText = "modificaci&oacute;n"
-			}else{
-				confirmText = "crear";
-				procText = "creaci&oacute;n"
-			}
-
-			confirmText += " el perfil '"+$("#title").val()+"'";
-
-			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
-				if(e)
-				{
-					var process		= process_url+'?object=CoreProfile';
-					if(BtnID=="BtnCreate")
-					{
-						var target		= 'list.php?element='+$('#title').val()+'&msg='+ $("#action").val();
-					}else{
-						var target		= 'new.php?element='+$('#title').val()+'&msg='+ $("#action").val();
-					}
-					var haveData	= function(returningData)
-					{
-						$("input,select").blur();
-						notifyError("Ha ocurrido un error durante el proceso de "+procText+".");
-						console.log(returningData);
-					}
-					var noData		= function()
-					{
-						document.location = target;
-					}
-					sumbitFields(process,haveData,noData);
-				}
-			});
-		}
+	$("#BtnCreate").click(function(){
+		var target		= 'list.php?element='+$('#title').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'CoreProfile','¿Desea crear el perfil <b>'+$('#title').val()+'</b>?');
 	});
-
+	$("#BtnCreateNext").click(function(){
+		var target		= 'new.php?element='+$('#title').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'CoreProfile','¿Desea crear el perfil <b>'+$('#title').val()+'</b>?');
+	});
+	$("#BtnEdit").click(function(){
+		var target		= 'list.php?element='+$('#title').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'CoreProfile','¿Desea modificar el perfil <b>'+$('#title').val()+'</b>?');
+	});
 	$("input").keypress(function(e){
 		if(e.which==13){
-			$("#BtnCreate").click();
+			$("#BtnCreate,#BtnEdit").click();
 		}
 	});
 });
@@ -58,14 +37,14 @@ $(document).ready(function(){
 });
 $(function() {
 	$(".tw-control").click(function(){
-		var selected = "0"
+		var selected = [];
 		$(".tw-control").each(function(){
 			if($(this).is(":checked"))
 			{
-				selected += ","+$(this).parent().attr("data-value");
+				selected.push($(this).parent().attr("data-value"));
 			}
 		});
-		$("#menues").val(selected);
+		$("#menues").val(selected.join());
 	});
 });
 function fillCheckboxTree()

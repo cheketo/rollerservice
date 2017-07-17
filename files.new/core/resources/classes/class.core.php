@@ -1,6 +1,7 @@
 <?php
     class Core
     {
+        const DEFAULT_GRID_IMG = '../../../../skin/images/body/pictures/img-back-gen.jpg';
         
         static function Select($Table,$Fields='',$Where='',$Order='',$GroupBy='',$Limit='')
     	{
@@ -32,6 +33,11 @@
     		return $GLOBALS['DB']->Delete($Table,$Where);
     	}
     	
+    	static function TableData($Table)
+    	{
+    	    return $GLOBALS['DB']->TableData($Table);
+    	}
+    	
     	static function AffectedRows()
     	{
     		return $GLOBALS['DB']->AffectedRows();
@@ -40,6 +46,27 @@
     	static function LastQuery()
     	{
     		return $GLOBALS['DB']->LastQuery();
+    	}
+    	
+    	public static function InsertArrayToID($Table,$Fields,$ID,$IDs)
+    	{
+    	    if($IDs && $IDs!='null')
+    	        return Core::Insert($Table,$Fields,self::AssocArrayToID($ID,$IDs));
+    	}
+    	
+    	public static function AssocArrayToID($ID,$Values=array())
+    	{
+    	    if($ID>0 && !empty($Values))
+    	    {
+    	        if(!is_array($Values))
+    	            $Values = explode(",",$Values);
+    	        for($i=0;$i<count($Values);$i++)
+        		{
+        			if(intval($Values[$i])>0)
+        				$String .= !$String? $ID.",".$Values[$i] : "),(".$ID.",".$Values[$i];
+        		}
+        		return $String;
+    	    }
     	}
         
         public static function include_dir($Path,$s="/")
@@ -55,7 +82,7 @@
         public static function Autoload($Resource)
     	{
     	    
-    		$File	        = strtolower(self::splitAtUpperCaseAddDot($Resource));
+    		$File	        = strtolower(self::SplitAtUpperCaseAddDot($Resource));
     		$CoreClass	    = "../../../core/resources/classes/class".$File.".php";
     		$CoreTrait      = "../../../core/resources/traits/trait".$File.".php";
     		$ProjectClass   = "../../../project/resources/classes/class".$File.".php";
@@ -75,7 +102,7 @@
     		}
     	}
         
-        public static function splitAtUpperCaseAddDot($String){
+        public static function SplitAtUpperCaseAddDot($String){
             return preg_replace('/([a-z0-9])?([A-Z])/','$1.$2',$String);
         }
         
@@ -231,8 +258,12 @@
     	static function DateTimeFormat($DateTime,$Mode='')
     	// Returns a formated date
     	{
-    		switch($Mode)
+    		switch(strtolower($Mode))
     		{
+    		    case 'time':
+    		        $Time	= explode(" ",$DateTime);
+    		        return $Time[1];
+    		    break;
     			case 'full':
     				$DateTime	= explode(" ",$DateTime);
     				$Time		= $DateTime[1];
@@ -244,7 +275,7 @@
     				$DateTime	= $Day." de ".$Month." del ".$Year;
     				return		$Time? $DateTime.", a las ".$Time : $DateTime;
     			break;
-    			default:
+    			case 'complete':
     				$DateTime	= explode(" ",$DateTime);
     				$Time		= $DateTime[1];
     				$Date		= explode("-",$DateTime[0]);
@@ -253,7 +284,11 @@
     				$Year		= substr($Date[0],2);
     				
     				$DateTime	= $Day."/".$Month."/".$Year;
-    				return		$Time? $DateTime."|".$Time."Hs." : $DateTime;
+    				return		$Time? $DateTime." | ".$Time." Hs." : $DateTime;
+    			break;
+    			default:
+    			    $Date	= explode(" ",$DateTime);
+    		        return implode('/',array_reverse(explode('-',$Date[0])));
     			break;
     		}	
     	}
@@ -412,8 +447,6 @@
     	
     	static function InsertAutolocationMap($ID=1,$Data=array())
     	{
-    		
-    		
     		$html = '<div id="map'.$ID.'_ErrorMsg" class="ErrorText Red Hidden">Seleccione una ubicaci&oacute;n</div>';
     		
     		$html .= self::InsertElement('hidden','map'.$ID.'_lat',$Data['lat']);

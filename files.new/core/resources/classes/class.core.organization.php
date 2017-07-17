@@ -1,6 +1,6 @@
 <?php
 
-class Organization 
+class CoreOrganization 
 {
 	use CoreSearchList;
 	
@@ -10,6 +10,8 @@ class Organization
 	var $Customers 		= array();
 	var $Parent 		= array();
 	
+	const TABLE			= 'core_organization';
+	const TABLE_ID		= 'organization_id';
 	const DEFAULTIMG	= "../../../skin/images/organization/default/company.jpg";
 
 	public function __construct($ID=0)
@@ -17,7 +19,7 @@ class Organization
 		
 		if($ID!=0)
 		{
-			$Data = Core::Select("admin_organization","*","organization_id=".$ID);
+			$Data = Core::Select(self::TABLE,"*",self::TABLE_ID."=".$ID);
 			$this->Data = $Data[0];
 			$this->ID = $ID;
 		}
@@ -27,7 +29,7 @@ class Organization
 	{
 		if(!$this->Companies)
 		{
-			$this->Companies = Core::Select("admin_organization",'*',"parent_id =".$this->ID);
+			$this->Companies = Core::Select(self::TABLE,'*',"parent_id =".$this->ID);
 		}
 		return $this->Companies;
 	}

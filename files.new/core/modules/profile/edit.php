@@ -7,12 +7,12 @@
     
     foreach($Edit->GetGroups() as $Group)
     {
-      $Groups .= $Groups? ','.$Group['group_id'] : $Group['group_id']; 
+      $Groups .= $Groups? ','.$Group[CoreGroup::TABLE_ID] : $Group[CoreGroup::TABLE_ID]; 
     }
-    $Menues = Core::Select("relation_menu_profile","DISTINCT(menu_id)","profile_id=".$ID);
+    $Menues = Core::Select("core_relation_menu_profile","DISTINCT(".CoreMenu::TABLE_ID.")",CoreProfile::TABLE_ID."=".$ID);
     foreach($Menues as $MenuData)
     {
-      $MenuArray[] = $MenuData['menu_id'];
+      $MenuArray[] = $MenuData[CoreMenu::TABLE_ID];
     }
     if(is_array($MenuArray))
       $Menues = implode(",",$MenuArray);
@@ -42,7 +42,7 @@
               <div class="col-xs-12 col-sm-6 inner">
                 <label for="">Grupos</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo Core::InsertElement('multiple','groups',$Groups,'form-control chosenSelect','data-placeholder="Seleccione Grupos"',Core::Select('admin_group','group_id,title',"status<>'I' AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php echo Core::InsertElement('multiple','groups',$Groups,'form-control chosenSelect','data-placeholder="Seleccione Grupos"',Core::Select(CoreGroup::TABLE,CoreGroup::TABLE_ID.',title',"status<>'I' AND ".CoreOrganization::TABLE_ID." = ".$_SESSION[CoreOrganization::TABLE_ID])); ?>
                 </div>
               </div>
               <!--<div class="col-xs-12 col-sm-12 inner">-->
@@ -81,15 +81,17 @@
                 </div>
               </div>
               <div class="col-xs-12 col-sm-6 inner">
-                <div id="treeview-checkbox" class="treeCheckBoxDiv">
-                  <label for="">Permisos</label>
-                  <?php echo $Menu->MakeTree(); ?>
-                </div><!-- treeview-checkbox -->
+                <label for="">Permisos</label>
+                <div class="lineContainer">
+                  <div id="treeview-checkbox">
+                    <?php echo $Menu->MakeTree(); ?>
+                  </div><!-- treeview-checkbox -->
+                </div>
               </div>
             </div><!-- inline-form -->
             <hr>
             <div class="txC">
-              <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-check"></i> Editar Perfil</button>
+              <button type="button" class="btn btn-success btnGreen" id="BtnEdit"><i class="fa fa-check"></i> Editar Perfil</button>
               <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
             </div>
         </div>

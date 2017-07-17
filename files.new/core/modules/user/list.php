@@ -10,10 +10,7 @@
   
   /* Body Content */ 
   // Search List Box
-  $CoreUser->ConfigureSearchRequest();
   echo $CoreUser->InsertSearchList();
-  // Help Modal
-  include('modal.help.php');
   
   /* Footer */
   $Foot->SetScript('../../../core/resources/js/script.core.searchlist.js');

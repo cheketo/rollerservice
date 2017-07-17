@@ -23,7 +23,7 @@
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Ubicaci&oacute;n</label>
-                <?php echo Core::InsertElement('select','parent','','form-control chosenSelect','',Core::Select('admin_menu a LEFT JOIN admin_menu b ON (a.parent_id=b.menu_id OR b.menu_id=0)',"a.menu_id,COALESCE(CONCAT(b.title,'/',a.title), a.title) AS title","a.status<>'I'"),'0','Men&uacute; Principal'); ?>
+                <?php echo Core::InsertElement('select','parent','','form-control chosenSelect','',Core::Select(CoreMenu::TABLE." a LEFT JOIN ".CoreMenu::TABLE." b ON ((a.parent_id=b.".CoreMenu::TABLE_ID." OR b.menu_id=0) AND a.link<>'#')","a.".CoreMenu::TABLE_ID.",COALESCE(CONCAT(b.title,'/',a.title), a.title) AS title","a.status<>'I' AND a.".CoreOrganization::TABLE_ID." IN (0,".$_SESSION[CoreOrganization::TABLE_ID].")","a.parent_id"),'0','Men&uacute; Principal'); ?>
                 
               </div>
               <div class="col-xs-12 col-sm-4 inner">
@@ -33,13 +33,13 @@
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Perfiles</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo Core::InsertElement('select','profiles','','form-control chosenSelect','multiple="multiple" data-placeholder="Seleccione Perfiles" style="width: 100%;"',Core::Select('admin_profile','profile_id,title',"status<>'I' AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php echo Core::InsertElement('select','profiles','','form-control chosenSelect','multiple="multiple" data-placeholder="Seleccione Perfiles" style="width: 100%;"',Core::Select(CoreProfile::TABLE,CoreProfile::TABLE_ID.',title',"status<>'I' AND ".CoreOrganization::TABLE_ID." = ".$_SESSION[CoreOrganization::TABLE_ID])); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Grupos</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo Core::InsertElement('select','groups','','form-control chosenSelect','multiple="multiple" data-placeholder="Seleccione Grupos" style="width: 100%;"',Core::Select('admin_group','group_id,title',"status<>'I' AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php echo Core::InsertElement('select','groups','','form-control chosenSelect','multiple="multiple" data-placeholder="Seleccione Grupos"',Core::Select(CoreGroup::TABLE,CoreGroup::TABLE_ID.',title',"status<>'I' AND ".CoreOrganization::TABLE_ID." = ".$_SESSION[CoreOrganization::TABLE_ID])); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 inner">

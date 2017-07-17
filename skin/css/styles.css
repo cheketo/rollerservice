@@ -197,7 +197,20 @@ html {
 
 @media (max-width: 990px) {
   .hideMobile990 {
-    display: none!important; } }
+    display: none!important; }
+  .list-margin-top{
+    margin-top:3em;
+  }
+}
+    
+@media (min-width: 990px) {
+  .showMobile990 {
+    display: none!important; }
+  .list-margin-top{
+    margin-top:1em;
+  }
+}
+    
 .main-wrapper {
   padding: 25px 5px; }
 
@@ -1505,7 +1518,7 @@ html {
   /*max-width: 300px;*/
   /*min-height: 100px;*/
   /*padding: 30px;*/
-  max-width: 10em;
+  max-width: 14em;
   min-height: 1em;
   padding: 1em;
   border-radius: 5px; }
@@ -1673,7 +1686,7 @@ html {
 .profile-section .profile-img {
   border-radius: 100%;
   margin: 0 auto;
-  max-width: 100%; }
+  max-width: 90%; }
 .profile-section .profile-user-info div:first-child {
   padding: 20px 2px;
   background-color: rgba(238, 238, 238, 0.51);

@@ -18,7 +18,7 @@ $(function(){
 			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
 				if(e)
 				{
-					var process		= process_url+'?object=AdminUser';
+					var process		= process_url+'?object=CoreUser';
 					if(BtnID=="BtnCreate")
 					{
 						var target		= 'list.php?element='+$('#user').val()+'&msg='+ $("#action").val();
@@ -50,7 +50,7 @@ $(function(){
 ///////////////////////////// Upload Image /////////////////////////////////////
 $(function(){
 	$("#image").change(function(){
-		var process		= process_url+'?action=newimage&object=AdminUser';
+		var process		= process_url+'?action=newimage&object=CoreUser';
 		var haveData	= function(returningData)
 		{
 			$('#newimage').val(returningData);

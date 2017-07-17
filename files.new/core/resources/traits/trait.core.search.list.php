@@ -1,14 +1,15 @@
 <?php
 trait CoreSearchList
 {
-    var $Where = '1=1';
-	var $Regs = array();
+    var $Where				= '1=1';
+	var $Regs				= array();
 	var $TotalRegs;
-	var $Page = 1;
-	var $RegsPerView = 25;
+	var $Page				= 1;
+	var $RegsPerView		= 25;
 	var $Order;
 	var $SearchTable;
-	var $Fields = '*';
+	var $SearchFields		= array();
+	var $Fields 			= '*';
 	
     public function GetWhere()
 	{
@@ -206,20 +207,20 @@ trait CoreSearchList
 			      <!-- Paginator -->
 			      <div class="form-inline paginationLeft">
 			    	<div class="row">
-			    		<div class="col-xs-12 col-sm-4">
+			    		<div class="col-xs-12 col-sm-4 col-md-3">
 					    	<div class="row">
-					    		<div class="col-xs-6 col-sm-3" style="margin:0px;padding:0px;margin-top:7px;">
+					    		<div class="col-xs-5 col-sm-3 col-md-4" style="margin:0px;padding:0px;margin-top:7px;">
 					    			<span class="pull-right">Mostrando&nbsp;</span>
 					    		</div>
-					    		<div class="col-xs-4  col-sm-2 txC" style="margin:0px;padding:0px;">
-					    			'.Core::InsertElement('select','regsperview',$this->GetRegsPerView(),'form-control chosenSelect','',array("5"=>"5","10"=>"10","25"=>"25","50"=>"50","100"=>"100")).'
+					    		<div class="col-xs-3 col-sm-2 col-md-3 txC" style="margin:0px;padding:0px;">
+					    			'.Core::InsertElement('select','regsperview',$this->GetRegsPerView(),'form-control chosenSelect txC','',array("5"=>"5","10"=>"10","25"=>"25","50"=>"50","100"=>"100")).'
 					    		</div>
-					    		<div class="col-xs-2  col-sm-2" style="margin:0px;padding:0px;margin-top:7px;">
+					    		<div class="col-xs-4 col-sm-7 col-md-5" style="margin:0px;padding:0px;margin-top:7px;">
 					    			&nbsp;de <b><span id="TotalRegs">'.$this->GetTotalRegs().'</span></b>
 					    		</div>
 					    	</div>
 				    	</div>
-				    	<div class="col-xs-12 col-sm-8">
+				    	<div class="col-xs-12 col-sm-8 col-md-9">
 				    		<ul class="paginationRight pagination no-margin pull-right">
 				    		</ul>
 				    	</div>
@@ -241,8 +242,8 @@ trait CoreSearchList
 			$ListClass = 'Hidden';
 		else
 			$GridClass = 'Hidden';
-			
-		return '<div class="contentContainer txC" id="SearchResult" object="'.get_class ($this).'"><!-- List Container -->
+		$this->ConfigureSearchRequest();
+		return '<div class="contentContainer txC" id="SearchResult" object="'.get_class($this).'">
 			        <div class="GridView row horizontal-list flex-justify-center GridElement '.$GridClass.' animated fadeIn">
 			          <ul>
 			            '.$this->MakeGrid().'
@@ -272,16 +273,35 @@ trait CoreSearchList
 		    	';
 	}
 	
+	protected function InsertSearchField()
+	{
+		$this->SetSearchFields();
+		$Activated = 'sort-activated';
+		$SearcherHTML = '<div class="row">';
+		foreach($this->SearchFields as $Order => $HTML)
+		{
+			
+			$SearcherHTML	.='<div class="input-group col-lg-2 col-md-3 col-sm-5 col-xs-11" style="margin:2px;">
+								<span class="input-group-addon order-arrows '.$Activated.'" order="'.$Order.'" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+								'.$HTML.'
+							</div>';
+        	$Activated = '';
+		}
+		$SearcherHTML .= '</div>';
+        return $SearcherHTML;
+	}
+	
 	public function Search()
 	{
-		$this->ConfigureSearchRequest();
 		echo $this->InsertSearchResults();
 	}
 	
-	public function SetSearchRequest($Fields=array(),$Order='',$Mode='ASC',$Regs='',$Page='')
+	public function SetSearchRequest($Fields=array())
 	{
 		$this->SetTable(self::SEARCH_TABLE);
-		$this->SetFields('*');
+		// $this->SetFields('*');
+		
+		$Fields = empty($Fields)? $this->ConfigureSearchColumns():$Fields;
 		
 		foreach($Fields as $Field => $Config)
 		{
@@ -289,13 +309,72 @@ trait CoreSearchList
 			$this->SetWhereCondition($Field,$Config['condition'],$Config['value']);
 		}
 		
-		if($Order)
-			$this->SetOrder($Order." ".$Mode);
+		$Mode = $_POST['view_order_mode']? $_POST['view_order_mode']: 'ASC';
+		
+		if($_POST['view_order_field'])
+			$this->SetOrder($_POST['view_order_field']." ".$Mode);
 
-		if(intval($Regs)>0)
-			$this->SetRegsPerView($Reg);
-		if(intval($Page)>0)
-			$this->SetPage($Page);
+		if(intval($_POST['regsperview'])>0)
+			$this->SetRegsPerView($_POST['regsperview']);
+		if(intval($_POST['view_page'])>0)
+			$this->SetPage($_POST['view_page']);
+	}
+	
+	protected function ConfigureSearchColumns()
+	{
+		if(!$_POST['status'])
+		{
+			if($_GET['status'])
+			{
+				$_POST['status'] = $_GET['status'];
+			}else{
+				$_POST['status'] = 'A';
+			}
+			$_POST['status_condition']='=';
+		}
+		
+		if(!$_POST['organization_id'])
+		{
+			$_POST['organization_id'] = $_SESSION['organization_id'];
+			$_POST['organization_id_condition']='=';
+		}
+			
+		
+		$Fields = array();
+		$Columns = Core::TableData(self::SEARCH_TABLE);
+		foreach($Columns as $Column)
+		{
+			if($_POST[$Column['Field']] && !$_POST[$Column['Field'].'_restrict'])
+			{
+				if($_POST[$Column['Field'].'_condition'])
+				{
+					$Fields[$Column['Field']] = array('value'=>$_POST[$Column['Field']],'condition'=>$_POST[$Column['Field'].'_condition']);	
+				}else{
+					$Column['Type'] = explode(")",$Column['Type']);
+					switch($Column['Type'][0])
+					{
+						case 'decimal':
+						case 'bigint':
+						case 'int':
+						$Fields[$Column['Field']] = array('value'=>$_POST[$Column['Field']],'condition'=>'IN');
+						break;
+						case 'date':
+						case 'datetime':
+							$Fields[$Column['Field']] = array('value'=>$_POST[$Column['Field']],'condition'=>'=');
+						break;
+						default:
+							$Fields[$Column['Field']] = array('value'=>$_POST[$Column['Field']]);
+						break;
+					}
+				}
+			}
+		}
+		return $Fields;
+	}
+	
+	public function ConfigureSearchRequest()
+	{
+		$this->SetSearchRequest();
 	}
 	
 	public function MakeList()
@@ -307,10 +386,56 @@ trait CoreSearchList
 	{
 		return $this->MakeRegs("Grid");
 	}
-
-	public function GetData()
+	
+	public function MakeRegs($Mode="list")
 	{
-		return $this->Data;
+		$Rows	= self::GroupRowsByID($this->GetRegs());
+		// echo Core::LastQuery();
+		foreach($Rows as $Row)
+		{
+			$Class	= get_class($this);
+			$Object	= new $Class($Row[self::TABLE_ID]);
+			switch(strtolower($Mode))
+			{
+				case "list":
+					
+					$RowBackground = $RowBackground == ' listRow2 '? '':' listRow2 ';
+					$Regs	.= '<div class="row listRow'.$RowBackground.'" id="row_'.$Object->ID.'">
+									'.self::MakeListHTML($Object).'
+									<div class="animated DetailedInformation Hidden col-md-12">
+										<div class="list-margin-top">
+											'.self::MakeItemsListHTML($Object).'
+										</div>
+									</div>
+									<div class="listActions flex-justify-center Hidden">
+										<div><span class="roundItemActionsGroup">'.self::MakeActionButtonsHTML($Object,'list').'</span></div>
+									</div>
+								</div>';
+				break;
+				case "grid":
+				$Regs	.= '<li id="grid_'.$Object->ID.'" class="RoundItemSelect roundItemBig">
+						            '.self::MakeGridHTML($Object).'
+						          </li>';
+				break;
+			}
+        }
+        if(!$Regs) $Regs.= self::MakeNoRegsHTML();
+		return $Regs;
 	}
+	
+	protected function GroupRowsByID($Rows)
+	{
+		$Regs = array();
+		foreach($Rows as $Row)
+		{
+			if($Row[self::TABLE_ID]!=$ID)
+			{
+				$Regs[] = $Row;
+				$ID = $Row[self::TABLE_ID];
+			}
+		}
+		return $Regs;
+	}
+
 }
 ?>

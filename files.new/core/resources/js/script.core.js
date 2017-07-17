@@ -74,11 +74,12 @@ function notifyError(msgNotify)
 {
     $.notify({
         // options
-        message: '<div style="text-align:center;">'+msgNotify+'</div>'
+        message: '<div class="txC"><i class="fa fa-exclamation-circle"></i> '+msgNotify+'</div>'
     },{
         // settings
         type: 'danger',
-        allow_dismiss: false,
+        allow_dismiss: true,
+        delay: 30000,
         placement: {
             from: "top",
             align: "center"
@@ -90,11 +91,12 @@ function notifySuccess(msgNotify)
 {
     $.notify({
         // options
-        message: '<div style="text-align:center;">'+msgNotify+'</div>'
+        message: '<div class="txC"><i class="fa fa-check-circle"></i><br>'+msgNotify+'</div>'
     },{
         // settings
         type: 'success',
-        allow_dismiss: false,
+        allow_dismiss: true,
+        delay: 15000,
         placement: {
             from: "bottom",
             align: "right"
@@ -106,11 +108,12 @@ function notifyInfo(msgNotify)
 {
     $.notify({
         // options
-        message: '<div style="text-align:center;">'+msgNotify+'</div>'
+        message: '<div class="txC"><i class="fa fa-info-circle"></i><br>'+msgNotify+'</div>'
     },{
         // settings
         type: 'info',
-        allow_dismiss: false,
+        allow_dismiss: true,
+        delay: 15000,
         placement: {
             from: "bottom",
             align: "right"
@@ -122,10 +125,12 @@ function notifyWarning(msgNotify)
 {
     $.notify({
         // options
-        message: '<div style="text-align:center;">'+msgNotify+'</div>'
+        message: '<div class="txC"><i class="fa fa-warning"></i><br>'+msgNotify+'</div>'
     },{
         // settings
         type: 'warning',
+        allow_dismiss: true,
+        delay: 30000,
         placement: {
             from: "bottom",
             align: "right"
@@ -356,6 +361,30 @@ function sumbitFields(process,haveData,noData){
             }
         }
     });
+}
+
+function askAndSubmit(target,object,qtext="¿Desea guardar la informaci&oacute;n?",etext="Ha ocurrido un error en el proceso de guardado.")
+{
+	if(validate.validateFields(''))
+	{
+		alertify.confirm(qtext, function(e){
+			if(e)
+			{
+				var process		= process_url+'?object='+object;
+				var haveData	= function(returningData)
+				{
+					$("input,select").blur();
+					notifyError(etext);
+					console.log(returningData);
+				}
+				var noData		= function()
+				{
+					document.location = target;
+				}
+				sumbitFields(process,haveData,noData);
+			}
+		});
+	}
 }
 
 ///////////////////////////////////////////////////// Attach a Selector //////////////////////////////////////////////////

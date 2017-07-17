@@ -1,23 +1,22 @@
 <?php
     include("../../../core/resources/includes/inc.core.php");
     $ID           = $_GET['id'];
-    $Menu         = new CoreMenu($ID);
-    $Data         = $Menu->GetData();
-    $Data['link'] = $Data['link']=='#'? '' : $Data['link'];
+    $Edit         = new CoreMenu($ID);
+    $Data         = $Edit->GetData();
+    $Data['link'] = $Data['link']=='#'? '' : $Data['link_text'];
     Core::ValidateID($Data);
     
-    foreach($Menu->GetGroups() as $Group)
+    foreach($Edit->GetGroups() as $Group)
     {
       $Groups .= $Groups? ','.$Group['group_id'] : $Group['group_id']; 
     }
-    foreach($Menu->GetProfiles() as $Profile)
+    foreach($Edit->GetProfiles() as $Profile)
     {
       $Profiles .= $Profiles? ','.$Profile['profile_id'] : $Profile['profile_id']; 
     }
-    
-    $Head->SetTitle($Data['title']);
+    $Head->SetTitle($Edit->Data['title']);
     $Head->SetSubTitle("Modificar Men&uacute;");
-    $Head->SetIcon($Menu->GetHTMLicon());
+    $Head->SetIcon($Edit->GetHTMLicon());
     $Head->SetStyle('../../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
      
     $Head->setHead();
@@ -41,7 +40,8 @@
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Ubicaci&oacute;n</label>
-                <?php echo Core::InsertElement('select','parent',$Data['parent_id'],'form-control chosenSelect','',Core::Select('admin_menu a LEFT JOIN admin_menu b ON (a.parent_id=b.menu_id OR b.menu_id=0)',"a.menu_id,COALESCE(CONCAT(b.title,'/',a.title), a.title) as title","status<>'I' AND menu_id <>".$ID),'0','Men&uacute; Principal'); ?>
+                <?php //echo Core::InsertElement('select','parent',$Data['parent_id'],'form-control chosenSelect','',Core::Select('core_menu a LEFT JOIN core_menu b ON (a.parent_id=b.menu_id OR b.menu_id=0)',"a.menu_id,COALESCE(CONCAT(b.title,'/',a.title), a.title) as title","a.status<>'I' AND a.menu_id <>".$ID),'0','Men&uacute; Principal'); ?>
+                <?php echo Core::InsertElement('select','parent',$Data['parent_id'],'form-control chosenSelect','',Core::Select(CoreMenu::TABLE." a LEFT JOIN ".CoreMenu::TABLE." b ON ((a.parent_id=b.".CoreMenu::TABLE_ID." OR b.menu_id=0) AND a.link<>'#')","a.".CoreMenu::TABLE_ID.",COALESCE(CONCAT(b.title,'/',a.title), a.title) AS title","a.status<>'I' AND a.".CoreMenu::TABLE_ID."<>".$ID." AND a.".CoreOrganization::TABLE_ID." IN (0,".$_SESSION[CoreOrganization::TABLE_ID].")"),'0','Men&uacute; Principal',"a.parent_id"); ?>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label>Link</label>
@@ -50,13 +50,15 @@
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Perfiles</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo Core::InsertElement('multiple','profiles',$Profiles,'form-control chosenSelect','data-placeholder="Seleccione Perfiles"',Core::Select('admin_profile','profile_id,title',"status<>'I' AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php //echo Core::InsertElement('multiple','profiles',$Profiles,'form-control chosenSelect','data-placeholder="Seleccione Perfiles"',Core::Select('core_profile','profile_id,title',"status<>'I' AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php echo Core::InsertElement('select','profiles',$Profiles,'form-control chosenSelect','multiple="multiple" data-placeholder="Seleccione Perfiles" style="width: 100%;"',Core::Select(CoreProfile::TABLE,CoreProfile::TABLE_ID.',title',"status<>'I' AND ".CoreOrganization::TABLE_ID." = ".$_SESSION[CoreOrganization::TABLE_ID])); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
                 <label for="">Grupos</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo Core::InsertElement('multiple','groups',$Groups,'form-control chosenSelect','data-placeholder="Seleccione Grupos"',Core::Select('admin_group','group_id,title',"status<>'I' AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php //echo Core::InsertElement('multiple','groups',$Groups,'form-control chosenSelect','data-placeholder="Seleccione Grupos"',Core::Select('core_group','group_id,title',"status<>'I' AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php echo Core::InsertElement('select','groups',$Groups,'form-control chosenSelect','multiple="multiple" data-placeholder="Seleccione Grupos"',Core::Select(CoreGroup::TABLE,CoreGroup::TABLE_ID.',title',"status<>'I' AND ".CoreOrganization::TABLE_ID." = ".$_SESSION[CoreOrganization::TABLE_ID])); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-4 inner">
@@ -85,7 +87,7 @@
             </div><!-- inline-form -->
             <hr>
             <div class="txC">
-              <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-check"></i> Editar Men&uacute;</button>
+              <button type="button" class="btn btn-success btnGreen" id="BtnEdit"><i class="fa fa-check"></i> Editar Men&uacute;</button>
               <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
             </div>
           

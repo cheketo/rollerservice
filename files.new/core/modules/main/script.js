@@ -3,7 +3,20 @@
 
 function welcomeMessage()
 {
-  notifyInfo('<img src="' + $(".img-circle").attr("src") + '" width="90" height="90" class="img-circle">' + "<br>" + "<br>" + utf8_decode('¡Bienvenido '+ $("#userfullname").html()) +'!');
+  var Name = $("#userfullname").html().split(" ");
+  $.notify({
+        // options
+        message: '<div class="txC"><img src="' + $(".img-circle").attr("src") + '" width="90" height="90" class="img-circle">' + "<br>" + "<br>" + '¡Bienvenido '+ Name[0] +'!</div>'
+    },{
+        // settings
+        type: 'info',
+        allow_dismiss: true,
+        delay: 2000,
+        placement: {
+            from: "bottom",
+            align: "right"
+        }
+    });
 }
 
 $(document).ready(function() {

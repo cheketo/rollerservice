@@ -18,5 +18,5 @@
    <br><br>
 
 <?php
-  include('../../../project/resources/includes/inc.bottom.php');
+    include('../../../project/resources/includes/inc.bottom.php');
 ?>

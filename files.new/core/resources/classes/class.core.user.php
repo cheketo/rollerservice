@@ -2,89 +2,60 @@
 
 class CoreUser 
 {
-	use CoreSearchList,CoreCrud;
+	use CoreSearchList,CoreCrud,CoreImage;
 	
-	var	$ID;
-	var	$FirstName;
-	var	$LastName;
-	var	$FullName;
-	var $FullUserName;
-	var	$ProfileID;
-	var	$ProfileName;
-	var	$User;
-	var	$Email;
-	var	$Img;
-	var $Data;
-	var $DefaultImg	= '../../../../skin/images/users/default/default.jpg';
-	var $DefaultImgDir = '../../../../skin/images/users/default';
-	var $ImgGalDir = '../../../../skin/images/users/';
-	var $LastAccess;
-	var $Organization 	= array();
-	var $Groups 		= array();
-	var $Parent 		= array();
-	var $Menues 		= array();
-	var $DefaultImages 	= array();
-	var $UserImages 	= array();
-	const TABLE			= 'core_user';
-	const TABLE_ID		= 'user_id';
-	const SEARCH_TABLE	= 'core_view_user_list';
+	var $Groups 			= array();
+	var $Parent 			= array();
+	var $Menues 			= array();
+	
+	const TABLE				= 'core_user';
+	const TABLE_ID			= 'user_id';
+	const SEARCH_TABLE		= 'core_view_user_list';
+	const DEFAULT_IMG		= '../../../../skin/images/users/default/default.jpg';
+	const DEFAULT_IMG_DIR	= '../../../../skin/images/users/default/';
+	const IMG_DIR			= '../../../../skin/images/users/';
 
 	public function __construct($ID='')
 	{
-		
-		$this->ID 			= $ID==''? $_SESSION[self::TABLE_ID] : $ID;
-		$this->Data			= Core::Select(self::TABLE,'*',self::TABLE_ID."= '".$this->ID."'")[0];
-		$this->FirstName	= $this->Data['first_name'];
-		$this->LastName		= $this->Data['last_name'];
-		$this->User			= $this->Data['user'];
-		$this->Email		= $this->Data['email'];
-		$this->ProfileID	= $this->Data['profile_id'];
-		$this->Img			= file_exists($this->Data['img'])? $this->Data['img'] : $this->DefaultImg;
-		$this->FullName		= $this->FirstName." ".$this->LastName;
-		$this->FullUserName	= $this->FirstName." ".$this->LastName." (".$this->User.")";
-		$this->LastAccess	= $this->Data['last_access']=="0000-00-00 00:00:00"? "Nunca se ha conectado":"&Uacute;ltima conexi&oacute;n: ".Core::DateTimeFormat($this->Data['last_access']);
-		$Profile			= Core::Select('core_profile','*'," profile_id = ".$this->ProfileID);
-		$this->ProfileName	= $Profile[0]['title'];
+		$this->ID = $ID;
+		$this->GetData();
+		self::SetImg($this->Data['img']);
 	}
 	
 	public function IsOwner()
 	{
-		return $this->Data['group_id'] == 360;
+		return $this->Data[CoreGroup::TABLE_ID] == 360;
 	}
 	
 	public function GetOrganization()
 	{
-		if(!$this->Organization)
+		if(!$this->Data['organization'])
 		{
-			$Rs 	= Core::Select("core_organization",'*',"organization_id =".$this->Data['organization_id']);
-			$this->Organization = $Rs[0];
+			$this->Data['organization'] = Core::Select(CoreOrganization::TABLE,'*',CoreOrganization::TABLE_ID."=".$this->Data[CoreOrganization::TABLE_ID])[0];
 		}
-		return $this->Organization;
+		return $this->Data['organization'];
 	}
 
 	public function GetGroups()
 	{
 		if(!$this->Groups)
 		{
-			$Rs 	= Core::Select('core_group','*',"status = 'A' AND group_id IN (SELECT group_id FROM core_relation_user_group WHERE ".self::TABLE_ID."=".$this->ID.")","title");
+			$Rs 	= Core::Select(CoreGroup::TABLE,'*',"status = 'A' AND ".CoreGroup::TABLE_ID." IN (SELECT ".CoreGroup::TABLE_ID." FROM core_relation_user_group WHERE ".self::TABLE_ID."=".$this->ID.")","title");
 			$this->Groups = $Rs;
 		}
 		return $this->Groups;
-
 	}
-
-	public function GetImg()
+	
+	public static function GetUserGroups($ID)
 	{
-		return $this->Img;
+		return Core::Select(CoreGroup::TABLE.' a INNER JOIN core_relation_user_group b ON (a.'.CoreGroup::TABLE_ID.'=b.'.CoreGroup::TABLE_ID.')','a.*',self::TABLE_ID."=".$ID);
 	}
 
 	public function GetProfileID()
 	{
-		return $this->ProfileID;
+		return $this->Data[CoreProfile::TABLE_ID];
 	}
-
 	
-
 	public function GetCheckedMenues()
 	{
 		if(count($this->Menues)<1)
@@ -92,202 +63,152 @@ class CoreUser
 			$Relations	= Core::Select('core_relation_user_menu','*',self::TABLE_ID." = ".$this->ID);
 			foreach($Relations as $Relation)
 			{
-				$this->Menues[]	= $Relation['menu_id'];
+				$this->Menues[]	= $Relation[CoreMenu::TABLE_ID];
 			}
 		}
 		return $this->Menues;
 
 	}
 
-	public function GetParents()
-	{
-		$Parents	= Core::Select('core_menu','DISTINCT(parent_id)',"parent_id <> 0 AND status <> 'I'");
-
-		foreach($Parents as $Parent){
-			$this->Parents[] = $Parent['parent_id'];
-		}
-	}
-
 	public function IsDisabled($ParentID)
 	{
 		return in_array($ParentID,$this->Menues) ? '' : ' disabled="disabled" ';
 	}
-
-	public function DefaultImages($Dir='')
+	
+	public static function DateTimeFormat($DateTime)
 	{
-		if(!$Dir) $Dir = $this->DefaultImgDir;
-
-		if(count($this->DefaultImages)<1)
-		{
-			$Elements = scandir($Dir);
-			foreach($Elements as $Image)
-			{
-				if(strlen($Image)>4 && $Image[0]!=".")
-				{
-					$this->DefaultImages[] = $Dir."/".$Image;
-				}
-			}
-		}
-
-		return $this->DefaultImages;
+		return $DateTime == "0000-00-00 00:00:00"? "Nunca se ha conectado":Core::DateTimeFormat($DateTime,'complete');
 	}
-
-	public function UserImages($Dir='')
-	{
-		if(!$Dir) $Dir = $this->ImgGalDir();
-
-		if(count($this->UserImages)<1)
-		{
-			$Elements = scandir($Dir);
-			foreach($Elements as $Image)
-			{
-				if(strlen($Image)>4 && $Image[0]!=".")
-				{
-					$this->UserImages[] = $Dir."/".$Image;
-				}
-			}
-		}
-
-		return $this->UserImages;
-	}
-
-	public function ImgGalDir()
-	{
-		$TempDir = $this->ImgGalDir.$this->ID."/";
-		if(!file_exists($TempDir)) mkdir($TempDir);
-		return $TempDir;
-	}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// SEARCHLIST FUNCTIONS ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-public function MakeRegs($Mode="List")
+	protected static function MakeActionButtonsHTML($Object,$Mode='list')
 	{
-		$Rows	= $this->GetRegs();
-		// echo Core::LastQuery();
-		for($i=0;$i<count($Rows);$i++)
+		if($Mode!='grid') $HTML .=	'<a class="hint--bottom hint--bounce" aria-label="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Object->ID.'"><i class="fa fa-plus"></i></button></a> ';;
+		$HTML	.= 	'<a href="edit.php?id='.$Object->ID.'" class="hint--bottom hint--bounce hint--info" aria-label="Editar"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
+		if($Object->Data['status']=="A")
 		{
-			$Row	=	new CoreUser($Rows[$i][self::TABLE_ID]);
-			$UserGroups = $Row->GetGroups();
-			$Groups='';
-			foreach($UserGroups as $Group)
+			if($Object->ID!=$_SESSION[self::TABLE_ID])
 			{
-				$Groups .= '<span class="label label-warning">'.$Group['title'].'</span> ';
+				$HTML	.= '<a class="deleteElement hint--bottom hint--bounce hint--error" aria-label="Eliminar" process="'.PROCESS.'" id="delete_'.$Object->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
+				$HTML	.= Core::InsertElement('hidden','delete_question_'.$Object->ID,'&iquest;Desea eliminar a '.$Object->Data['full_user_name'].' ?');
+				$HTML	.= Core::InsertElement('hidden','delete_text_ok_'.$Object->ID,$Object->Data['full_user_name'].' ha sido eliminado.');
+				$HTML	.= Core::InsertElement('hidden','delete_text_error_'.$Object->ID,'Hubo un error al intentar eliminar a '.$Object->Data['full_user_name'].'.');
 			}
-			if(!$Groups) $Groups = 'Ninguno';
-			$Actions	= 	'<span class="roundItemActionsGroup"><a href="edit.php?id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
-			if($Row->Data['status']=="A")
-			{
-				if($Row->ID!=$_SESSION[self::TABLE_ID])
-				{
-					$Actions	.= '<a class="deleteElement" process="'.PROCESS.'" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
-					$Restrict	= '';
-				}else{
-					$Restrict	= ' undeleteable ';
-				}
-			}else{
-				$Actions	.= '<a class="activateElement" process="'.PROCESS.'" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
-			}
-			$Actions	.= '</span>';
-			switch(strtolower($Mode))
-			{
-				case "list":
-					
-					$RowBackground = $i % 2 == 0? '':' listRow2 ';
-					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="'.$Row->FullName.'">
-									<div class="col-lg-3 col-md-3 col-sm-10 col-xs-10">
-										<div class="listRowInner">
-											<img class="img-circle" src="'.$Row->Img.'" alt="'.$Row->FullName.'">
-											<span class="listTextStrong">'.$Row->FullName.' ('.$Row->User.')</span>
-											<span class="smallDetails">'.$Row->LastAccess.'<!--22/25/24 | 22:00Hs.--></span>
-										</div>
-									</div>
-									<div class="col-lg-2 col-md-3 col-sm-2 hideMobile990">
-										<div class="listRowInner">
-											<span class="smallTitle">Email</span>
-											<span class="emailTextResp">'.$Row->Email.'</span>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-2 col-sm-2 hideMobile990">
-										<div class="listRowInner">
-											<span class="smallTitle">Perfil</span>
-											<span class="listTextStrong"><span class="label label-primary">'.ucfirst($Row->ProfileName).'</span></span>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-3 col-sm-3 hideMobile990">
-										<div class="listRowInner">
-											<span class="smallTitle">Grupos</span>
-											<span class="listTextStrong">
-												'.$Groups.'
-											</span>
-										</div>
-									</div>
-									<div class="col-lg-1 col-md-1 col-sm-1 hideMobile990"></div>
-									<div class="listActions flex-justify-center Hidden">
-										<div>'.$Actions.'</div>
-									</div>
-								</div>';
-				break;
-				case "grid":
-				$Regs	.= '<li id="grid_'.$Row->ID.'" class="RoundItemSelect roundItemBig'.$Restrict.'" title="'.$Row->FullName.'">
-						            <div class="flex-allCenter imgSelector">
-						              <div class="imgSelectorInner">
-						                <img src="'.$Row->Img.'" alt="'.$Row->FullName.'" class="img-responsive">
-						                <div class="imgSelectorContent">
-						                  <div class="roundItemBigActions">
-						                    '.$Actions.'
-						                    <span class="roundItemCheckDiv"><a href="#"><button type="button" class="btn roundBtnIconGreen Hidden" name="button"><i class="fa fa-check"></i></button></a></span>
-						                  </div>
-						                </div>
-						              </div>
-						              <div class="roundItemText">
-						                <p><b>'.$Row->FullName.'</b></p>
-						                <p>('.$Row->User.')</p>
-						                <p>'.ucfirst($Row->ProfileName).'</p>
-						              </div>
-						            </div>
-						          </li>';
-				break;
-			}
-        }
-        if(!$Regs) $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron usuarios.</h4><p>Puede crear un nuevo usuario haciendo click <a href="new.php">aqui</a>.</p></div>';
-		return $Regs;
+		}else{
+			$HTML	.= '<a class="activateElement hint--bottom hint--bounce hint--success" aria-label="Activar" process="'.PROCESS.'" id="activate_'.$Object->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
+			$HTML	.= Core::InsertElement('hidden','activate_question_'.$Object->ID,'&iquest;Desea activar al usuario '.$Object->Data['full_user_name'].' ?');
+			$HTML	.= Core::InsertElement('hidden','activate_text_ok_'.$Object->ID,$Object->Data['full_user_name'].' ha sido activado.');
+			$HTML	.= Core::InsertElement('hidden','activate_text_error_'.$Object->ID,'Hubo un error al intentar activar el usuario '.$Object->Data['full_user_name'].'.');
+		}
+		return $HTML;
 	}
 	
-	protected function InsertSearchField()
+	protected static function MakeListHTML($Object)
 	{
-		return '<!-- First Name -->
-		<div class="row">
-          <div class="input-group col-xs-3">
-            <span class="input-group-addon order-arrows sort-activated" order="first_name" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.Core::InsertElement('text','first_name','','form-control','placeholder="Nombre"').'
-          </div>
-          <!-- Last Name -->
-          <div class="input-group col-xs-3">
-            <span class="input-group-addon order-arrows" order="last_name" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.Core::InsertElement('text','last_name','','form-control','placeholder="Apellido"').'
-          </div>
-          <!-- User -->
-          <div class="input-group col-xs-3">
-            <span class="input-group-addon order-arrows" order="user" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.Core::InsertElement('text','user','','form-control','placeholder="Usuario"').'
-          </div>
-          <!-- Email -->
-          <div class="input-group col-xs-3">
-            <span class="input-group-addon order-arrows" order="email" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.Core::InsertElement('text','email','','form-control','placeholder="Email"').'
-          </div>
-          <!-- Profile -->
-          <div class="input-group col-xs-3">
-            <span class="input-group-addon order-arrows btnFormAddon" order="profile" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.Core::InsertElement('select','user_profile','','form-control chosenSelect','data-placeholder="Perfil"',Core::Select('core_profile','profile_id,title',"organization_id=".$_SESSION['organization_id']." AND status='A' AND profile_id >= ".$_SESSION['profile_id']),' ', 'Todos los Perfiles').'
-          </div>
-          <!-- Group -->
-          <div class="input-group col-xs-3">
-            <span class="input-group-addon order-arrows btnFormAddon" order="group" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.Core::InsertElement('multiple','user_groups','','form-control chosenSelect','data-placeholder="Grupo"',Core::Select('core_group','group_id,title',"organization_id=".$_SESSION['organization_id']." AND status='A' AND group_id IN (SELECT group_id FROM core_relation_group_profile WHERE profile_id >= ".$_SESSION['profile_id'].")","title"),' ', '').'
-          </div>
-          </div>';
+		$Groups = $Object->GetGroups();
+		$Object->GroupsHTML = '';
+		foreach($Groups as $Group)
+		{
+			$Object->GroupsHTML .= '<span class="label label-warning">'.$Group['title'].'</span> ';
+		}
+		if(!$Object->GroupsHTML) $Object->GroupsHTML = 'Ninguno';
+		$HTML = '<div class="col-lg-4 col-md-5 col-sm-5 col-xs-10">
+			<div class="listRowInner">
+				<img class="img-circle" src="'.$Object->Img.'" alt="'.$Object->Data['full_name'].'">
+				<span class="listTextStrong">'.$Object->Data['full_name'].' ('.$Object->Data['user'].')</span>
+				<span class="smallTitle hideMobile990">'.$Object->Data['email'].'</span>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-2 col-sm-2 hideMobile990">
+			<div class="listRowInner">
+				<span class="smallTitle">Perfil</span>
+				<span class="listTextStrong"><span class="label label-primary">'.ucfirst($Object->Data['profile']).'</span></span>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-4 col-sm-3 hideMobile990">
+			<div class="listRowInner">
+				<span class="smallTitle">Grupos</span>
+				<span class="listTextStrong">
+					'.$Object->GroupsHTML.'
+				</span>
+			</div>
+		</div>
+		<div class="col-lg-1 col-md-1 col-sm-1 hideMobile990"></div>';
+		return $HTML;
+	}
+	
+	protected static function MakeItemsListHTML($Object)
+	{
+		// $Object->Data['items'] = $Object->GetItems();
+		// foreach($Object->Data['items'] as $Item)
+		// {
+			$RowClass = $RowClass != 'bg-gray'? 'bg-gray':'bg-gray-active';
+			$HTML .= '
+						<div class="row '.$RowClass.'" style="padding:5px;">
+							<div class="col-xs-12">
+								<div class="listRowInner">
+									<span class="itemRowtitle"><span class="smallTitle">&Uacute;ltimo Acceso:</span> '.self::DateTimeFormat($Object->Data['last_access']).'</span>
+								</div>
+							</div>
+							<div class="col-xs-12 showMobile990">
+								<div class="listRowInner">
+									<span class="smallTitle">Email</span>
+									<span class="emailTextResp">'.$Object->Data['email'].'</span>
+								</div>
+							</div>
+							<div class="col-xs-12 showMobile990">
+								<div class="listRowInner">
+									<span class="smallTitle">Perfil</span>
+									<span class="listTextStrong"><span class="label label-primary">'.ucfirst($Object->Data['profile']).'</span></span>
+								</div>
+							</div>
+							<div class="col-xs-12 showMobile990">
+								<div class="listRowInner">
+									<span class="smallTitle">Grupos</span>
+									<span class="listTextStrong">'.$Object->GroupsHTML.'</span>
+								</div>
+							</div>
+						</div>';
+		// }
+		return $HTML;
+	}
+	
+	protected static function MakeGridHTML($Object)
+	{
+		$ButtonsHTML = '<span class="roundItemActionsGroup">'.self::MakeActionButtonsHTML($Object,'grid').'</span>';
+		$HTML = '<div class="flex-allCenter imgSelector">
+		              <div class="imgSelectorInner">
+		                <img src="'.$Object->Img.'" alt="'.$Object->Data['full_name'].'" class="img-responsive">
+		                <div class="imgSelectorContent">
+		                  <div class="roundItemBigActions">
+		                    '.$ButtonsHTML.'
+		                    <span class="roundItemCheckDiv"><a href="#"><button type="button" class="btn roundBtnIconGreen Hidden" name="button"><i class="fa fa-check"></i></button></a></span>
+		                  </div>
+		                </div>
+		              </div>
+		              <div class="roundItemText">
+		                <p><b>'.$Object->Data['full_name'].'</b></p>
+		                <p>('.$Object->Data['user'].')</p>
+		                <p>'.ucfirst($Object->Data['profile']).'</p>
+		              </div>
+		            </div>';
+		return $HTML;
+	}
+	
+	public static function MakeNoRegsHTML()
+	{
+		return '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron usuarios.</h4><p>Puede crear un nuevo usuario haciendo click <a href="new.php">aqui</a>.</p></div>';	
+	}
+	
+	protected function SetSearchFields()
+	{
+		$this->SearchFields['first_name'] = Core::InsertElement('text','first_name','','form-control','placeholder="Nombre"');
+		$this->SearchFields['last_name'] = Core::InsertElement('text','last_name','','form-control','placeholder="Apellido"');
+		$this->SearchFields['user'] = Core::InsertElement('text','user','','form-control','placeholder="Usuario"');
+		$this->SearchFields['email'] = Core::InsertElement('text','email','','form-control','placeholder="Email"');
+		$this->SearchFields['profile'] = Core::InsertElement('select','profile_id','','form-control chosenSelect','data-placeholder="Perfil"',Core::Select(CoreProfile::TABLE,CoreProfile::TABLE_ID.',title',CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]." AND status='A' AND ".CoreProfile::TABLE_ID." >= ".$_SESSION[CoreProfile::TABLE_ID]),' ', 'Todos los Perfiles');
+		$this->SearchFields['group_title'] = Core::InsertElement('multiple','group_id','','form-control chosenSelect','data-placeholder="Grupo"',Core::Select(CoreGroup::TABLE,CoreGroup::TABLE_ID.',title',CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]." AND status='A' AND ".CoreGroup::TABLE_ID." IN (SELECT ".CoreGroup::TABLE_ID." FROM core_relation_group_profile WHERE ".CoreProfile::TABLE_ID." >= ".$_SESSION[CoreProfile::TABLE_ID].")","title"),' ', '');
 	}
 	
 	protected function InsertSearchButtons()
@@ -299,173 +220,68 @@ public function MakeRegs($Mode="List")
 	
 	public function ConfigureSearchRequest()
 	{
-		if($_GET['status'])
+		if($_SESSION[CoreProfile::TABLE_ID]!=333)
 		{
-			$_POST['status'] = $_GET['status'];
-		}else{
-			$_POST['status'] = 'A';
+			$_POST[CoreProfile::TABLE_ID.'_condition'] = '>=';
 		}
-		if($_SESSION['profile_id']!=333)
-		{
-			$Fields['profile_id'] = array('value'=>$this->ProfileID,'condition'=>'>=');
-		}
-		$Fields['organization_id'] = array('value'=>$_SESSION['organization_id'],'condition'=>'=');
-		if($_POST['first_name']) $Fields['first_name'] = array('value'=>$_POST['first_name']);
-		if($_POST['first_name']) $Fields['last_name'] = array('value'=>$_POST['last_name']);
-		if($_POST['email']) $Fields['email'] = array('value'=>$_POST['email']);
-		if($_POST['user']) $Fields['user'] = array('value'=>$_POST['user']);
-		if($_POST['user_profile']) $Fields['profile_id'] = array('value'=>$_POST['user_profile'],'condition'=>'=');
-		if($_POST['user_groups']) $Fields['group_id'] = array('value'=>$_POST['user_groups'],'condition'=>'IN');
-		if($_POST['status']) $Fields['status'] = array('value'=>$_POST['status'],'condition'=>'=');
-		$this->SetSearchRequest($Fields,$_POST['view_order_field'],$_POST['view_order_mode'],$_POST['regsperview'],$_POST['view_page']);
+		$_POST[CoreGroup::TABLE_ID.'_condition'] = 'IN';
+		$this->SetSearchRequest();
 	}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// PROCESS METHODS ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 	public function Insert()
 	{
-		$Image 		= $_POST['newimage'];
 		$User		= strtolower($_POST['user']);
 		$Password	= sha1($_POST['password']);
 		$FirstName	= ucfirst($_POST['first_name']);
 		$LastName	= ucfirst($_POST['last_name']);
 		$Email 		= strtolower($_POST['email']);
 		$ProfileID	= $_POST['profile'];
-		$Groups		= $_POST['groups'] ? explode(",",$_POST['groups']) : array();
-		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
-		$NewID		= Core::Insert(self::TABLE,'user,password,first_name,last_name,email,profile_id,img,creation_date,creator_id,organization_id',"'".$User."','".$Password."','".$FirstName."','".$LastName."','".$Email."','".$ProfileID."','".$Image."',NOW(),".$_SESSION[self::TABLE_ID].",".$_SESSION['organization_id']);
-		$New 		= new CoreUser($NewID);
-		$Dir 		= array_reverse(explode("/",$Image));
-		if($Dir[1]!="default")
-		{
-			$Temp 	= $Image;
-			$Image 	= $New->ImgGalDir().$Dir[0];
-			copy($Temp,$Image);
-		}
-		Core::Update(self::TABLE,"img='".$Image."'",self::TABLE_ID."=".$NewID);
-		for($i=0;$i<count($Groups);$i++)
-		{
-			if(intval($Groups[$i])>0)
-				$Values .= !$Values? $NewID.",".$Groups[$i] : "),(".$NewID.",".$Groups[$i];
-		}
-		if(!empty($Groups)) Core::Insert('core_relation_user_group',self::TABLE_ID.',group_id',$Values);
-		$Values = "";
-		for($i=0;$i<count($Menues);$i++)
-		{
-			if(intval($Menues[$i])>0)
-				$Values .= !$Values? $NewID.",".$Menues[$i] : "),(".$NewID.",".$Menues[$i];
-		}
-		if(!empty($Menues)) Core::Insert('core_relation_user_menu',self::TABLE_ID.',menu_id',$Values);
+		$ID			= Core::Insert(self::TABLE,'user,password,first_name,last_name,email,'.CoreProfile::TABLE_ID.',img,creation_date,creator_id,'.CoreOrganization::TABLE_ID,"'".$User."','".$Password."','".$FirstName."','".$LastName."','".$Email."','".$ProfileID."','".$Image."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+		$Object 	= new CoreUser($ID);
+		$Image 		= $Object->ProcessImg($_POST['newimage']);
+		Core::Update(self::TABLE,"img='".$Image."'",self::TABLE_ID."=".$ID);
+		if($_POST['groups']>0) Core::Insert('core_relation_user_group',self::TABLE_ID.','.CoreGroup::TABLE_ID,Core::AssocArrayToID($ID,$_POST['groups']));
+		if($_POST['menues']>0) Core::Insert('core_relation_user_menu',self::TABLE_ID.','.CoreMenu::TABLE_ID,Core::AssocArrayToID($ID,$_POST['menues']));
 	}
 	
 	public function Update()
 	{
 		$ID 	= $_POST['id'];
-		$Edit	= new CoreUser($ID);
+		$Object	= new CoreUser($ID);
 		if($_POST['password'])
 		{
 			$Password	= sha1($_POST['password']);
 			$PasswordFilter	= ",password='".$Password."'";
 		}
-		$Image 		= $_POST['newimage'];
 		$User		= strtolower($_POST['user']);
 		$FirstName	= $_POST['first_name'];
 		$LastName	= $_POST['last_name'];
 		$Email 		= $_POST['email'];
 		$ProfileID	= $_POST['profile'];
-		$Groups		= $_POST['groups'] ? explode(",",$_POST['groups']) : array();
-		$Menues		= $_POST['menues'] ? explode(",",$_POST['menues']) : array();
-		$Dir 		= array_reverse(explode("/",$Image));
-		
-		if($Dir[1]!="default" && $ID!=$this->ID)
-		{
-			$Temp 	= $Image;
-			$Image 	= $Edit->ImgGalDir().$Dir[0];
-			copy($Temp,$Image);
-		}
-		$Update		= Core::Update(self::TABLE,"user='".$User."'".$PasswordFilter.",first_name='".$FirstName."',last_name='".$LastName."',email='".$Email."',profile_id='".$ProfileID."',img='".$Image."'",self::TABLE_ID."=".$ID);
-		//echo $this->LastQuery();
-		Core::Delete('core_relation_user_group',self::TABLE_ID." = ".$ID);
-		Core::Delete('core_relation_user_menu',self::TABLE_ID." = ".$ID);
-		foreach($Groups as $Group)
-		{
-			if(intval($Group)>0)
-				$Values .= !$Values? $ID.",".$Group : "),(".$ID.",".$Group;
-		}
-		if($Values) Core::Insert('core_relation_user_group',self::TABLE_ID.',group_id',$Values);
-		//echo $this->LastQuery();
-		$Values = "";
-		foreach($Menues as $Menu)
-		{
-			if(intval($Menu)>0)
-				$Values .= !$Values? $ID.",".$Menu : "),(".$ID.",".$Menu;
-		}
-		if($Values) Core::Insert('core_relation_user_menu',self::TABLE_ID.',menu_id',$Values);
-		// echo Core::LastQuery();
-	}
-	
-	public function Activate()
-	{
-		$ID	= $_POST['id'];
-		Core::Update(self::TABLE,"status = 'A'",self::TABLE_ID."=".$ID);
-	}
-	
-	public function Delete()
-	{
-		$ID	= $_POST['id'];
-		Core::Update(self::TABLE,"status = 'I'",self::TABLE_ID."=".$ID);
-	}
-	
-	public function Newimage()
-	{
-		if(count($_FILES['image'])>0)
-		{
-			// $Images = self::UserImages(); // Para cuando se requiera limitar la cantidad de imágenes.
-			$TempDir = $this->ImgGalDir();
-			$Name	= "user".intval(rand()*rand()/rand())."__".$this->ID;
-			$Img	= new CoreFileData($_FILES['image'],$TempDir,$Name);
-			echo $Img	-> BuildImage(200,200);
-		}
-	}
-	
-	public function Deleteimage()
-	{
-		$SRC	= $_POST['src'];
-		unlink($SRC);
+		// if($ID!=$this->ID) $Image = $this->ProcessImg($_POST['newimage']);
+		$Image = $this->ProcessImg($_POST['newimage']);
+		$Update		= Core::Update(self::TABLE,"user='".$User."'".$PasswordFilter.",first_name='".$FirstName."',last_name='".$LastName."',email='".$Email."',".CoreProfile::TABLE_ID."='".$ProfileID."',img='".$Image."'",self::TABLE_ID."=".$ID);
+		$Object->FastDelete('core_relation_user_group');
+		$Object->FastDelete('core_relation_user_menu');
+		if($_POST['groups']>0) Core::Insert('core_relation_user_group',self::TABLE_ID.','.CoreGroup::TABLE_ID,Core::AssocArrayToID($ID,$_POST['groups']));
+		if($_POST['menues']>0) Core::Insert('core_relation_user_menu',self::TABLE_ID.','.CoreMenu::TABLE_ID,Core::AssocArrayToID($ID,$_POST['menues']));
 	}
 	
 	public function Validate()
 	{
-		$User 			= strtolower($_POST['user']);
-		$ActualUser 	= strtolower($_POST['actualuser']);
-
-	    if($ActualUser)
-	    	$TotalRegs  = Core::NumRows(self::TABLE,'*',"user = '".$User."' AND user<> '".$ActualUser."'");
-    	else
-		    $TotalRegs  = Core::NumRows(self::TABLE,'*',"user = '".$User."'");
-		if($TotalRegs>0) echo $TotalRegs;
+		echo self::ValidateValue('user',$_POST['user'],$_POST['actualuser']);
 	}
 	
 	public function Validate_email()
 	{
-		$Email 			= strtolower($_POST['email']);
-		$ActualEmail 	= strtolower($_POST['actualemail']);
-
-	    if($ActualEmail)
-	    	$TotalRegs  = Core::NumRows(self::TABLE,'*',"email = '".$Email."' AND email<> '".$ActualEmail."'");
-    	else
-		    $TotalRegs  = Core::NumRows(self::TABLE,'*',"email = '".$Email."'");
-		if($TotalRegs>0) echo $TotalRegs;
+		echo self::ValidateValue('email',$_POST['email'],$_POST['actualemail']);
 	}
 	
 	public function Fillgroups()
 	{
-		$Profile 	= $_POST['profile'];
-		$User 		= $_POST['id'];
-        $Groups 	= new CoreGroup();
-        echo $Groups->GetGroups($Profile,$User);
+        echo CoreGroup::GetGroups($_POST['profile'],$_POST['id']);
 	}
 }
 ?>

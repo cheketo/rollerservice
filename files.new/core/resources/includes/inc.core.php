@@ -12,7 +12,7 @@
 	$GLOBALS['DB'] = new CoreDataBase();
 	if(!$GLOBALS['DB']->Connect())
 	{
-		header("Location: ../../../core/resources/includes/inc.core.error.php?error=".$DB->Error);
+		header("Location: ../../../core/resources/includes/inc.core.error.php?error=".$GLOBALS['DB']->Error);
 		die();
 	}
 	
@@ -24,23 +24,25 @@
 	$Security		= new CoreSecurity();
 	if($Security->CheckProfile())
 	{
-		$CoreUser 	= new CoreUser();
+		$CoreUser 	= new CoreUser($_SESSION[CoreUser::TABLE_ID]);
 		$Cookies 	= new CoreLogin();
-		$Cookies	->SetData($CoreUser->User);
+		$Cookies	->SetData($CoreUser->Data['user']);
 		$Cookies	->SetCookies();
+		$CoreUser->GetOrganization();
 	}
 	
 	/* ADDING SLASHES TO PUBLIC VARIABLES */
 	$_POST	= Core::AddSlashesArray($_POST);
 	$_GET	= Core::AddSlashesArray($_GET);
 	
+	/* SETTING MENU OF THE DOCUMENT */
+	$Menu = new CoreMenu();
+	
 	/* SETTING HEAD OF THE DOCUMENT */
 	$Head	= new CoreHead();
 	$Head	->SetFavicon("../../../../skin/images/body/icons/favicon.ico");
+	$Head	->SetOrganization($CoreUser->Data['organization']['name']);
 	
 	/* SETTING FOOT OF THE DOCUMENT */
 	$Foot	= new CoreFoot();
-	
-	/* SETTING MENU OF THE DOCUMENT */
-	$Menu = new CoreMenu();
 ?>

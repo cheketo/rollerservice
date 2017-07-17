@@ -183,10 +183,21 @@ class CoreDataBase
 			break;
 		}
 	}
-	public function DataTable($Table)
+	public function TableData($Table)
 	{
 		$Query = $this->QueryBuild('DATA',$Table);
-		return $this->ExecQuery($Query);
+		// return $this->ExecQuery($Query);
+		switch($this->TypeDB)
+		{
+			case "Mysql":
+				$Query	= $this->ExecQuery($Query);
+				$Data	= array();
+				while($Data[]=mysqli_fetch_assoc($Query)){}
+				array_pop($Data);
+				$Data = Core::Utf8EncodeArray($Data);
+				return $Data;
+			break;
+		}
 	}
 	public function QueryBuild($Operation,$Table,$Fields='',$Where='',$Order='',$GroupBy='',$Limit='')
 	{
@@ -266,7 +277,7 @@ class CoreDataBase
 		switch($this->TypeDB)
 		{
 			case "Mysql":
-				return 'DESCRIBE '.$Table;
+				return 'DESCRIBE '.$Table; //SHOW COLUMNS FROM table;
 			break;
 		}
 	}

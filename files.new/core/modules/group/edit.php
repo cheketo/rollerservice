@@ -1,22 +1,22 @@
 <?php
     include("../../../core/resources/includes/inc.core.php");
     $ID           = $_GET['id'];
-    $Edit         = new CoreFoo($ID);
+    $Edit         = new CoreGroup($ID);
     $Data         = $Edit->GetData();
     Core::ValidateID($Data);
     
     foreach($Edit->GetUsers() as $User)
     {
-      $Users .= $Users? ','.$User['user_id'] : $User['user_id']; 
+      $Users .= $Users? ','.$User[CoreUser::TABLE_ID] : $User[CoreUser::TABLE_ID]; 
     }
     foreach($Edit->GetProfiles() as $Profile)
     {
-      $Profiles .= $Profiles? ','.$Profile['profile_id'] : $Profile['profile_id']; 
+      $Profiles .= $Profiles? ','.$Profile[CoreProfile::TABLE_ID] : $Profile[CoreProfile::TABLE_ID]; 
     }
-    $Menues = Core::Select("relation_menu_group","DISTINCT(menu_id)","group_id=".$ID);
+    $Menues = Core::Select("core_relation_menu_group","DISTINCT(".CoreMenu::TABLE_ID.")",CoreGroup::TABLE_ID."=".$ID);
     foreach($Menues as $MenuData)
     {
-      $MenuArray[] = $MenuData['menu_id'];
+      $MenuArray[] = $MenuData[CoreMenu::TABLE_ID];
     }
     if(is_array($MenuArray))
       $Menues = implode(",",$MenuArray);
@@ -46,13 +46,13 @@
               <div class="col-xs-12 col-sm-6 inner">
                 <label for="">Asociar Perfiles</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo Core::InsertElement('multiple','profiles',$Profiles,'form-control chosenSelect','data-placeholder="Seleccione Perfiles"',Core::Select('admin_profile','profile_id,title',"status<>'I' AND profile_id >= ".$_SESSION['profile_id']." AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php echo Core::InsertElement('multiple','profiles',$Profiles,'form-control chosenSelect','data-placeholder="Seleccione Perfiles"',Core::Select(CoreProfile::TABLE,CoreProfile::TABLE_ID.',title',"status<>'I' AND ".CoreProfile::TABLE_ID." >= ".$_SESSION[CoreProfile::TABLE_ID]." AND ".CoreOrganization::TABLE_ID." = ".$_SESSION[CoreOrganization::TABLE_ID])); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-12 inner">
                 <label for="">Asociar Usuarios</label>
                 <div class="form-group" id="groups-wrapper">
-                  <?php echo Core::InsertElement('multiple','users',$Users,'form-control chosenSelect','data-placeholder="Seleccione Usuarios"',Core::Select('core_user','user_id,user',"status='A' AND organization_id = ".$_SESSION['organization_id'])); ?>
+                  <?php echo Core::InsertElement('multiple','users',$Users,'form-control chosenSelect','data-placeholder="Seleccione Usuarios"',Core::Select(CoreUser::TABLE,CoreUser::TABLE_ID.',user',"status='A' AND ".CoreOrganization::TABLE_ID." = ".$_SESSION[CoreOrganization::TABLE_ID])); ?>
                 </div>
               </div>
               <div class="col-xs-12 col-sm-6 inner">
@@ -77,15 +77,17 @@
                 </div>
               </div>
               <div class="col-xs-12 col-sm-6 inner">
-                <div id="treeview-checkbox" class="treeCheckBoxDiv">
-                  <label for="">Permisos</label>
-                  <?php echo $Menu->MakeTree(); ?>
-                </div><!-- treeview-checkbox -->
+                <label for="">Permisos</label>
+                <div class="lineContainer">
+                  <div id="treeview-checkbox">
+                    <?php echo $Menu->MakeTree(); ?>
+                  </div><!-- treeview-checkbox -->
+                </div>
               </div>
             </div><!-- inline-form -->
             <hr>
             <div class="txC">
-              <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-check"></i> Editar Grupo</button>
+              <button type="button" class="btn btn-success btnGreen" id="BtnEdit"><i class="fa fa-check"></i> Editar Grupo</button>
               <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
             </div>
         </div>
@@ -95,7 +97,6 @@
 
 <?php
 $Foot->SetScript('../../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
-
 $Foot->SetScript('../../../../vendors/treemultiselect/logger.min.js');
 $Foot->SetScript('../../../../vendors/treemultiselect/treeview.min.js');
 include('../../../project/resources/includes/inc.bottom.php');

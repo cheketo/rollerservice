@@ -1,6 +1,6 @@
 <?php
   include('../../../core/resources/includes/inc.core.php');
-  $Group = new CoreFoo();
+  $Group = new CoreGroup();
   $Head->SetTitle("Grupos");
   $Head->SetIcon($Menu->GetHTMLicon());
   $Head->SetSubTitle("Listado de Grupos");
@@ -11,12 +11,9 @@
   
   /* Body Content */ 
   // Search List Box
-  $Group->ConfigureSearchRequest();
   echo $Group->InsertSearchList();
-  // Help Modal
-  //include('modal.help.php');
   
   /* Footer */
-  $Foot->SetScript('../../js/script.searchlist.js');
+  $Foot->SetScript('../../../core/resources/js/script.core.searchlist.js');
   include('../../../project/resources/includes/inc.bottom.php');
 ?>

@@ -9,11 +9,11 @@ class CoreSecurity
 	var $File;
 	var $IsLogged		= false;
 	var $MenuData 		= array();
-	var $CoreProfile 	= array();
-	var $Destination	= '../../../project/modules/main/main.php';
+	// var $CoreProfile 	= array();
+	var $Destination	= '../../../core/modules/main/main.php';
 	
 	const PROFILE		= 333;
-	const LOGIN			= 'files.new/core/modules/login/login.php';
+	const LOGIN			= 'core/modules/login/login.php';
 	
 
 	function __construct($User='',$Password='')
@@ -27,16 +27,16 @@ class CoreSecurity
 		$this->MenuData	= $MenuData[0];
 	}
 
-	public function CheckProfile($UserID=0)
+	public function CheckProfile()
 	{
-		if($this->User!='' && $this->Password!='')
+		if($_SESSION[CoreUser::TABLE_ID] && $this->User!='' && $this->Password!='')
 		{
-			$CoreProfile		= Core::Select("core_user","profile_id","user = '".$this->User."' AND password='".$this->Password."' AND user_id='".$_SESSION['user_id']."'");
-			$this->CoreProfile	= $CoreProfile[0];
+			// $CoreProfile		= Core::Select("core_user","profile_id","user = '".$this->User."' AND password='".$this->Password."' AND user_id='".$_SESSION['user_id']."'");
+			// $this->CoreProfile	= $CoreProfile[0];
 
-			if($this->CheckException() && $this->CoreProfile['profile_id']!=self::PROFILE)
+			if($this->CheckException() && $_SESSION[CoreProfile::TABLE_ID]!=self::PROFILE)
 			{
-				$Groups    		= Core::Select("core_relation_user_group","group_id","user_id=".$UserID);
+				$Groups    		= Core::Select("core_relation_user_group","group_id",CoreUser::TABLE_ID."=".$_SESSION[CoreUser::TABLE_ID]);
 				$UserGroups 	= array();
 				$UserGroups[]	= 0;
 				foreach($Groups as $Group)
@@ -44,13 +44,12 @@ class CoreSecurity
 					$UserGroups[]	= $Group['group_id'];
 				}
 				$MenuGroups 	= implode(",",$UserGroups);
-				$Rows			= Core::NumRows("core_relation_menu_profile","*","menu_id = ".$this->MenuData['menu_id']." AND profile_id = ".$this->CoreProfile['profile_id']);
-				$Exceptions 	= Core::NumRows("core_relation_user_menu","*","menu_id = ".$this->MenuData['menu_id']." AND user_id = ".$UserID);
+				$Rows			= Core::NumRows("core_relation_menu_profile","*","menu_id = ".$this->MenuData['menu_id']." AND profile_id = ".$_SESSION[CoreProfile::TABLE_ID]);
+				$Exceptions 	= Core::NumRows("core_relation_user_menu","*","menu_id = ".$this->MenuData['menu_id']." AND user_id = ".$_SESSION[CoreUser::TABLE_ID]);
 				$GroupsAllowed 	= Core::NumRows("core_relation_menu_group","*","menu_id = ".$this->MenuData['menu_id']." AND group_id IN (".$MenuGroups.")");
 
 				if($Rows<1 && $Exceptions<1 && $GroupsAllowed<1){
 					header("Location: ".$_SERVER['HTTP_REFERER']); echo '<script>window.history.go(-1)</script>';
-					
 				}
 			}elseif($this->Link==self::LOGIN){
 				header("Location: ".$this->Destination);

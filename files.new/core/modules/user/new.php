@@ -6,7 +6,7 @@
     include('../../../project/resources/includes/inc.top.php');
     echo Core::InsertElement("hidden","action",'insert');
     echo Core::InsertElement("hidden","menues","");
-    echo Core::InsertElement("hidden","newimage",$CoreUser->DefaultImg);
+    echo Core::InsertElement("hidden","newimage",CoreUser::DEFAULT_IMG);
 ?>
    <div class="box"> <!--box-success-->
     <div class="box-header with-border">
@@ -78,7 +78,7 @@
             <h4 class="subTitleB"><i class="fa fa-picture-o"></i> Im&aacute;gen Actual</h4>
             <div class="flex-allCenter imgSelector">
               <div class="imgSelectorInner">
-                <img src="<?php echo $CoreUser->DefaultImg ?>" class="img-responsive MainImg animated">
+                <img src="<?php echo CoreUser::DEFAULT_IMG ?>" class="img-responsive MainImg animated">
                 <?php echo Core::InsertElement('file','image','','Hidden'); ?>
                 <div class="imgSelectorContent">
                   <div id="SelectImg">
@@ -101,7 +101,7 @@
             <div class="smallThumbsList flex-justify-center">
               <ul>
                 <?php
-                  foreach($CoreUser->DefaultImages() as $Image)
+                  foreach(CoreUser::DefaultImages() as $Image)
                   {
                     echo '<li><img src="'.$Image.'" class="ImgSelecteable"></li>';
                   }
@@ -121,7 +121,8 @@
             <div class="smallThumbsList flex-justify-center">
               <ul id="UserImages">
                 <?php
-                  foreach($CoreUser->UserImages() as $Image)
+                  
+                  foreach($CoreUser->GetImages() as $Image)
                   {
                     echo '<li><img src="'.$Image.'" class="ImgSelecteable"></li>';
                   }

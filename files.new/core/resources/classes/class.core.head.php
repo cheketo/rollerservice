@@ -4,6 +4,7 @@ class CoreHead
 {
 	var $Title;
 	var $SubTitle;
+	var $Organization;
 	var $DocType	= '<!DOCTYPE html>';
 	var $HTML		= '<html lang="es">';
 	var $Link		= array();
@@ -34,6 +35,12 @@ class CoreHead
 	{
 		$this->SubTitle	= $Title;
 	}
+	
+	function SetOrganization($Organization)
+	{
+		if($Organization)
+			$this->Organization = " • ".$Organization;
+	}
 
 	function SetHead(){
 		echo $this->DocType;
@@ -41,7 +48,7 @@ class CoreHead
 		echo "<head>";
 		echo '<meta http-equiv="Content-Type" content="application/xhtml+xml; charset='.$this->Charset.'">';
     	echo '<meta charset="'.$this->Charset.'" >';
-		echo "<title>".$this->Title." | ".$_SESSION['organization']."</title>";
+		echo "<title>".$this->Title.$this->Organization."</title>";
 		echo $this->Favicon;
 		include(self::INCLUDE_HEAD);
 		$this->EchoLink();

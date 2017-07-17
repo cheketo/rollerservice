@@ -7,18 +7,14 @@
     $Head->SetTitle($Menu->GetTitle());
     $Head->SetIcon($Menu->GetHTMLicon());
     $Head->setHead();
-    $Exceptions = Core::Select("core_relation_user_menu","menu_id","user_id=".$ID);
-    $Menues     = "0";
-    foreach($Exceptions as $Exception)
-    {
-      $Menues .= ",".$Exception['menu_id'];
-    }
-    $RelatedGroups = Core::Select("core_relation_user_group","group_id","user_id=".$ID);
-    $Groups     = "0";
+    
+    $Menues = implode(",",$Edit->GetCheckedMenues());
+    $RelatedGroups = CoreUser::GetUserGroups($ID);
     foreach($RelatedGroups as $Group)
     {
-      $Groups .= ",".$Group['group_id'];
+      $Groups[] = $Group['group_id'];
     }
+    $Groups = count($Groups)>0? implode(',',$Groups):'';
     include('../../../project/resources/includes/inc.top.php');
     echo Core::InsertElement("hidden","action",'update');
     echo Core::InsertElement("hidden","id",$ID);
@@ -137,7 +133,7 @@
             <div class="smallThumbsList flex-justify-center">
               <ul id="UserImages">
                 <?php
-                  foreach($CoreUser->UserImages() as $Image)
+                  foreach($CoreUser->GetImages() as $Image)
                   {
                     echo '<li><img src="'.$Image.'" class="ImgSelecteable"></li>';
                   }
@@ -153,7 +149,7 @@
       </div><!-- IMAGES -->
     </div><!-- /.box-body -->
     <div class="box-footer btnRightMobCent">
-      <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-pencil"></i> Editar Usuario</button>
+      <button type="button" class="btn btn-success btnGreen" id="BtnEdit"><i class="fa fa-pencil"></i> Editar Usuario</button>
       <button type="button" class="btn btn-danger btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
     </div><!-- box-footer -->
   </div><!-- /.box -->

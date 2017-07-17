@@ -1,49 +1,28 @@
+///////////////////////// ALERTS ////////////////////////////////////
+$(document).ready(function(){
+	if(get['msg']=='insert')
+		notifySuccess('El grupo <b>'+get['element']+'</b> ha sido creado correctamente.');
+	if(get['msg']=='update')
+		notifySuccess('El grupo <b>'+get['element']+'</b> ha sido modificado correctamente.');
+});
+
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
-	$("#BtnCreate,#BtnCreateNext").click(function(){
-		if(validate.validateFields(''))
-		{
-			var BtnID = $(this).attr("id")
-			if(get['id']>0)
-			{
-				confirmText = "modificar";
-				procText = "modificaci&oacute;n"
-			}else{
-				confirmText = "crear";
-				procText = "creaci&oacute;n"
-			}
-
-			confirmText += " el grupo '"+$("#title").val()+"'";
-
-			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
-				if(e)
-				{
-					var process		= process_url+'?object=CoreFoo';
-					if(BtnID=="BtnCreate")
-					{
-						var target		= 'list.php?element='+$('#title').val()+'&msg='+ $("#action").val();
-					}else{
-						var target		= 'new.php?element='+$('#title').val()+'&msg='+ $("#action").val();
-					}
-					var haveData	= function(returningData)
-					{
-						$("input,select").blur();
-						notifyError("Ha ocurrido un error durante el proceso de "+procText+".");
-						console.log(returningData);
-					}
-					var noData		= function()
-					{
-						document.location = target;
-					}
-					sumbitFields(process,haveData,noData);
-				}
-			});
-		}
+	$("#BtnCreate").click(function(){
+		var target		= 'list.php?element='+$('#title').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'CoreGroup','¿Desea crear el grupo <b>'+$('#title').val()+'</b>?');
 	});
-
+	$("#BtnCreateNext").click(function(){
+		var target		= 'new.php?element='+$('#title').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'CoreGroup','¿Desea crear el grupo <b>'+$('#title').val()+'</b>?');
+	});
+	$("#BtnEdit").click(function(){
+		var target		= 'list.php?element='+$('#title').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'CoreGroup','¿Desea modificar el grupo <b>'+$('#title').val()+'</b>?');
+	});
 	$("input").keypress(function(e){
 		if(e.which==13){
-			$("#BtnCreate").click();
+			$("#BtnCreate,#BtnEdit").click();
 		}
 	});
 });
@@ -58,14 +37,14 @@ $(document).ready(function(){
 });
 $(function() {
 	$(".tw-control").click(function(){
-		var selected = "0"
+		var selected = [];
 		$(".tw-control").each(function(){
 			if($(this).is(":checked"))
 			{
-				selected += ","+$(this).parent().attr("data-value");
+				selected.push($(this).parent().attr("data-value"));
 			}
 		});
-		$("#menues").val(selected);
+		$("#menues").val(selected.join());
 	});
 });
 function fillCheckboxTree()
@@ -83,7 +62,7 @@ function fillCheckboxTree()
 ///////////////////////////// UPLOAD IMAGE /////////////////////////////////////
 $(function(){
 	$("#image").change(function(){
-		var process		= process_url+'?action=newimage&object=CoreFoo';
+		var process		= process_url+'?action=newimage&object=CoreGroup';
 		var haveData	= function(returningData)
 		{
 			$('#newimage').val(returningData);

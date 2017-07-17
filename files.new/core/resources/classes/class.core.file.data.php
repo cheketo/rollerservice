@@ -17,7 +17,7 @@ class CoreFileData
 	var		$Quality	= 100;
 	var		$Path;
 	
-	const DEFAULT_PATH = 'skin/images/body/pictures/';
+	const DEFAULT_PATH = '/skin/files/';
 	
 	public function __construct($File,$Path="",$FileName="")
 	{
@@ -39,7 +39,7 @@ class CoreFileData
 			$this->Extension= $Extension[0];
 			$this->Error	= $File['error'];
 			$this->Size		= $File['size'];
-			$this->Name		= $FileName ? $FileName.".".$this->Type : md5($this->TmpName.date("Y-m-d H:i:s")).".".$this->Type;
+			$this->Name		= $FileName ? $FileName.".".$this->Type : sha1($this->TmpName.date("Y-m-d H:i:s")).".".$this->Type;
 			$this->Url		= $this->Path.$this->Name;
 			
 		}elseif(count(explode(".",$File))>1){
@@ -158,7 +158,7 @@ class CoreFileData
 	
 	public function SetPath($Path)
 	{
-		$this->Path	= $_SERVER['DOCUMENT_ROOT'].$Path;	
+		$this->Path	= $Path;	
 	}
 	
 	public function SetQuality($Quality)

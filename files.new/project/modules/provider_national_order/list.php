@@ -38,6 +38,6 @@
   
   /* Footer */
   $Foot->SetScript('../../../../vendors/datepicker/bootstrap-datepicker.js');
-  $Foot->SetScript('../../js/script.searchlist.js');
+  $Foot->SetScript('../../../core/resources/js/script.core.searchlist.js');
   include('../../../project/resources/includes/inc.bottom.php');
 ?>

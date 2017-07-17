@@ -132,8 +132,12 @@ function checkDeleteRestrictions()
 {
     var x=true;
     $('.SelectedRow').each(function(){
-        if($(this).hasClass('undeleteable'))
-            x=false;
+        var id = $(this).attr('id').split('_');
+        if($("#delete_"+id[1]).length<1)
+        {
+        	x=false;
+        }
+            
     });
     return x;
 }
@@ -221,8 +225,26 @@ function deleteListElement()
 		var elementID	= $(this).attr("id").split("_");
 		var id			= elementID[1];
 		var row			= $("#row_"+id);
-		var title		= utf8_encode(row.attr("title"));
-		alertify.confirm(utf8_decode('Est&aacute; a punto de eliminar a '+title+' ¿Desea continuar?'), function(e){
+		var question	= "";
+		var text_ok		= "";
+		var text_error	= "";
+		
+		if($("#delete_question_"+id).length>0)
+			question = $("#delete_question_"+id).val();
+		else
+			question = utf8_decode('Está a punto de eliminar un registro ¿Desea continuar?');
+			
+		if($("#delete_text_ok_"+id).length>0)
+			text_ok = $("#delete_text_ok_"+id).val();
+		else
+			text_ok = "El registro ha sido eliminado.";
+			
+		if($("#delete_text_error_"+id).length>0)
+			text_error = $("#delete_text_error_"+id).val();
+		else
+			text_error = "Hubo un problema. El registro no pudo ser eliminado.";
+			
+		alertify.confirm(question, function(e){
 			if(e)
 			{
 				unselectRow(id);
@@ -231,10 +253,10 @@ function deleteListElement()
 
 				if(result)
 				{
-					notifySuccess(utf8_decode(title+' ha sido eliminado.'));
+					notifySuccess(text_ok);
 					submitSearch();
 				}else{
-					notifyError('Hubo un problema. '+title+' no pudo ser eliminado.');
+					notifyError(text_error);
 				}
 			}
 
@@ -251,8 +273,26 @@ function activateListElement()
 		var elementID	= $(this).attr("id").split("_");
 		var id			= elementID[1];
 		var row			= $("#row_"+id);
-		var title		= utf8_encode(row.attr("title"));
-		alertify.confirm(utf8_decode('Est&aacute; a punto de activar a '+title+' ¿Desea continuar?'), function(e){
+		var question	= "";
+		var text_ok		= "";
+		var text_error	= "";
+		
+		if($("#activate_question_"+id).length>0)
+			question = $("#activate_question_"+id).val();
+		else
+			question = utf8_decode('Está a punto de activar un registro ¿Desea continuar?');
+			
+		if($("#activate_text_ok_"+id).length>0)
+			text_ok = $("#activate_text_ok_"+id).val();
+		else
+			text_ok = "El registro ha sido activado.";
+			
+		if($("#activate_text_error_"+id).length>0)
+			text_error = $("#activate_text_error_"+id).val();
+		else
+			text_error = "Hubo un problema. El registro no pudo ser activado.";
+		
+		alertify.confirm(question, function(e){
 			if(e)
 			{
 				unselectRow(id);
@@ -261,10 +301,10 @@ function activateListElement()
 
 				if(result)
 				{
-					notifySuccess(utf8_decode(title+' ha sido activado.'));
+					notifySuccess(text_ok);
 					submitSearch();
 				}else{
-					notifyError('Hubo un problema. '+title+' no pudo ser activado.');
+					notifyError(text_error);
 				}
 			}
 
@@ -396,15 +436,11 @@ function showSelectAllButton()
 $(function(){
 	$('.ShowFilters').click(function(){
 		$('.SearchFilters').toggleClass('Hidden');
-		// $('.NewElementButton').toggleClass('Hidden');
-		// if(!$('.SearchFilters').hasClass('Hidden'))
-		// {
-		// 	$('.NewElementButton').addClass('Hidden');
-		// }
 	});
 	
 	$(".searchButton").click(function(){
 		$("#view_page").val("1");
+		multipleInputTransform();
 		submitSearch();
 		unselectAll();
 	});
@@ -423,6 +459,14 @@ $(function(){
 		$("#SearchFieldsForm").children('.input-group').children('input,select,textarea').val('');
 	})
 });
+
+function multipleInputTransform()
+{
+	$(".chosenSelect[multiple='multiple']").each(function(){
+		if(String($(this).val()).substr(0,1)==",")
+			$(this).val(String($(this).val()).substr(1));	
+	});
+}
 
 function submitSearch()
 {

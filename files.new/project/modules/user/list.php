@@ -17,6 +17,6 @@
   include('modal.help.php');
   
   /* Footer */
-  $Foot->SetScript('../../js/script.searchlist.js');
+  $Foot->SetScript('../../../core/resources/js/script.core.searchlist.js');
   include('../../../project/resources/includes/inc.bottom.php');
 ?>

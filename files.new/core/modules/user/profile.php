@@ -17,17 +17,17 @@
         <div class="col-md-5 profile-user-info">
           <div class="">
             <img class="profile-img img-responsive" src="<?php echo $CoreUser->Img ?>" alt="User profile picture">
-            <h3 class="profile-username text-center"><?php echo $CoreUser->FullName ?></h3>
-            <p class="text-muted text-center"><?php echo $CoreUser->User ?></p>
-            <p class="text-muted text-center"><?php echo $CoreUser->Email ?></p>
-            <p class="text-muted text-center"><?php echo $CoreUser->LastAccess ?></p>
+            <h3 class="profile-username text-center"><?php echo $CoreUser->Data['full_name'] ?></h3>
+            <p class="text-muted text-center"><b><?php echo $CoreUser->Data['user'] ?></b></p>
+            <p class="text-muted text-center"><?php echo $CoreUser->Data['email'] ?></p>
+            <p class="text-muted text-center"><?php echo CoreUser::DateTimeFormat($CoreUser->Data['last_access']) ?></p>
           </div>
         </div>
         <div class="col-md-7 profile-user-misc">
           <div class="box-body">
             <span class="profile-titles"><strong><i class="fa fa-lock"></i> Perfil</strong></span>
             <p>
-              <span class="label label-primary"><?php echo $CoreUser->ProfileName ?></span>
+              <span class="label label-primary"><?php echo $CoreUser->Data['profile'] ?></span>
             </p>
             <hr>
             <span class="profile-titles"><strong><i class="fa fa-users"></i> Grupos</strong></span>
@@ -56,8 +56,7 @@
             <hr>
             <span class="profile-titles"><strong><i class="fa fa-building"></i> Empresa</strong></span>
             <div class="profile-bussines-logo">
-              <?php $Organization = $CoreUser->GetOrganization(); ?>
-              <img src="<?php echo $Organization['logo']; ?>" alt="" />
+              <img src="<?php echo $CoreUser->Data['organization']['logo']; ?>" alt="" />
             </div>
           </div>
         </div>
