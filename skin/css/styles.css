@@ -1790,4 +1790,7 @@ html {
     border-left: 10px solid transparent;
     border-bottom: 10px solid #e6e6e6; }
 
-/*# sourceMappingURL=styles.css.map */
+.label-brown {
+  background-color:#61210B;
+  color:#FFF!important;
+}

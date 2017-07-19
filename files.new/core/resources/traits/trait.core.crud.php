@@ -44,13 +44,14 @@
                     
         }
         
-        public static function ValidateValue($Field,$Value,$ActualValue='',$Org=true)
+        public static function ValidateValue($Field,$Value,$ActualValue='',$AnotherField='',$AnotherVal='',$Org=true)
     	{
-    	    $Organization = $Org? ' AND '.CoreOrganization::TABLE_ID.'='.$_SESSION[CoreOrganization::TABLE_ID]:'';
+    	    $AnotherField   = $AnotherVal? " AND ".$AnotherField."='".$AnotherVal."'":"";
+    	    $Organization   = $Org? ' AND '.CoreOrganization::TABLE_ID.'='.$_SESSION[CoreOrganization::TABLE_ID]:'';
     	    if($ActualValue)
-    	    	$TotalRegs  = Core::NumRows(self::TABLE,'*',$Field."='".$Value."' AND ".$Field."<>'".$ActualValue."'".$Organization);
+    	    	$TotalRegs  = Core::NumRows(self::TABLE,'*',$Field."='".$Value."' AND ".$Field."<>'".$ActualValue."'".$AnotherField.$Organization);
         	else
-    		    $TotalRegs  = Core::NumRows(self::TABLE,'*',$Field."='".$Value."'".$Organization);
+    		    $TotalRegs  = Core::NumRows(self::TABLE,'*',$Field."='".$Value."'".$AnotherField.$Organization);
     		if($TotalRegs>0) return $TotalRegs;
     	}
     }

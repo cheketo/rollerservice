@@ -434,9 +434,9 @@ function validateDivChange()
 //////////////////////////////////////////////////// Logout ////////////////////////////////////////////////////
 $(function(){
   $("#Logout").click(function(){
-      alertify.confirm(utf8_decode("¿Desea salir?"), function(e){
+      alertify.confirm("¿Desea salir?", function(e){
             if(e){
-              var target      = '../login/login.php';
+              var target      = '../../../core/modules/login/login.php';
               var process     = process_url+'?object=CoreLogin&action=logout';
               $.ajax({
                   type: "POST",

@@ -493,7 +493,7 @@ class CoreMenu
 	public function ConfigureSearchRequest()
 	{
 		$_POST[CoreProfile::TABLE_ID.'_condition'] = 'IN';
-		if($_SESSION[CoreProfile::TABLE_ID]!=333 && $_SESSION[CoreOrganization::TABLE_ID]!=0)
+		if($_SESSION[CoreProfile::TABLE_ID]==333 && $_SESSION[CoreOrganization::TABLE_ID]==1)
 		{
 			$this->AddWhereString(" AND (".CoreOrganization::TABLE_ID."=0 OR ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID].")");
 			$_POST[CoreOrganization::TABLE_ID.'_restrict']=true;

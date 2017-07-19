@@ -8,46 +8,6 @@ $(document).ready(function(){
 
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
-	// $("#BtnCreate,#BtnCreateNext").click(function(){
-	// 	if(validate.validateFields(''))
-	// 	{
-	// 		var BtnID = $(this).attr("id")
-	// 		if(get['id']>0)
-	// 		{
-	// 			confirmText = "modificar";
-	// 			procText = "modificaci&oacute;n"
-	// 		}else{
-	// 			confirmText = "crear";
-	// 			procText = "creaci&oacute;n"
-	// 		}
-
-	// 		confirmText += " el usuario '"+$("#user").val()+"'";
-
-	// 		alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
-	// 			if(e)
-	// 			{
-	// 				var process		= process_url+'?object=CoreUser';
-	// 				if(BtnID=="BtnCreate")
-	// 				{
-	// 					var target		= 'list.php?element='+$('#user').val()+'&msg='+ $("#action").val();
-	// 				}else{
-	// 					var target		= 'new.php?element='+$('#user').val()+'&msg='+ $("#action").val();
-	// 				}
-	// 				var haveData	= function(returningData)
-	// 				{
-	// 					$("input,select").blur();
-	// 					notifyError("Ha ocurrido un error durante el proceso de "+procText+".");
-	// 					console.log(returningData);
-	// 				}
-	// 				var noData		= function()
-	// 				{
-	// 					document.location = target;
-	// 				}
-	// 				sumbitFields(process,haveData,noData);
-	// 			}
-	// 		});
-	// 	}
-	// });
 	$("#BtnCreate").click(function(){
 		var target		= 'list.php?element='+$('#user').val()+'&msg='+ $("#action").val();
 		askAndSubmit(target,'CoreUser','¿Desea crear el usuario <b>'+$('#user').val()+'</b>?');

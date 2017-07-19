@@ -9,12 +9,8 @@
   /* Header */
   include('../../../project/resources/includes/inc.top.php');
   
-  /* Body Content */ 
-  // Search List Box
-  $List->ConfigureSearchRequest();
+  /* Body Content */
   echo $List->InsertSearchList();
-  // Help Modal
-  //include('modal.help.php');
   
   /* Footer */
   $Foot->SetScript('../../../core/resources/js/script.core.searchlist.js');

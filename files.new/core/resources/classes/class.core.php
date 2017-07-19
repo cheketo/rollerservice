@@ -190,6 +190,23 @@
     		}
     		return $Ext;
     	}
+    	
+    	public static function FromDBToMoney($Number)
+    	{
+    	    return "$".number_format($Number, 2, ',', '.');
+    	}
+    	
+    	public static function FromMoneyToDB($String)
+    	{
+    	    $String=trim($String);
+    	    $String=str_replace("$","",$String);
+			if(substr($String,-3,1)=="." || substr($String,-3,1)==",")
+				$String=str_replace(".","",substr($String,0,-4)).".".substr($String,-1,2);	
+		    else
+				$String=str_replace(".","",$String);
+			$String=str_replace(",","",$String);
+			return $String;
+    	}
     
     	static function MonthFormat($Month)
     	{
@@ -216,12 +233,11 @@
     		{
     				if(is_array($Value))
     			{
-    				$Array[$Key]	= self::AddSlashesArray($Value);
+    				$Array[$Key]=self::AddSlashesArray($Value);
     			}else{
-    				$Array[$Key]	= addslashes($Value);
+    				$Array[$Key]=addslashes($Value);
     			}
     		}
-    		
     		return $Array;
     	}
     	
@@ -231,9 +247,9 @@
     		{
     			if(is_array($Value))
     			{
-    				$Array[$Key]	= self::Utf8EncodeArray($Value);
+    				$Array[$Key]=self::Utf8EncodeArray($Value);
     			}else{
-    				$Array[$Key]	= utf8_encode($Value);
+    				$Array[$Key]=utf8_encode($Value);
     			}
     		}
     		

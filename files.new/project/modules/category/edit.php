@@ -4,7 +4,6 @@
     $Edit         = new Category($ID);
     $Data         = $Edit->GetData();
     Core::ValidateID($Data);
-    $Edit->Data = Utf8EncodeArray($Edit->Data);
     $Head->SetTitle("Modificar L&iacute;nea ".$Data['title']);
     $Head->SetIcon($Menu->GetHTMLicon());
     $Head->setHead();
@@ -33,13 +32,12 @@
               </div>
               <div class="col-xs-12 col-sm-6 inner">
                 <label>Ubicaci&oacute;n</label>
-                <?php echo Core::InsertElement('select','parent',$Data['parent_id'],'form-control chosenSelect','',Core::Select("product_category","category_id,title","status='A' AND organization_id=".$_SESSION['organization_id']),'0','L&iacute;nea Principal'); ?>
+                <?php echo Core::InsertElement('select','parent',$Data['parent_id'],'form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.",title","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'0','L&iacute;nea Principal'); ?>
               </div>
             </div><!-- inline-form -->
             <hr>
             <div class="txC">
-              <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-plus"></i> Modificar L&iacute;nea</button>
-              <button type="button" class="btn btn-success btnBlue" id="BtnCreateNext"><i class="fa fa-plus"></i> Modificar y Agregar Otra</button>
+              <button type="button" class="btn btn-success btnGreen" id="BtnEdit"><i class="fa fa-plus"></i> Modificar L&iacute;nea</button>
               <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
             </div>
         </div>

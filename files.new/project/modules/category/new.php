@@ -25,7 +25,7 @@
               </div>
               <div class="col-xs-12 col-sm-6 inner">
                 <label>Ubicaci&oacute;n</label>
-                <?php echo Core::InsertElement('select','parent','','form-control chosenSelect','',Core::Select("product_category","category_id,title","status='A' AND organization_id=".$_SESSION['organization_id']),'0','L&iacute;nea Principal'); ?>
+                <?php echo Core::InsertElement('select','parent','','form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.",title","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'0','L&iacute;nea Principal'); ?>
               </div>
             </div><!-- inline-form -->
             <hr>

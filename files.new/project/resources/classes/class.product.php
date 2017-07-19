@@ -2,257 +2,172 @@
 
 class Product 
 {
-	use SearchList;
+	use CoreSearchList,CoreCrud,CoreImage;
 	
-	var	$ID;
-	var $Data;
 	var $Providers = array();
-	var $DefaultImgURL = '../../../skin/images/products/default/default.jpg';
-	var $Table = 'product';
-	var $TableID = 'product_id';
+	
+	const TABLE				= 'product';
+	const TABLE_ID			= 'product_id';
+	const SEARCH_TABLE		= 'view_product_list';
+	const DEFAULT_IMG		= '../../../../skin/images/products/default/default.jpg';
+	const DEFAULT_IMG_DIR	= '../../../../skin/images/products/default/';
+	const IMG_DIR			= '../../../../skin/images/products/';
 
 	public function __construct($ID=0)
 	{
-		
-		if($ID!=0)
-		{
-			$Data = Core::Select($this->Table,"*",$this->TableID."=".$ID);
-			$this->Data = $Data[0];
-			$this->ID = $ID;
-			$Data = Core::Select($this->Table.'_category',"title","category_id=".$this->Data['category_id']);
-			$this->Data['category'] = $Data[0]['title'];
-			$Data = Core::Select($this->Table.'_brand',"name","brand_id=".$this->Data['brand_id']);
-			$this->Data['brand'] = $Data[0]['name'];
-		}
+		$this->ID = $ID;
+		$this->GetData();
+		self::SetImg($this->Data['img']);
 	}
 	
-	public function GetProviders()
-	{
-		if(!$this->Providers)
-		{
-			$Providers = Core::Select("relation_provider",'provider_id',$this->TableID." =".$this->ID);
-			foreach($Providers as $Provider)
-			{
-				if($ProvidersID) $ProvidersID .= ',';
-				$ProvidersID .= $Provider['provider_id'];
-			}
-			$this->Providers = Core::Select('provider','*',"status='A' AND provider_id IN ('.$ProvidersID.')");
-		}
-		return $this->Providers;
-	}
-	
-	// public function GetCategoryTree()
+	// public function GetProviders()
 	// {
-		
+	// 	if(!$this->Providers)
+	// 	{
+	// 		$Providers = Core::Select("relation_provider",'provider_id',$this->TableID." =".$this->ID);
+	// 		foreach($Providers as $Provider)
+	// 		{
+	// 			if($ProvidersID) $ProvidersID .= ',';
+	// 			$ProvidersID .= $Provider['provider_id'];
+	// 		}
+	// 		$this->Providers = Core::Select('provider','*',"status='A' AND provider_id IN ('.$ProvidersID.')");
+	// 	}
+	// 	return $this->Providers;
 	// }
-	
-	public function GetImg()
-	{
-		return $this->DefaultImgURL;
-	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// SEARCHLIST FUNCTIONS ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-public function MakeRegs($Mode="List")
+	protected static function MakeActionButtonsHTML($Object,$Mode='list')
 	{
-		$Rows	= $this->GetRegs();
-		//echo $this->LastQuery();
-		for($i=0;$i<count($Rows);$i++)
+		if($Mode!='grid') $HTML .=	'<a class="hint--bottom hint--bounce" aria-label="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Object->ID.'"><i class="fa fa-plus"></i></button></a> ';;
+		$HTML	.= 	'<a href="edit.php?id='.$Object->ID.'" class="hint--bottom hint--bounce hint--info" aria-label="Editar"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
+		if($Object->Data['status']=="A")
 		{
-			$Row	=	new Product($Rows[$i][$this->TableID]);
-			$Actions= '';
-			//$Row->Data['code'] = $Row->Data['code'];
-			//var_dump($Row);
-			// $UserGroups = $Row->GetGroups();
-			// $Groups='';
-			// foreach($UserGroups as $Group)
-			// {
-			// 	$Groups .= '<span class="label label-warning">'.$Group['title'].'</span> ';
-			// }
-			// if(!$Groups) $Groups = 'Ninguno';
-			$Actions	.= 	'<span class="roundItemActionsGroup"><a><button type="button" class="btn btnGreen ExpandButton" id="expand_'.$Row->ID.'"><i class="fa fa-plus"></i></button></a>';
-			$Actions	.= 	'<span class="roundItemActionsGroup"><a href="edit.php?id='.$Row->ID.'"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
-			if($Row->Data['status']=="A")
-			{
-				$Actions	.= '<a class="deleteElement" process="'.PROCESS.'" id="delete_'.$Row->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
-			}else{
-				$Actions	.= '<a class="activateElement" process="'.PROCESS.'" id="activate_'.$Row->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
-			}
-			$Actions	.= '</span>';
-			switch(strtolower($Mode))
-			{
-				case "list":
-					$RowBackground = $i % 2 == 0? '':' listRow2 ';
-					$Regs	.= '<div class="row listRow'.$RowBackground.$Restrict.'" id="row_'.$Row->ID.'" title="'.$Row->Data['code'].'">
-									<div class="col-lg-3 col-md-3 col-sm-10 col-xs-10">
-										<div class="listRowInner" style="text-align:left!important;">
-											<img class="img-circle" style="margin-right:1em!important;" src="'.$Row->GetImg().'" alt="'.$Row->Data['cod'].'">
-											<span class="listTextStrong" style="margin-top:0.7em;">'.$Row->Data['code'].'</span>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-3 col-sm-3">
-										<div class="listRowInner">
-											<span class="smallTitle">L&iacute;nea</span>
-											<span class="listTextStrong"><span class="label label-primary">'.ucfirst($Row->Data['category']).'</span></span>
-										</div>
-									</div>
-									<div class="col-lg-1 col-md-1 col-sm-1 hideMobile990">
-										<div class="listRowInner">
-											<span class="smallTitle">Estanter&iacute;a</span>
-											<span class="listTextStrong"><span class="label label-warning">'.strtoupper($Row->Data['rack']).'</span></span>
-										</div>
-									</div>
-									<div class="col-lg-3 col-md-3 col-sm-3 hideMobile990">
-										<div class="listRowInner">
-											<span class="smallTitle">'.$Row->Data['description'].'</span>
-										</div>
-									</div>
-									<div class="col-lg-2 col-md-2 col-sm-1 hideMobile990"></div>
-									<div class="listActions flex-justify-center Hidden">
-										<div>'.$Actions.'</div>
-									</div>
-									
-								</div>';
-				break;
-				case "grid":
-				$Regs	.= '<li id="grid_'.$Row->ID.'" class="RoundItemSelect roundItemBig'.$Restrict.'" title="'.$Row->Data['code'].'">
-						            <div class="flex-allCenter imgSelector">
-						              <div class="imgSelectorInner">
-						                <img src="'.$Row->GetImg().'" alt="'.$Row->Data['code'].'" class="img-responsive">
-						                <div class="imgSelectorContent">
-						                  <div class="roundItemBigActions">
-						                    '.$Actions.'
-						                    <span class="roundItemCheckDiv"><a href="#"><button type="button" class="btn roundBtnIconGreen Hidden" name="button"><i class="fa fa-check"></i></button></a></span>
-						                  </div>
-						                </div>
-						              </div>
-						              <div class="roundItemText">
-						                <p><b>'.$Row->Data['code'].'</b></p>
-						                <p><span class="label label-primary">'.ucfirst($Row->Data['category']).'</span></p>
-						              </div>
-						            </div>
-						          </li>';
-				break;
-			}
-        }
-        if(!$Regs) $Regs.= '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron art&iacute;culos.</h4><p>Puede crear un art&iacute;culo haciendo click <a href="new.php">aqui</a>.</p></div>';
-		return $Regs;
+			$HTML	.= '<a class="deleteElement hint--bottom hint--bounce hint--error" aria-label="Eliminar" process="'.PROCESS.'" id="delete_'.$Object->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
+			$HTML	.= Core::InsertElement('hidden','delete_question_'.$Object->ID,'&iquest;Desea eliminar el art&iacute;culo <b>'.$Object->Data['code'].'</b> ?');
+			$HTML	.= Core::InsertElement('hidden','delete_text_ok_'.$Object->ID,'El art&iacute;culo <b>'.$Object->Data['code'].'</b> ha sido eliminado.');
+			$HTML	.= Core::InsertElement('hidden','delete_text_error_'.$Object->ID,'Hubo un error al intentar eliminar el art&iacute;culo <b>'.$Object->Data['code'].'</b>.');
+			
+		}else{
+			$HTML	.= '<a class="activateElement hint--bottom hint--bounce hint--success" aria-label="Activar" process="'.PROCESS.'" id="activate_'.$Object->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
+			$HTML	.= Core::InsertElement('hidden','activate_question_'.$Object->ID,'&iquest;Desea activar el art&iacute;culo <b>'.$Object->Data['code'].'</b> ?');
+			$HTML	.= Core::InsertElement('hidden','activate_text_ok_'.$Object->ID,'El art&iacute;culo <b>'.$Object->Data['code'].'</b> ha sido activado.');
+			$HTML	.= Core::InsertElement('hidden','activate_text_error_'.$Object->ID,'Hubo un error al intentar activar el art&iacute;culo <b>'.$Object->Data['code'].'</b>.');
+		}
+		return $HTML;
 	}
 	
-	protected function InsertSearchField()
+	protected static function MakeListHTML($Object)
 	{
-		return '<!-- Name -->
-          <div class="input-group">
-            <span class="input-group-addon order-arrows sort-activated" order="code" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo"').'
-          </div>
-          <!-- Categories -->
-          <div class="input-group">
-            <span class="input-group-addon order-arrows" order="category" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
-            '.Core::InsertElement('select','group','','form-control','',Core::Select('product_category a, relation_product_category b','a.*',"a.category_id = b.category_id AND a.status = 'A' AND a.organization_id = ".$_SESSION['organization_id'],"a.title"),'', 'L&iacute;nea').'
-          </div>
-          ';
+		$StockLabel = $Object->Data['stock']>0? 'primary':'danger';
+		$HTML = '<div class="col-lg-4 col-md-5 col-sm-4 col-xs-7">
+					<div class="listRowInner">
+						<img class="img-circle" src="'.$Object->Img.'" alt="'.$Object->Data['code'].'">
+						<span class="listTextStrong">'.$Object->Data['code'].'</span>
+						<span class="smallTitle">'.ucfirst($Object->Data['category']).'</span>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-1 col-sm-1 col-xs-2">
+					<div class="listRowInner">
+						<span class="listTextStrong">Stock</span>
+						<span class="listTextStrong"><span class="label label-'.$StockLabel.'">'.$Object->Data['stock'].'</span></span>
+					</div>
+				</div>
+				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-3">
+					<div class="listRowInner">
+						<span class="listTextStrong">Precio</span>
+						<span class="listTextStrong"><span class="label label-success">'.Core::FromDBToMoney($Object->Data['price']).'</span></span>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-3 hideMobile990">
+					<div class="listRowInner">
+						<span class="smallTitle">'.$Object->Data['description'].'</span>
+					</div>
+				</div>
+				';
+		return $HTML;
+	}
+	
+	protected static function MakeItemsListHTML($Object)
+	{
+		$HTML .= '
+				<div class="row bg-gray" style="padding:5px;">
+					<div class="col-xs-6">
+						<div class="listRowInner">
+							<span class="itemRowtitle">
+								<span class="smallTitle">Stock Min/Max</span> 
+								<span class="label label-warning">'.$Object->Data['stock_min'].'/'.$Object->Data['stock_max'].'</span>
+							</span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="listRowInner">
+							<span class="smallTitle">Marca</span>
+							<span class="label label-primary">'.$Object->Data['brand'].'</span>
+						</div>
+					</div>
+					<div class="col-xs-6">
+						<div class="listRowInner">
+							<span class="smallTitle">Estanter&iacute;a</span>
+							<span class="label label-brown">'.$Object->Data['rack'].'</span>
+						</div>
+					</div>
+					<div class="col-xs-12 showMobile990">
+						<div class="listRowInner">
+							<span class="label label-warning">'.$Object->Data['description'].'</span>
+						</div>
+					</div>
+				</div>';
+		return $HTML;
+	}
+	
+	protected static function MakeGridHTML($Object)
+	{
+		$ButtonsHTML = '<span class="roundItemActionsGroup">'.self::MakeActionButtonsHTML($Object,'grid').'</span>';
+		$HTML = '<div class="flex-allCenter imgSelector">
+		              <div class="imgSelectorInner">
+		                <img src="'.$Object->Img.'" alt="'.$Object->Data['code'].'" class="img-responsive">
+		                <div class="imgSelectorContent">
+		                  <div class="roundItemBigActions">
+		                    '.$ButtonsHTML.'
+		                    <span class="roundItemCheckDiv"><a href="#"><button type="button" class="btn roundBtnIconGreen Hidden" name="button"><i class="fa fa-check"></i></button></a></span>
+		                  </div>
+		                </div>
+		              </div>
+		              <div class="roundItemText">
+		                <p><b>'.$Object->Data['code'].'</b></p>
+		                <p>('.ucfirst($Object->Data['category']).')</p>
+		              </div>
+		            </div>';
+		return $HTML;
+	}
+	
+	public static function MakeNoRegsHTML()
+	{
+		return '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron art&iacute;culos.</h4><p>Puede crear un nuevo art&iacute;culo haciendo click <a href="new.php">aqui</a>.</p></div>';	
+	}
+	
+	protected function SetSearchFields()
+	{
+		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo"');
+		$this->SearchFields['price'] = Core::InsertElement('text','price','','form-control','placeholder="Precio"');
+		$this->SearchFields['brand_id'] = Core::InsertElement('select',Brand::TABLE_ID,'','form-control chosenSelect','',Core::Select(Brand::TABLE,Brand::TABLE_ID.',name',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"name"),'','Cualquier Marca');
+		$this->SearchFields['category_id'] = Core::InsertElement('select',Category::TABLE_ID,'','form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.',title',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"title"),'','Cualquier L&iacute;nea');
 	}
 	
 	protected function InsertSearchButtons()
 	{
-		return '<!-- New Button -->
-		    	<a href="new.php"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-user-plus"></i> Nuevo Art&iacute;culo</button></a>
-		    	<!-- /New Button -->';
+		return '<a href="new.php" class="hint--bottom hint--bounce hint--success" aria-label="Nuevo Art&iacute;culo"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-plus-square"></i></button></a>';
 	}
 	
 	public function ConfigureSearchRequest()
 	{
-		$this->SetTable($this->Table.' b');
-		$this->SetFields('b.*');
-		$this->SetWhere("b.organization_id = ".$_SESSION['organization_id']);
-		//$this->AddWhereString(" AND c.organization_id = a.organization_id");
-		$this->SetOrder('code');
-		$this->SetGroupBy("b.".$this->TableID);
-		
-		foreach($_POST as $Key => $Value)
+		if($_POST['price'])
 		{
-			$_POST[$Key] = $Value;
+			$_POST['price']=Core::FromMoneyToDB($_POST['price']);
 		}
-			
-		if($_POST['code']) $this->SetWhereCondition("b.code","LIKE","%".$_POST['code']."%");
-		if(!is_null($_POST['parent']))
-		{
-			switch($_POST['parent'])
-			{
-				case "0": $this->SetWhereCondition("b.parent_id","=",0); break;
-				case '': break;
-				default:
-					$this->SetWhereCondition("b.parent_id","=",$_POST['parent']);
-				break;
-			}
-			
-			
-			
-		}
-		// if($_POST['country']){
-		// 	$this->SetWhereCondition("c.title","LIKE","%".$_POST['country']."%");
-		// 	$this->AddWhereString(" AND b.country_id = c.country_id");
-		// }
-		
-		//if($_POST['agent_email']) $this->SetWhereCondition("a.email","LIKE","%".$_POST['agent_email']."%");
-		//if($_POST['agent_charge']) $this->SetWhereCondition("a.charge","LIKE", "%".$_POST['agent_charge']."%");
-		// if($_POST['phone']) $this->AddWhereString(" AND (c.phone LIKE '%".$_POST['phone']."%' OR a.phone LIKE '%".$_POST['phone']."%')");
-		//if($_POST['parent']) $this->SetWhereCondition("c.parent_id","=",$_POST['parent']);
-		// if($_POST['agent_name'])
-		// {
-		// 	$this->AddWhereString(" AND c.organization_id = a.organization_id");
-		// }
-		if($_REQUEST['status'])
-		{
-			if($_POST['status']) $this->SetWhereCondition("b.status","=", $_POST['status']);
-			if($_GET['status']) $this->SetWhereCondition("b.status","=", $_GET['status']);	
-		}else{
-			$this->SetWhereCondition("b.status","=","A");
-		}
-		if($_POST['view_order_field'])
-		{
-			if(strtolower($_POST['view_order_mode'])=="desc")
-				$Mode = "DESC";
-			else
-				$Mode = $_POST['view_order_mode'];
-			
-			$Order = strtolower($_POST['view_order_field']);
-			switch($Order)
-			{
-				// case "agent_name": 
-				// 	$this->AddWhereString(" AND b.country_id = c.country_id");
-				// 	$Order = 'title';
-				// 	$Prefix = "c.";
-				// break;
-				default:
-					$Prefix = "b.";
-				break;
-			}
-			$this->SetOrder($Prefix.$Order." ".$Mode);
-		}
-		if($_POST['regsperview'])
-		{
-			$this->SetRegsPerView($_POST['regsperview']);
-		}
-		if(intval($_POST['view_page'])>0)
-			$this->SetPage($_POST['view_page']);
-	}
-
-	public function MakeList()
-	{
-		return $this->MakeRegs("List");
-	}
-
-	public function MakeGrid()
-	{
-		return $this->MakeRegs("Grid");
-	}
-
-	public function GetData()
-	{
-		return $this->Data;
+		$this->SetSearchRequest();
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -279,7 +194,7 @@ public function MakeRegs($Mode="List")
 		if(!$StockMax) $StockMax = 0;
 		if(!$PriceFob) $PriceFob = 0;
 		if(!$PriceDispatch) $PriceDispatch = 0;
-		$Insert		= Core::Insert($this->Table,'code,category_id,price,brand_id,rack,size,stock_min,stock_max,description,creation_date,organization_id,created_by',"'".$Code."',".$Category.",".$Price.",".$Brand.",'".$Rack."','".$Size."',".$StockMin.",".$StockMax.",'".$Description."',NOW(),".$_SESSION['organization_id'].",".$_SESSION['user_id']);
+		Core::Insert(self::TABLE,'code,'.Category::TABLE_ID.',price,'.Brand::TABLE_ID.',rack,size,stock_min,stock_max,description,creation_date,organization_id,created_by',"'".$Code."',".$Category.",".$Price.",".$Brand.",'".$Rack."','".$Size."',".$StockMin.",".$StockMax.",'".$Description."',NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
 		//echo $this->LastQuery();
 	}	
 	
@@ -297,56 +212,15 @@ public function MakeRegs($Mode="List")
 		$StockMin	= $_POST['stock_min'];
 		$StockMax	= $_POST['stock_max'];
 		$Description= $_POST['description'];
-		
 		if(!$StockMin) $StockMin = 0;
 		if(!$StockMax) $StockMax = 0;
-		
-		$Update		= Core::Update($this->Table,"code='".$Code."',category_id=".$Category.",brand_id=".$Brand.",price=".$Price.",rack='".$Rack."',size='".$Size."',stock_min='".$StockMin."',stock_max='".$StockMax."',description='".$Description."',updated_by=".$_SESSION['user_id'],$this->TableID."=".$ID);
+		Core::Update(self::TABLE,"code='".$Code."',".Category::TABLE_ID."=".$Category.",".Brand::TABLE_ID."=".$Brand.",price=".$Price.",rack='".$Rack."',size='".$Size."',stock_min='".$StockMin."',stock_max='".$StockMax."',description='".$Description."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
 		//echo $this->LastQuery();
 	}
-	
-	public function Activate()
-	{
-		$ID	= $_POST['id'];
-		Core::Update($this->Table,"status = 'A'",$this->TableID."=".$ID);
-	}
-	
-	public function Delete()
-	{
-		$ID	= $_POST['id'];
-		Core::Update($this->Table,"status = 'I'",$this->TableID."=".$ID);
-		//echo $this->LastQuery();
-	}
-	
-	public function Search()
-	{
-		$this->ConfigureSearchRequest();
-		echo $this->InsertSearchResults();
-	}
-	
-	// public function Newimage()
-	// {
-	// 	if(count($_FILES['image'])>0)
-	// 	{
-	// 		if($_POST['newimage']!=$this->GetDefaultImg() && file_exists($_POST['newimage']))
-	// 			unlink($_POST['newimage']);
-	// 		$TempDir = $this->ImgGalDir;
-	// 		$Name	= "organization".intval(rand()*rand()/rand());
-	// 		$Img	= new CoreFileData($_FILES['image'],$TempDir,$Name);
-	// 		echo $Img	-> BuildImage(365,110);
-	// 	}
-	// }
 	
 	public function Validate()
 	{
-		$Name 			= strtolower($_POST['code']);
-		$ActualName 	= strtolower($_POST['actualcode']);
-
-	    if($ActualName)
-	    	$TotalRegs  = Core::NumRows($this->Table,'*',"code = '".$Name."' AND code<> '".$ActualName."'");
-    	else
-		    $TotalRegs  = Core::NumRows($this->Table,'*',"code = '".$Name."'");
-		if($TotalRegs>0) echo $TotalRegs;
+		self::ValidateValue("code",$_POST['code'],$_POST['actualcode']);
 	}
 }
 ?>

@@ -13,15 +13,13 @@
         <div class="innerContainer">
           <h4 class="subTitleB"><i class="fa fa-plus-circle"></i> Complete los campos para agregar una nueva marca</h4>
             <div class="row form-group inline-form-custom-2">
-              <div class="col-xs-12 col-sm-6 inner">
+              
+              <div class="col-xs-12 col-sm-12 inner">
                 <label>Nombre</label>
                 <?php echo Core::InsertElement('text','name','','form-control','placeholder="Ingrese un Nombre" validateEmpty="Ingrese un nombre." validateFromFile='.PROCESS.'///El nombre ya existe///action:=validate///object:=Brand" autofocus'); ?>
               </div>
-              <div class="col-xs-12 col-sm-6 inner">
-                <label>Origen</label>
-                <?php echo Core::InsertElement('select','country','','form-control chosenSelect','data-placeholder="Seleccione un pa&iacute;s"',Core::Select('admin_country','country_id,title',"status<>'I'"),' ',''); ?>
-              </div>
-            </div><!-- inline-form -->
+              
+            </div>
             <hr>
             <div class="txC">
               <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-plus"></i> Crear Marca</button>
@@ -33,6 +31,5 @@
     </div>
   </div>
 <?php
-  
   include('../../../project/resources/includes/inc.bottom.php');
 ?>
