@@ -390,7 +390,7 @@ trait CoreSearchList
 	public function MakeRegs($Mode="list")
 	{
 		$Rows	= self::GroupRowsByID($this->GetRegs());
-		echo Core::LastQuery();
+		// echo Core::LastQuery();
 		foreach($Rows as $Row)
 		{
 			$Class	= get_class($this);

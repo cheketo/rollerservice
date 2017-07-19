@@ -19,7 +19,7 @@
     // HIDDEN ELEMENTS
     echo Core::InsertElement("hidden","id",$ID);
     echo Core::InsertElement("hidden","action",'update');
-    echo Core::InsertElement("hidden","category",$Data['category_id']);
+    echo Core::InsertElement("hidden","category",$Data[Category::TABLE_ID]);
 
 ?>
   <!-- ///////// FIRST SCREEN ////////// -->
@@ -45,7 +45,7 @@
                 {
                   if($Parent!=$Cat['parent_id'])
                   {
-                    $Level = $Category->CalculateCategoryLevel($Cat['category_id']);
+                    $Level = $Category->CalculateCategoryLevel($Cat[Category::TABLE_ID]);
                     if($Level>$MaxLevel) $MaxLevel = $Level;
                     $Parent = $Cat['parent_id'];
                     if($Parent!=0)
@@ -55,8 +55,8 @@
                     }
                     echo '<li class="'.$Class.'" level="'.$Level.'" category="'.$Parent.'"><select class="category_selector" name="category_'.$Parent.'" id="category_'.$Parent.'" size="20">';
                   }
-                  $Selected = $Cat['category_id']==$Data['category_id']? 'selected="selected"' : '';
-                  echo '<option value="'.$Cat['category_id'].'" '.$Selected.'>'.$Cat['title'].'</option>';
+                  $Selected = $Cat[Category::TABLE_ID]==$Data[Category::TABLE_ID]? 'selected="selected"' : '';
+                  echo '<option value="'.$Cat[Category::TABLE_ID].'" '.$Selected.'>'.$Cat['title'].'</option>';
                 }
                 echo '</select></li>';
               ?>
@@ -111,7 +111,7 @@
               <!--</div>-->
               <div class="col-xs-12 col-sm-12">
                 <label for="brand_select">Marca:</label>
-                <?php echo Core::InsertElement('select','brand',$Data['brand_id'],'form-control  chosenSelect','validateEmpty="Ingrese una marca." data-placeholder="Seleccionar Marca"',Core::Select("product_brand","brand_id,name","status='A' AND organization_id=".$_SESSION['organization_id']),' ','') ?>
+                <?php echo Core::InsertElement('select','brand',$Data['brand_id'],'form-control  chosenSelect','validateEmpty="Ingrese una marca." data-placeholder="Seleccionar Marca"',Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),' ','') ?>
                 
               </div>
             </div>
@@ -121,7 +121,7 @@
             </div>
             <div class="row form-group inline-form-custom">
               <!--<div class="col-xs-12 col-sm-4">-->
-              <!--  <?php echo Core::InsertElement('text','stock',$Data['stock'],'form-control','placeholder="Stock Incial"') ?>-->
+              <!--  <?php //echo Core::InsertElement('text','stock',$Data['stock'],'form-control','placeholder="Stock"') ?>-->
               <!--</div>-->
               <div class="col-xs-12 col-sm-6">
                 <label for="stock_min">Stock M&iacute;nimo:</label>
@@ -159,7 +159,7 @@
               </div>
             </div>
             <div class="txC">
-              <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-check"></i> Finalizar Edici&oacute;n</button>
+              <button type="button" class="btn btn-success btnGreen" id="BtnEdit"><i class="fa fa-check"></i> Finalizar Edici&oacute;n</button>
               <button type="button" class="btn btn-error btnRed" id="BtnCancel" name="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
             </div>
         </div>

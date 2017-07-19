@@ -199,7 +199,7 @@ html {
   .hideMobile990 {
     display: none!important; }
   .list-margin-top{
-    margin-top:3em;
+    margin-top:5em;
   }
 }
     
@@ -699,16 +699,24 @@ html {
   background-color: #a3ccb1;
   border: 1px solid #b9b9b9;
   border-left: 5px solid green;
-  color: #fff;
+  /*color: #fff;*/
   -webkit-box-shadow: 1px 3px 5px -5px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 1px 3px 5px -5px rgba(0, 0, 0, 0.75);
   box-shadow: 1px 3px 5px -5px rgba(0, 0, 0, 0.75); }
-  .listRowSelected span.smallDetails {
+  /*.listRowSelected span.smallDetails {*/
+  /*  color: #fff !important; }*/
+  .listRowSelected span.smallTitle {
     color: #fff !important; }
-  .listRowSelected .listRowInner .smallDetails {
-    color: #000; }
-  .listRowSelected .listRowInner .smallTitle {
-    color: #000; }
+  /*.listRowSelected .listRowInner .smallDetails {*/
+  /*  color: #000; }*/
+  /*.listRowSelected .listRowInner .smallTitle {*/
+  /*  color: #000; }*/
+.listRowSelected:hover {
+    background-color: #54a770!important;}
+.listRowSelected:hover span.smallDetails {
+  color: #fff !important; }
+.listRowSelected:hover span.smallTitle {
+  color: #fff !important; }
 
 .post .listRowInner {
   margin-bottom: 15px; }
@@ -738,6 +746,13 @@ html {
   margin-left: 40px; }
 .listRowInner.listRowInner-sm .listTextStrong {
   font-size: 14px; }
+  
+@media (max-width: 990px)
+{
+  .listRowInner {
+    padding-top:1em;padding-bottom:1em;
+  }
+}
 
 @media (max-width: 1150px) {
   .listRowInner .emailTextResp {

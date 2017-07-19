@@ -1,8 +1,8 @@
 <?php
     include("../../../core/resources/includes/inc.core.php");
     $Head->SetTitle($Menu->GetTitle());
-    $Head->SetStyle('../../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
     $Head->SetIcon($Menu->GetHTMLicon());
+    $Head->SetStyle('../../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
     $Head->setHead();
     
     $Category = new Category();
@@ -36,7 +36,7 @@
                 {
                   if($Parent!=$Cat['parent_id'])
                   {
-                    $Level = $Category->CalculateCategoryLevel($Cat['category_id']);
+                    $Level = $Category->CalculateCategoryLevel($Cat[Category::TABLE_ID]);
                     if($Level>$MaxLevel) $MaxLevel = $Level;
                     $Parent = $Cat['parent_id'];
                     if($Parent!=0)
@@ -46,7 +46,7 @@
                     }
                     echo '<li class="'.$Class.'" level="'.$Level.'" category="'.$Parent.'"><select class="category_selector" name="category_'.$Parent.'" id="category_'.$Parent.'" size="20">';
                   }
-                  echo '<option value="'.$Cat['category_id'].'">'.$Cat['title'].'</option>';
+                  echo '<option value="'.$Cat[Category::TABLE_ID].'">'.$Cat['title'].'</option>';
                 }
                 echo '</select></li>';
               ?>
@@ -101,7 +101,7 @@
               <!--  <?php //echo Core::InsertElement('text','rack','','form-control','placeholder="Estanter&iacute;a"') ?>-->
               <!--</div>-->
               <div class="col-xs-12 col-sm-12">
-                <?php echo Core::InsertElement('select','brand','','form-control chosenSelect','data-placeholder="Seleccionar Marca" validateEmpty="Seleccione una marca." style="width:100%!important;"',Core::Select("product_brand","brand_id,name","status='A' AND organization_id=".$_SESSION['organization_id']),'',' '); ?>
+                <?php echo Core::InsertElement('select','brand','','form-control chosenSelect','data-placeholder="Seleccionar Marca" validateEmpty="Seleccione una marca." style="width:100%!important;"',Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' '); ?>
               </div>
             </div>
             <div class="form-group">

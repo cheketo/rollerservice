@@ -60,27 +60,29 @@ class Product
 	
 	protected static function MakeListHTML($Object)
 	{
-		$StockLabel = $Object->Data['stock']>0? 'primary':'danger';
-		$HTML = '<div class="col-lg-4 col-md-5 col-sm-4 col-xs-7">
+		$StockLabel = $Object->Data['stock_min']>$Object->Data['stock'] || $Object->Data['stock_max']<$Object->Data['stock']? 'warning':'primary';
+		$StockLabel = $Object->Data['stock']==0? 'danger':$StockLabel;
+		
+		$HTML = '<div class="col-lg-3 col-md-4 col-sm-4 col-xs-7">
 					<div class="listRowInner">
-						<img class="img-circle" src="'.$Object->Img.'" alt="'.$Object->Data['code'].'">
+						<img class="img-circle hideMobile990" src="'.$Object->Img.'" alt="'.$Object->Data['code'].'">
 						<span class="listTextStrong">'.$Object->Data['code'].'</span>
-						<span class="smallTitle">'.ucfirst($Object->Data['category']).'</span>
+						<span class="smallTitle"><b>'.$Object->Data['brand'].'</b></span>
 					</div>
 				</div>
-				<div class="col-lg-3 col-md-1 col-sm-1 col-xs-2">
+				<div class="col-lg-1 col-md-1 col-sm-1 hideMobile990">
 					<div class="listRowInner">
 						<span class="listTextStrong">Stock</span>
 						<span class="listTextStrong"><span class="label label-'.$StockLabel.'">'.$Object->Data['stock'].'</span></span>
 					</div>
 				</div>
-				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-3">
+				<div class="col-lg-1 col-md-1 col-sm-1 col-xs-5">
 					<div class="listRowInner">
 						<span class="listTextStrong">Precio</span>
 						<span class="listTextStrong"><span class="label label-success">'.Core::FromDBToMoney($Object->Data['price']).'</span></span>
 					</div>
 				</div>
-				<div class="col-lg-3 col-md-3 col-sm-3 hideMobile990">
+				<div class="col-lg-2 col-md-3 col-sm-4 hideMobile990">
 					<div class="listRowInner">
 						<span class="smallTitle">'.$Object->Data['description'].'</span>
 					</div>
@@ -91,31 +93,49 @@ class Product
 	
 	protected static function MakeItemsListHTML($Object)
 	{
+		$StockLabel = $Object->Data['stock_min']>$Object->Data['stock'] || $Object->Data['stock_max']<$Object->Data['stock']? 'warning':'primary';
+		$StockLabel = $Object->Data['stock']==0? 'danger':$StockLabel;
+		$Object->Data['rack'] = $Object->Data['rack'] ? '<span class="label label-brown">'.$Object->Data['rack'].'</span>':'No especificado';
+		$Object->Data['size'] = $Object->Data['size']? $Object->Data['size']:'Sin especificar';
+		$Object->Data['description'] = $Object->Data['description']? '<span class="smallDetails"><b>Descripci&oacute;n</b></span>'.$Object->Data['description']:'';
+		$StockMM = $Object->Data['stock_max']>0? '<span class="label label-primary">'.$Object->Data['stock_min'].'/'.$Object->Data['stock_max'].'</span>':'Indistinto';
 		$HTML .= '
 				<div class="row bg-gray" style="padding:5px;">
-					<div class="col-xs-6">
+					<div class="col-md-4 col-sm-4 col-xs-6">
+						<div class="listRowInner">
+							<span class="smallDetails"><b>L&iacute;nea</b></span>
+							'.$Object->Data['category'].'
+						</div>
+					</div>
+					<div class="col-md-3 col-sm-2 col-xs-6">
 						<div class="listRowInner">
 							<span class="itemRowtitle">
-								<span class="smallTitle">Stock Min/Max</span> 
-								<span class="label label-warning">'.$Object->Data['stock_min'].'/'.$Object->Data['stock_max'].'</span>
+								<span class="smallDetails"><b>Stock Min/Max</b></span> 
+								'.$StockMM.'
 							</span>
 						</div>
 					</div>
-					<div class="col-xs-6">
+					<div class="col-xs-6 showMobile990">
 						<div class="listRowInner">
-							<span class="smallTitle">Marca</span>
-							<span class="label label-primary">'.$Object->Data['brand'].'</span>
+							<span class="smallDetails"><b>Stock</b></span>
+							<span class="label label-'.$StockLabel.'">'.$Object->Data['stock'].'</span>
 						</div>
 					</div>
-					<div class="col-xs-6">
+					<div class="col-md-2 col-sm-4 col-xs-6">
 						<div class="listRowInner">
-							<span class="smallTitle">Estanter&iacute;a</span>
-							<span class="label label-brown">'.$Object->Data['rack'].'</span>
+							<span class="smallDetails"><b>Estanter&iacute;a</b></span>
+							'.$Object->Data['rack'].'
+						</div>
+					</div>
+					<div class="col-md-2 col-sm-4 col-xs-6"">
+						<div class="listRowInner">
+							<span class="smallDetails"><b>Medidas</b></span>
+							'.$Object->Data['size'].'
 						</div>
 					</div>
 					<div class="col-xs-12 showMobile990">
 						<div class="listRowInner">
-							<span class="label label-warning">'.$Object->Data['description'].'</span>
+						'.$Object->Data['description'].'
 						</div>
 					</div>
 				</div>';
@@ -151,9 +171,12 @@ class Product
 	protected function SetSearchFields()
 	{
 		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo"');
-		$this->SearchFields['price'] = Core::InsertElement('text','price','','form-control','placeholder="Precio"');
+		$this->SearchFields['stock_from'] = Core::InsertElement('text','stock_from','','form-control','placeholder="Stock Desde"');
+		$this->SearchFields['stock_to'] = Core::InsertElement('text','stock_to','','form-control','placeholder="Stock Hasta"');
 		$this->SearchFields['brand_id'] = Core::InsertElement('select',Brand::TABLE_ID,'','form-control chosenSelect','',Core::Select(Brand::TABLE,Brand::TABLE_ID.',name',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"name"),'','Cualquier Marca');
 		$this->SearchFields['category_id'] = Core::InsertElement('select',Category::TABLE_ID,'','form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.',title',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"title"),'','Cualquier L&iacute;nea');
+		$this->SearchFields['price_from'] = Core::InsertElement('text','price_from','','form-control','placeholder="Precio Desde"');
+		$this->SearchFields['price_to'] = Core::InsertElement('text','price_to','','form-control','placeholder="Precio Hasta"');
 	}
 	
 	protected function InsertSearchButtons()
@@ -163,10 +186,32 @@ class Product
 	
 	public function ConfigureSearchRequest()
 	{
-		if($_POST['price'])
+		if($_POST['price_from'])
 		{
-			$_POST['price']=Core::FromMoneyToDB($_POST['price']);
+			$Price=Core::FromMoneyToDB($_POST['price_from']);
+			$this->AddWhereString(" AND price>=".$Price);
 		}
+		if($_POST['price_to'])
+		{
+			$Price=Core::FromMoneyToDB($_POST['price_to']);
+			$this->AddWhereString(" AND price<=".$Price);
+		}
+		
+		if($_POST['stock_from'])
+		{
+			$this->AddWhereString(" AND stock>=".$_POST['stock_from']);
+		}
+		if($_POST['stock_to'])
+		{
+			$this->AddWhereString(" AND stock<=".$_POST['stock_to']);
+		}
+		
+		if($_POST['view_order_field']=="price_from" || $_POST['view_order_field']=="price_to")
+			$_POST['view_order_field'] = "price";
+		
+		if($_POST['view_order_field']=="stock_from" || $_POST['view_order_field']=="stock_to")
+			$_POST['view_order_field'] = "stock";
+			
 		$this->SetSearchRequest();
 	}
 

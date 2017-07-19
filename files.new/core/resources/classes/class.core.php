@@ -200,10 +200,15 @@
     	{
     	    $String=trim($String);
     	    $String=str_replace("$","",$String);
-			if(substr($String,-3,1)=="." || substr($String,-3,1)==",")
-				$String=str_replace(".","",substr($String,0,-4)).".".substr($String,-1,2);	
-		    else
+			if(substr($String,-3,1)=="." || substr($String,-3,1)=="," || substr($String,-2,1)=="." || substr($String,-2,1)==",")
+			{
+			    if(substr($String,-3,1)=="." || substr($String,-3,1)==",")
+				    $String=str_replace(".","",substr($String,0,-3)).".".substr($String,-2);
+				else
+				    $String=str_replace(".","",substr($String,0,-2)).".".substr($String,-1);
+		    }else{
 				$String=str_replace(".","",$String);
+		    }
 			$String=str_replace(",","",$String);
 			return $String;
     	}

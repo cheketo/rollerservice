@@ -1,53 +1,32 @@
+// ///////////////////////// ALERTS ////////////////////////////////////
+$(document).ready(function(){
+	if(get['msg']=='insert')
+		notifySuccess('El producto <b>'+get['element']+'</b> ha sido creado correctamente.');
+	if(get['msg']=='update')
+		notifySuccess('El producto <b>'+get['element']+'</b> ha sido modificado correctamente.');
+});
+
 ///////////////////////// CREATE/EDIT ////////////////////////////////////
 $(function(){
-	$("#BtnCreate,#BtnCreateNext").click(function(){
-		if(validate.validateFields(''))
-		{
-			var BtnID = $(this).attr("id")
-			if(get['id']>0)
-			{
-				confirmText = "modificar";
-				procText = "modificaci&oacute;n"
-			}else{
-				confirmText = "crear";
-				procText = "creaci&oacute;n"
-			}
-
-			confirmText += " el art&iacute;culo '"+utf8_encode($("#code").val())+"'";
-
-			alertify.confirm(utf8_decode('¿Desea '+confirmText+' ?'), function(e){
-				if(e)
-				{
-					var process		= process_url+'?object=Product';
-					if(BtnID=="BtnCreate")
-					{
-						var target		= 'list.php?element='+utf8_encode($('#code').val())+'&msg='+ $("#action").val();
-					}else{
-						var target		= 'new.php?element='+utf8_encode($('#code').val())+'&msg='+ $("#action").val();
-					}
-					var haveData	= function(returningData)
-					{
-						$("input,select").blur();
-						notifyError("Ha ocurrido un error durante el proceso de "+procText+".");
-						console.log(returningData);
-					}
-					var noData		= function()
-					{
-						document.location = target;
-					}
-					sumbitFields(process,haveData,noData);
-				}
-			});
-		}
+	$("#BtnCreate").click(function(){
+		var target		= 'list.php?element='+$('#code').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'Product','¿Desea crear la l&iacute;nea <b>'+$('#code').val()+'</b>?');
 	});
-
+	$("#BtnCreateNext").click(function(){
+		var target		= 'new.php?element='+$('#code').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'Product','¿Desea crear la l&iacute;nea <b>'+$('#code').val()+'</b>?');
+	});
+	$("#BtnEdit").click(function(){
+		var target		= 'list.php?element='+$('#code').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'Product','¿Desea modificar la l&iacute;nea <b>'+$('#code').val()+'</b>?');
+	});
 	$("input").keypress(function(e){
 		if(e.which==13){
-			$("#BtnCreate").click();
+			$("#BtnCreate,#BtnEdit").click();
 		}
 	});
 });
-
+//////////////////////////// CREATE/EDIT FUNCTIONS /////////////////////
 function ShowCategoriesList(id)
 {
     $('option[value="'+id+'"]').parent().parent().removeClass("Hidden");
@@ -145,22 +124,7 @@ $('input, textarea').keyup(function() {
 });
 
 
-/////////////////////// Categories Behavior DEMO ///////////////////////////
-
-
-//-----  Highlight Selected MAIN Category----- //
-// $(".squareMenuMain").children().click(function() {
-//   $('.squareItemMenu').addClass('squareItemDisabled');
-//   $('.squareItemMenu').removeClass('squareItemActive');
-//   $('.squareItemMenu .arrow-css').addClass('Hidden');
-
-//   $(this).removeClass('squareItemDisabled');
-//   $(this).addClass('squareItemActive');
-//   $('.arrow-css', this).removeClass('Hidden');
-// })
-
-
-
+/////////////////////// Categories Behavior ///////////////////////////
 $(function(){
     $(".BackToCategory").on('click',function(){
       $('.ProductDetails').addClass('Hidden');
