@@ -91,15 +91,15 @@ class CoreUser
 			if($Object->ID!=$_SESSION[self::TABLE_ID])
 			{
 				$HTML	.= '<a class="deleteElement hint--bottom hint--bounce hint--error" aria-label="Eliminar" process="'.PROCESS.'" id="delete_'.$Object->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
-				$HTML	.= Core::InsertElement('hidden','delete_question_'.$Object->ID,'&iquest;Desea eliminar a '.$Object->Data['full_user_name'].' ?');
-				$HTML	.= Core::InsertElement('hidden','delete_text_ok_'.$Object->ID,$Object->Data['full_user_name'].' ha sido eliminado.');
-				$HTML	.= Core::InsertElement('hidden','delete_text_error_'.$Object->ID,'Hubo un error al intentar eliminar a '.$Object->Data['full_user_name'].'.');
+				$HTML	.= Core::InsertElement('hidden','delete_question_'.$Object->ID,'&iquest;Desea eliminar el usuario <b>'.$Object->Data['full_user_name'].'</b>?');
+				$HTML	.= Core::InsertElement('hidden','delete_text_ok_'.$Object->ID,'El usuario <b>'.$Object->Data['full_user_name'].'</b> ha sido eliminado.');
+				$HTML	.= Core::InsertElement('hidden','delete_text_error_'.$Object->ID,'Hubo un error al intentar eliminar el usuario <b>'.$Object->Data['full_user_name'].'</b>.');
 			}
 		}else{
 			$HTML	.= '<a class="activateElement hint--bottom hint--bounce hint--success" aria-label="Activar" process="'.PROCESS.'" id="activate_'.$Object->ID.'"><button type="button" class="btn btnGreen"><i class="fa fa-check-circle"></i></button></a>';
-			$HTML	.= Core::InsertElement('hidden','activate_question_'.$Object->ID,'&iquest;Desea activar al usuario '.$Object->Data['full_user_name'].' ?');
-			$HTML	.= Core::InsertElement('hidden','activate_text_ok_'.$Object->ID,$Object->Data['full_user_name'].' ha sido activado.');
-			$HTML	.= Core::InsertElement('hidden','activate_text_error_'.$Object->ID,'Hubo un error al intentar activar el usuario '.$Object->Data['full_user_name'].'.');
+			$HTML	.= Core::InsertElement('hidden','activate_question_'.$Object->ID,'&iquest;Desea activar al usuario <b>'.$Object->Data['full_user_name'].'</b> ?');
+			$HTML	.= Core::InsertElement('hidden','activate_text_ok_'.$Object->ID,'El usuario <b>'.$Object->Data['full_user_name'].'</b> ha sido activado.');
+			$HTML	.= Core::InsertElement('hidden','activate_text_error_'.$Object->ID,'Hubo un error al intentar activar el usuario <b>'.$Object->Data['full_user_name'].'</b>.');
 		}
 		return $HTML;
 	}
@@ -261,7 +261,7 @@ class CoreUser
 		$Email 		= $_POST['email'];
 		$ProfileID	= $_POST['profile'];
 		// if($ID!=$this->ID) $Image = $this->ProcessImg($_POST['newimage']);
-		$Image = $this->ProcessImg($_POST['newimage']);
+		$Image = $Object->ProcessImg($_POST['newimage']);
 		$Update		= Core::Update(self::TABLE,"user='".$User."'".$PasswordFilter.",first_name='".$FirstName."',last_name='".$LastName."',email='".$Email."',".CoreProfile::TABLE_ID."='".$ProfileID."',img='".$Image."'",self::TABLE_ID."=".$ID);
 		$Object->FastDelete('core_relation_user_group');
 		$Object->FastDelete('core_relation_user_menu');

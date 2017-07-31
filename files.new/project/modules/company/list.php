@@ -1,9 +1,9 @@
 <?php
   include('../../../core/resources/includes/inc.core.php');
   $Company = new Company();
-  $Head->SetTitle("Empresas");
+  $Head->SetTitle($Menu->GetTitle());
   $Head->SetIcon($Menu->GetHTMLicon());
-  $Head->SetSubTitle("Listado de Empresas");
+  $Head->SetSubTitle("Listado de ".strtolower($Menu->GetTitle()));
   $Head->setHead();
 
   /* Header */

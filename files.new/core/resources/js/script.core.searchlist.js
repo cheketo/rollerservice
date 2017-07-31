@@ -478,11 +478,13 @@ function submitSearch()
 		}else{
 			$("#view_type").val('grid');
 		}
-		var status		= get['status'];
+		var loc = document.location.href;
+    	var getString = loc.split('?');
+    	var getVars = '';
+    	if(getString[1])
+    		getVars = '&'+getString[1];
 		var object		= $("#SearchResult").attr("object");
-		if(status) status = '&status='+status;
-		else status 	= '';
-		var process		= process_url+'?action=search&object='+object+status;
+		var process		= process_url+'?action=search&object='+object+getVars;
 		var haveData	= function(returningData)
 		{
 			$("input,select").blur();

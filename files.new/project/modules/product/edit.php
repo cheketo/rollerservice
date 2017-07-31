@@ -132,22 +132,6 @@
                 <?php echo Core::InsertElement('text','stock_max',$Data['stock_max'],'form-control','placeholder="Stock M&aacute;ximo"') ?>
               </div>
             </div>
-            <!--<div class="form-group">-->
-            <!--  <?php echo Core::InsertElement('button','dispatch_data','Agregar datos de &uacute;ltima importaci&oacute;n','btn btn-warning','style="width:100%;"') ?>-->
-            <!--</div>-->
-            <!--<div class="row form-group inline-form-custom Hidden Dispatch animated fadeIn">-->
-            <!--  <div class="col-md-12">-->
-            <!--    <?php echo Core::InsertElement('text','dispatch','','form-control','placeholder="Desp. Aduana"') ?>-->
-            <!--  </div>-->
-            <!--</div>-->
-            <!--<div class="row form-group inline-form-custom Hidden Dispatch animated fadeIn">-->
-            <!--  <div class="col-xs-12 col-sm-6">-->
-            <!--    <?php echo Core::InsertElement('text','price_fob','','form-control','placeholder="Costo Fob"') ?>-->
-            <!--  </div>-->
-            <!--  <div class="col-xs-12 col-sm-6">-->
-            <!--    <?php echo Core::InsertElement('text','price_dispatch','','form-control','placeholder="Costo Desp."') ?>-->
-            <!--  </div>-->
-            <!--</div>-->
             <!-- Description (Character Counter)-->
             <label for="description">Descripci&oacute;n:</label>
             <div class="form-group textWithCounter">

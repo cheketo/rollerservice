@@ -43,14 +43,12 @@ class CoreMenu
 		}else{
 			return $this->Data;
 		}
-	
     }
 
 	public function GetLinkData()
 	{
 		if(!$this->Data)
-		{
-			
+		{	
 			$this->Data = self::ChosenMenu(Core::Select(self::SEARCH_TABLE,'*',"link LIKE '%".Core::GetLink()."%' ".$this->OrgCondition));
 			$this->ID	= $this->Data[self::TABLE_ID];
 		}
@@ -79,7 +77,7 @@ class CoreMenu
 			$ChosenMenu[1] = 0;
 			foreach($Menues as $Key => $Menu)
 			{
-				$I=-1;
+				$I=0;
 				$Link = $Menu['link'];
 				$Link = explode("?",$Link);
 				$Args = $Link[1];
@@ -92,10 +90,10 @@ class CoreMenu
 						if($_GET[$Arg[0]]==$Arg[1])
 							$I++;
 					}
-					if($I>=$ChosenMenu[1])
+					if(intval($I)>intval($ChosenMenu[1]))
 					{
 						$ChosenMenu[0] = $Menues[$Key];
-						$ChosenMenu[1] = $I;
+						$ChosenMenu[1] = intval($I);
 					}
 				}else{
 					if($ChosenMenu[1]==0)

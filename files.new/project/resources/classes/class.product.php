@@ -101,13 +101,13 @@ class Product
 		$StockMM = $Object->Data['stock_max']>0? '<span class="label label-primary">'.$Object->Data['stock_min'].'/'.$Object->Data['stock_max'].'</span>':'Indistinto';
 		$HTML .= '
 				<div class="row bg-gray" style="padding:5px;">
-					<div class="col-md-4 col-sm-4 col-xs-6">
+					<div class="col-md-3 col-sm-4 col-xs-6">
 						<div class="listRowInner">
 							<span class="smallDetails"><b>L&iacute;nea</b></span>
 							'.$Object->Data['category'].'
 						</div>
 					</div>
-					<div class="col-md-3 col-sm-2 col-xs-6">
+					<div class="col-md-1 col-sm-1 col-xs-6">
 						<div class="listRowInner">
 							<span class="itemRowtitle">
 								<span class="smallDetails"><b>Stock Min/Max</b></span> 
@@ -121,13 +121,13 @@ class Product
 							<span class="label label-'.$StockLabel.'">'.$Object->Data['stock'].'</span>
 						</div>
 					</div>
-					<div class="col-md-2 col-sm-4 col-xs-6">
+					<div class="col-md-1 col-sm-1 col-xs-6">
 						<div class="listRowInner">
 							<span class="smallDetails"><b>Estanter&iacute;a</b></span>
 							'.$Object->Data['rack'].'
 						</div>
 					</div>
-					<div class="col-md-2 col-sm-4 col-xs-6"">
+					<div class="col-md-1 col-sm-2 col-xs-6"">
 						<div class="listRowInner">
 							<span class="smallDetails"><b>Medidas</b></span>
 							'.$Object->Data['size'].'

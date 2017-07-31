@@ -1,17 +1,7 @@
 <?php
     include("../../../core/resources/includes/inc.core.php");
     //$Head->SetTitle("Nuevo Usuario");
-    $ID           = $_GET['id'];
-    $Edit         = new Company($ID);
-    $Data         = $Edit->GetData();
-    Core::ValidateID($Data);
-    $Agents = Core::Select('admin_company_agent','*','organization_id='.$ID);
-    $I=0;
-    foreach($Agents as $Agent)
-    {
-      $I++;
-    }
-    
+    $New = new Company();
     $Head->SetTitle($Menu->GetTitle());
     $Head->SetIcon($Menu->GetHTMLicon());
     $Head->SetStyle('../../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
@@ -25,21 +15,21 @@
           <div class="innerContainer main_form">
             <form id="new_company_form">
             <h4 class="subTitleB"><i class="fa fa-tag"></i> Datos de la Empresa</h4>
-            <?php echo Core::InsertElement("hidden","action",'update'); ?>
-            <?php echo Core::InsertElement("hidden","newimage",$Edit->GetImg()); ?>
-            <?php echo Core::InsertElement("hidden","total_agents",$I); ?>
+            <?php echo Core::InsertElement("hidden","action",'insert'); ?>
+            <?php echo Core::InsertElement("hidden","newimage",$New->GetDefaultImg()); ?>
+            <?php echo Core::InsertElement("hidden","total_agents","0"); ?>
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-building"></i></span>
-                  <?php echo Core::InsertElement('text','name',$Edit->Data['name'],'form-control','tabindex="1" placeholder="Nombre de la Empresa" validateEmpty="Ingrese un nombre." validateFromFile='.PROCESS.'///El nombre ya existe///action:=validate///object:=Company"'); ?>
+                  <?php echo Core::InsertElement('text','name','','form-control','tabindex="1" placeholder="Nombre de la Empresa" validateEmpty="Ingrese un nombre." validateFromFile='.PROCESS.'///El nombre ya existe///action:=validate///object:=Company"'); ?>
                   <!--<input class="form-control" placeholder="Nombre de la Empresa">-->
                 </span>
               </div>
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-desktop"></i></span>
-                  <?php echo Core::InsertElement('text','website',$Edit->Data['website'],'form-control','tabindex="2" placeholder="Sitio Web"'); ?>
+                  <?php echo Core::InsertElement('text','website','','form-control','tabindex="2" placeholder="Sitio Web"'); ?>
                   <!--<input class="form-control" placeholder="Sitio Web">-->
                 </span>
               </div>
@@ -48,14 +38,14 @@
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                  <?php echo Core::InsertElement('text','phone',$Edit->Data['phone'],'form-control','tabindex="3" placeholder="Tel&eacute;fono"'); ?>
+                  <?php echo Core::InsertElement('text','phone','','form-control','tabindex="3" placeholder="Tel&eacute;fono"'); ?>
                   <!--<input class="form-control" placeholder="Tel&eacute;fonos">-->
                 </span>
               </div>
               <div class="col-xs-12 col-sm-6">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
-                  <?php echo Core::InsertElement('text','address',$Edit->Data['address'],'form-control','tabindex="4" placeholder="Direcci&oacute;n" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."'); ?>
+                  <?php echo Core::InsertElement('text','address','','form-control','tabindex="4" placeholder="Direcci&oacute;n" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."'); ?>
                   <!--<input class="form-control" placeholder="Direcci&oacute;n">-->
                 </span>
               </div>
@@ -64,14 +54,14 @@
               <div class="col-sm-6 col-xs-12">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-list-alt"></i></span>
-                  <?php echo Core::InsertElement('text','corporate_name',$Edit->Data['corporate_name'],'form-control','tabindex="5" placeholder="Raz&oacute;n Social" validateMinLength="4///El email debe contener 4 caracteres como m&iacute;nimo."'); ?>
+                  <?php echo Core::InsertElement('text','corporate_name','','form-control','tabindex="5" placeholder="Raz&oacute;n Social" validateMinLength="4///El email debe contener 4 caracteres como m&iacute;nimo."'); ?>
                   <!--<input class="form-control" placeholder="Raz&oacute;n Social">-->
                 </span>
               </div>
               <div class="col-sm-6 col-xs-12">
                 <span class="input-group">
                   <span class="input-group-addon"><i class="fa fa-bank"></i></span>
-                  <?php echo Core::InsertElement('text','cuit',$Edit->Data['cuit'],'form-control','tabindex="6" placeholder="CUIT" validateMinLength="11///El CUIT debe contener 11 caracteres como m&iacute;nimo." validateOnlyNumbers="Ingrese n&uacute;meros &uacute;nicamente."'); ?>
+                  <?php echo Core::InsertElement('text','cuit','','form-control','tabindex="6" placeholder="CUIT" validateMinLength="11///El CUIT debe contener 11 caracteres como m&iacute;nimo." validateOnlyNumbers="Ingrese n&uacute;meros &uacute;nicamente."'); ?>
                   <!--<input class="form-control" placeholder="Cuit">-->
                 </span>
               </div>
@@ -83,9 +73,9 @@
                   <span>Logo de la empresa</span>
                 </div>
                 <div class="image_sector">
-                  <img id="company_logo" src="<?php echo $Edit->GetImg(); ?>" alt="" class="animated" />
+                  <img id="company_logo" src="../../../skin/images/body/pictures/logo-gen.jpg" alt="" class="animated" />
                   <div id="image_upload" class="overlay-text"><span><i class="fa fa-upload"></i> Subir Im&aacute;gen</span></div>
-                  <?php echo Core::InsertElement('file','image','','form-control Hidden'); ?>
+                  <?php echo Core::InsertElement('file','image','','form-control Hidden','tabindex="2" placeholder="Sitio Web"'); ?>
                 </div>
               </div>
             </div>
@@ -98,21 +88,19 @@
               </div>
               <!--<span id="empty_agent" class="Info-Card-Empty info-card-empty">No hay representantes ingresados</span>-->
               <div id="agent_list" class="row">
-                <?php $X=1; foreach($Agents as $Agent){ ?>
-                  <div class="col-md-4 col-sm-6 col-xs-12 AgentCard">
-                    <div class="info-card-item">
-                      <input type="hidden" id="agent_name_<?php echo $X;?>" value="<?php echo $Agent['name']; ?>" />
-                      <input type="hidden" id="agent_charge_<?php echo $X;?>" value="<?php echo $Agent['charge']; ?>" />
-                      <input type="hidden" id="agent_email_<?php echo $X;?>" value="<?php echo $Agent['email']; ?>" />
-                      <input type="hidden" id="agent_phone_<?php echo $X;?>" value="<?php echo $Agent['phone']; ?>" />
-                      <div class="close-btn DeleteAgent"><i class="fa fa-times"></i></div>
-                      <span><i class="fa fa-user"></i> <b><?php echo $Agent['name']; ?></b></span><br>
-                      <span><i class="fa fa-briefcase"></i> <?php echo $Agent['charge']; ?></span><br>
-                      <span><i class="fa fa-envelope"></i> <?php echo $Agent['email']; ?></span><br>
-                      <span><i class="fa fa-phone"></i> <?php echo $Agent['phone']; ?></span><br>
-                    </div>
-                  </div>
-                <?php $X++;} ?>
+                <!-- Agent Data -->
+                <!--<div class="col-md-3 Demo-Card">-->
+                <!--  <div class="info-card-item">-->
+                <!--    <input type="hidden" id="agent_name[]" name="agent_name[]" value="nombre" />-->
+                <!--    <input type="hidden" id="agent_charge[]" name="agent_charge[]" value="cargo" />-->
+                <!--    <input type="hidden" id="agent_email[]" name="agent_email[]" value="email" />-->
+                <!--    <input type="hidden" id="agent_phone[]" name="agent_phone[]" value="telefono" />-->
+                <!--    <span><b><i class="fa fa-user"></i> Nombre y Apellido</b></span>-->
+                <!--    <span><i class="fa fa-briefcase"></i> Empleado</span> <br>-->
+                <!--    <span><i class="fa fa-envelope"></i> pedro@mulo.com</span> <br>-->
+                <!--    <span><i class="fa fa-phone"></i> 4545-4545</span> <br>-->
+                <!--  </div>-->
+                <!--</div>-->
                 
               </div>
               <button id="agent_new" type="button" class="btn btnGreen Info-Card-Form-Btn"><i class="fa fa-plus"></i> Agregar un representante</button>
@@ -164,7 +152,9 @@
           </div>
           <hr>
           <div class="row txC">
-            <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-plus"></i> Modificar Empresa</button>
+            <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-plus"></i> Crear Empresa</button>
+            <button type="button" class="btn btn-success btnBlue" id="BtnCreateNext"><i class="fa fa-plus"></i> Crear y Agregar Otra</button>
+            <!--<button type="button" class="MainDoneBtn btn btnBlue" id="BtnCreate"><i class="fa fa-check-circle"></i> Finalizar</button>-->
             <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
           </div>
         </div>

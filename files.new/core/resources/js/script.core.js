@@ -365,8 +365,11 @@ function sumbitFields(process,haveData,noData){
 
 function askAndSubmit(target,object,qtext="¿Desea guardar la informaci&oacute;n?",etext="Ha ocurrido un error en el proceso de guardado.")
 {
+  alert('Pre Validation');
+  console.log(validate.validateFields(''));
 	if(validate.validateFields(''))
 	{
+	  alert('Post Validation');
 		alertify.confirm(qtext, function(e){
 			if(e)
 			{

@@ -191,6 +191,15 @@
     		return $Ext;
     	}
     	
+    	public static function FromNumberToMoneyLabel($Number)
+    	{
+    	    if($Number==0)
+    	        $Class = 'default';
+    	    else
+    	        $Class = intval($Number) > 0? 'success':'danger';
+    	    return '<span class="label label-'.$Class.'">'.self::FromDBToMoney($Number).'</span>';
+    	}
+    	
     	public static function FromDBToMoney($Number)
     	{
     	    return "$".number_format($Number, 2, ',', '.');
@@ -211,6 +220,21 @@
 		    }
 			$String=str_replace(",","",$String);
 			return $String;
+    	}
+    	
+    	public static function FromNumberToCUIT($Number)
+    	{
+    	    return substr($Number,0,2).'-'.substr($Number,2,8).'-'.substr($Number,10,1);
+    	}
+    	
+    	public static function FromCUITToNumber($CUIT)
+    	{
+    	    return str_replace('-','',$CUIT);
+    	}
+    	
+    	public function EmailLink($Email)
+    	{
+    	    return '<a href="mailto:'.$Email.'">'.$Email.'</a>';
     	}
     
     	static function MonthFormat($Month)

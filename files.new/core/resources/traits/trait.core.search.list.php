@@ -344,8 +344,9 @@ trait CoreSearchList
 		$Columns = Core::TableData(self::SEARCH_TABLE);
 		foreach($Columns as $Column)
 		{
-			if($_POST[$Column['Field']] && !$_POST[$Column['Field'].'_restrict'])
+			if(($_POST[$Column['Field']] || $_GET[$Column['Field']]) && !$_POST[$Column['Field'].'_restrict'])
 			{
+				if(!$_POST[$Column['Field']]) $_POST[$Column['Field']] = $_GET[$Column['Field']];
 				if($_POST[$Column['Field'].'_condition'])
 				{
 					$Fields[$Column['Field']] = array('value'=>$_POST[$Column['Field']],'condition'=>$_POST[$Column['Field'].'_condition']);	
