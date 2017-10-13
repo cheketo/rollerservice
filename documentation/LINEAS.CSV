@@ -1,0 +1,135 @@
+COD-LINEA           ;NOMBRE ;NOMBRE 1 
+1;RETEN       ;RETENES                                                     
+2;BUJE        ;BUJES                                                       
+3;TUERCA      ;TUERCAS                                                     
+4;ROTULA      ;ROTULAS                                                     
+5;RODAMIENTO  ;RODAMIENTOS LINEA GENERAL                                   
+6;CONO/CUBETA ;RODAMIENTOS CONOS Y CUBETAS                                 
+7;SOPORTE     ;SOPORTES                                                    
+8;CONJUNTO    ;CONJUNTOS                                                   
+9;BOLILLA     ;BOLILLAS                                                    
+10;O'RING      ;O'RINGS                                                     
+11;RODILLO     ;RODILLOS                                                    
+12;ARANDELA    ;ARANDELAS                                                   
+13;ARO SEEGER  ;ARO SEEGER                                                  
+14;X'RING      ;X'RINGS                                                     
+15;CABLE       ;CABLES                                                      
+16;LLAVE DE GOL;LLAVE DE GOLPE                                              
+17;V'RING      ;V'RINGS                                                     
+18;ROD. AGUJAS ;AGUJAS                                                      
+19;PLACA       ;PLACAS                                                      
+20;CALENTADOR  ;CALENTADOR                                                  
+21;ZONDA       ;ZONDAS                                                      
+22;AROSP       ;AROSP                                                       
+23;AROS        ;AROS                                                        
+24;LLAVE GANCHO;LLAVE DE GANCHO                                             
+25;BATERIA     ;BATERIAS                                                    
+26;EXTRACTOR   ;EXTRACTOR                                                   
+27;GRASA       ;GRASAS                                                      
+28;HERR.MONTAJ.;HERRAMIENTAS DE MONTAJE                                     
+29;CARRO       ;CARROS                                                      
+30;ALAMBRE     ;ALAMBRES                                                    
+31;EJE         ;EJES                                                        
+32;BOMBA       ;BOMBAS                                                      
+33;PROTECTOR   ;PROTECTOR                                                   
+34;INOXIDABLE  ;INOXIDABLES                                                 
+35;SOP.TERMOPLA;SOPORTES TERMOPLASTICOS                                     
+36;TORN.BOL.REC;TORNILLOS DE BOLAS RECIRCULANTES                            
+37;TUERCA RECI.;TUERCAS PARA TORNILLOS RECIRCULANTES                        
+38;CORONA      ;CORONA                                                      
+39;CRUCETAS    ;CRUCETAS                                                    
+40;CASQ.ANTIF. ;CASQUILLOS ANTIFRICCION                                     
+41;ACOPLAMIENTO;ACOPLAMIENTO                                                
+42;CORREAS     ;CORREAS                                                     
+43;SUPLEMENTO  ;SUPLEMENTO                                                  
+44;JUNTAS      ;JUNTAS                                                      
+45;CADENAS     ;CADENAS                                                     
+46;ANILLO NILOS;ANILLOS NILOS                                               
+47;ALINEADOR   ;ALINEADOR                                                   
+48;SELLO       ;SELLO MECANICO                                              
+49;POLEAS      ;POLEAS                                                      
+50;TORNILLOS   ;TORNILLOS                                                   
+51;TAPON OBTURA;TAPON OBTURADOR                                             
+52;ACEITE      ;ACEITE                                                      
+53;CUAD RING   ;                                                            
+54;HERRAM.MED. ;HERRAMIENTAS DE MEDICION                                    
+55;ANILLO      ;ANILLO                                                      
+56;ADITIVO     ;ADITIVO                                                     
+57;FILTRO      ;FILTRO                                                      
+58;ALEMITE     ;ALEMITE                                                     
+59;PI¥ON       ;PI¥ON                                                       
+60;BOLA TRANS. ;BOLA TRANSPORTADORA                                         
+61;GUIA        ;GUIA LINEAL                                                 
+62;TAPA DE EJE ;TAPA DE EJE                                                 
+63;TENS. CADENA;TENSOR DE CADENA                                            
+64;PLANO       ;PLANO                                                       
+65;REEL        ;REEL                                                        
+66;CASQUILLO   ;CASQUILLO                                                   
+67;COUP. CHAIN ;COUPLING CHAIN                                              
+68;COUP. COVER ;COUPLING COVER                                              
+69;BUSHING     ;BUSHING                                                     
+70;CLG.SPROCKET;COUPLING SPROKET                                            
+71;CARTUCHO    ;CARTUCHO                                                    
+72;P. ESTRIADA ;PUNTA ESTRIADA                                              
+73;HORQUILLA   ;HORQUILLA                                                   
+74;PLATO ACOPLE;PLATO DE ACOPLE                                             
+75;ENGRANAJE   ;ENGRANAJE                                                   
+76;SINFIN      ;SINFIN                                                      
+77;BANDA       ;BANDA                                                       
+78;LIQ. FRENO  ;LIQUIDO FRENO                                               
+79;LIQUIDO FREN;LIQUIDO FRENO                                               
+80;RACORD      ;RACORD                                                      
+81;UNION CADENA;UNION DE CADENA                                             
+82;TERMOMETRO  ;TERMOMETRO                                                  
+83;REFRIGERANTE;REFRIGERANTE                                                
+84;REDUCTOR    ;REDUCTOR                                                    
+85;CUPLAS UNION;CUPLAS DE UNION                                             
+86;ENGRASADOR  ;ENGRASADOR                                                  
+87;CALIBRE     ;CALIBRE                                                     
+88;CONT.GIRATOR;CONTRAPUNTA GIRATORIA                                       
+89;PERNO       ;PERNO                                                       
+90;MANDRIL     ;MANDRIL                                                     
+91;CALIBRE P-NP;CALIBRE P-NP                                                
+92;CALIBRE PASA;CALIBRE PASA                                                
+93;ACOPLES     ;ACOPLES                                                     
+94;MEDIA MALLA ;MEDIA MALLA                                                 
+95;ANIL.CAL.INT;ANILLO CALIBRADOR INTERNO                                   
+96;ANIL.CAL.EXT;ANILLO CALIBRADOR EXTERNO                                   
+97;VALIJAS     ;VALIJAS                                                     
+98;VALVULAS    ;VALVULAS                                                    
+99;            ;VARIAS                                                      
+100;VAR.CONOCIM.;VARILL P/CONOCIMETRO                                        
+101;PALPADORES  ;PALPADORES                                                  
+102;CALIBRE MRP ;CALIBRE MRP                                                 
+104;PIN         ;PIN                                                         
+105;BOX         ;BOX                                                         
+106;PATRON MRP  ;PATRON MRP                                                  
+107;PATRON ALT.F;PATRON ALT. FILETE                                          
+108;CAL.DIFERENC;CALIBRE DIFERENCIAL                                         
+109;REG.RECTITUD;REGLA RECTITUD                                              
+110;PATRON PASO ;PATRON DE PASO                                              
+111;GALGAS      ;GALGAS                                                      
+112;INST.MEDICIO;INST.MEDICION                                               
+113;RUEDAS      ;RUEDAS                                                      
+114;PUNZONADORA ;PUNZONADORA                                                 
+115;DESVANECEDOR;DESVANECEDOR                                                
+116;CUPLA       ;CUPLA                                                       
+117;REPARACION  ;REPARACION                                                  
+118;PREALESADO  ;PREALESADO                                                  
+119;PLANTILLA   ;PLANTILLA                                                   
+120;VARILLA     ;VARILLA                                                     
+121;PLAN C/VISUA;PLANTILLA DE ROSCA CON CONTROL VISUAL                       
+122;ACC. VARILLA;ACCESORIO VARILLA                                           
+123;ACC. CONTROL;ACCESORIO CONTROLADOR                                       
+124;CONT. VISUAL;CONTROLADOR VISUAL                                          
+125;RELOJ COMP. ;RELOJ COMPARADOR                                            
+126;ACCESORIO   ;ACCESORIO                                                   
+127;PATRON SETEO;PATRON SETEO                                                
+128;NIPLE       ;NIPLE                                                       
+129;SETEADOR    ;SETEADOR                                                    
+130;CAMISA      ;CAMISA DE LIBRADO                                           
+131;SEGMENTO    ;SEGMENTO                                                    
+132;CABALLETE   ;CABALLETE                                                   
+133;PATRON      ;PATRON                                                      
+134;RECTIFICADO ;RECTIFICADO                                                 
+135;MOTOR       ;MOTOR                                                       
