@@ -1,6 +1,6 @@
 ///////////////////////// ALERTS ////////////////////////////////////
 $(document).ready(function(){
-	$("#prueba").keydown();
+	//$("#prueba").keydown();
 	// $("#prueba").onfocus(function(){$(this).change(); alert('entra');});
 	if(get['msg']=='insert')
 		notifySuccess('La cotizaci&oacute;n de <b>'+get['element']+'</b> ha sido creada correctamente.');
@@ -58,6 +58,10 @@ $(document).ready(function(){
 	deleteItem();
 	setDatePicker();
 	priceImputMask(1);
+	updateDeliveryDateFromDays();
+	updateAllDeliveryDates();
+	showHistoryWindow();
+	showHistoryButtons();
 });
 
 function setDatePicker()
@@ -101,6 +105,27 @@ function priceImputMask(id)
 	});	
 }
 
+function showHistoryButtons()
+{
+	$("#company,.itemSelect").change(function(){
+		checkHistoryButtons();
+	});
+}
+
+function checkHistoryButtons()
+{
+	$(".itemSelect").each(function(){
+		var itemid = $(this).attr("item");
+		if($(this).val() && $("#company").val())
+		{
+			$("#HistoryItem"+itemid).removeClass("Hidden");
+		}else{
+			$("#HistoryItem"+itemid).addClass("Hidden");
+		}
+	})
+	
+}
+
 //////////////////////////// QUOTATION ITEMS //////////////////////////////////
 function addItem()
 {
@@ -127,7 +152,9 @@ function addItem()
 	                calculateRowPrice();
 	                priceImputMask(id);
 	                updateRowBackground();
-	                recalculateItemPrice();
+	                // recalculateItemPrice();
+	                updateDeliveryDateFromDays();
+	                $("#day_"+id).change();
 	            }else{
 	                console.log('Sin información devuelta. Item='+id);
 	            }
@@ -142,15 +169,18 @@ function saveItem()
 		var id = $(this).attr("item");
 		if(validate.validateFields('item_form_'+id))
 		{
-			var item_id = $("#item_"+id).val();
-			var item = $("#item_"+id).children('option[value="'+item_id+'"]').html();
+			// var item_id = $("#item_"+id).val();
+			var item = $("#TextAutoCompleteitem_"+id).val();
 			var price = $("#price_"+id).val();
 			var quantity = $("#quantity_"+id).val();
 			var delivery = $("#date_"+id).val();
-			$("#Item"+id).html(item);
+			var days = $("#day_"+id).val();
+			if(!days) days="0";
+			$("#Item"+id).html('<i class="fa fa-cube"></i> '+item);
 			$("#Price"+id).html("$ "+price);
 			$("#Quantity"+id).html(quantity);
 			$("#Date"+id).html(delivery);
+			$("#Day"+id).html(days);
 			$("#SaveItem"+id+",.ItemField"+id).addClass('Hidden');
 			$("#EditItem"+id+",.ItemText"+id).removeClass('Hidden');
 			$("#item_"+id).next().addClass('Hidden');
@@ -178,7 +208,26 @@ function deleteItem()
 		calculateTotalQuotationQuantity();
 		updateRowBackground();
 	});
-	
+}
+
+function updateDeliveryDateFromDays()
+{
+	$(".DayPicker").change(function(){
+		var id = $(this).attr("id").split("_");
+		if(parseInt($(this).val())>-1)
+		{
+			var creation_date = $("#creation_date").val();
+			var DeliveryDate = AddDaysToDate($(this).val(),creation_date);
+			$("#date_"+id[1]).val(DeliveryDate);
+		}
+	});
+}
+
+function updateAllDeliveryDates()
+{
+	$(".DayPicker").each(function(){
+		$(this).change();
+	});
 }
 
 function updateRowBackground()
@@ -245,27 +294,44 @@ function calculateTotalQuotationPrice()
 
 function changeDates()
 {
-	$("#ChangeDates").click(function(){
-		var date = $("#change_date").val();
-		alertify.confirm(utf8_decode('¿Desea aplicar la fecha '+date+' a todos los art&iacute;culos ?'), function(e){
+	$("#ChangeDays").click(function(){
+		var days = $("#change_day").val();
+		alertify.confirm(utf8_decode('¿Desea establecer '+days+' d&iacute;as de entrega para todos los art&iacute;culos ?'), function(e){
 		if(e)
 		{	
-			$(".delivery_date").each(function(){
+			$(".DayPicker").each(function(){
 				if(!$(this).hasClass('Restricted'))
-					$(this).val(date);
+					$(this).val(days);
+					$(this).change();
 			});
 			
-			$(".QuotationDate").each(function(){
+			$(".OrderDay").each(function(){
 				if(!$(this).hasClass('Restricted'))
-					$(this).html(date);
+					$(this).html(days);
+			});
+			
+			$(".OrderDate").each(function(){
+				if(!$(this).hasClass('Restricted'))
+				{
+					var id = $(this).attr("id").split("Date");
+					$(this).html($("#date_"+id[1]).val());
+				}
 			});
 		}
 		});
 	});
 }
 
-/////////////////////////// LOAD AGENT SELECT ////////////////////////////////
 
+function showHistoryWindow()
+{
+	$(".HistoryItem").click(function(){
+		var id = $(this).attr("item");
+		$("#window"+id).removeClass("Hidden");
+	})	
+}
+
+/////////////////////////// LOAD AGENT SELECT ////////////////////////////////
 $(function(){
 	$("#company").change(function(){
 		if($(this).val())
@@ -359,36 +425,6 @@ function getProductsPrices(values,ids)
 		        }
 		    });
 		}
-	}
-}
-
-function recalculateItemPrice()
-{
-	if(get['customer']=='Y')
-	{
-		// $('#company').change(function(e){
-		// 	e.stopImmediatePropagation();
-		// 	var ids="";
-		// 	var values = "";
-		// 	var first = true;
-		// 	$(".itemSelect").each(function(){
-		// 		var id = $(this).attr("item");
-		// 		var value = $("#item_"+id).val();
-		// 		if(value)
-		// 		{
-		// 			if(first)
-		// 			{
-		// 				ids = id;
-		// 				values = value;
-		// 				first = false;
-		// 			}else{
-		// 				ids = ids+","+id;
-		// 				values = values + ","+value;
-		// 			}
-		// 		}
-		// 	});
-		// 	getProductsPrices(values,ids);
-		// });
 	}
 }
 

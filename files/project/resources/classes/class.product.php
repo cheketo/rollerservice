@@ -25,9 +25,26 @@ class Product
 	
 	public static function SearchCodes()
 	{
-		$Products =  Core::Select(Product::SEARCH_TABLE,"product_id as id,code as text","status='A' AND code LIKE '%".$_GET['text']."%' AND organization_id=".$_SESSION['organization_id'],'code','',100);
+		if($_GET['category'])
+			$CategoryFilter = " AND category_id=".$_GET['category'];
+		$Products =  Core::Select(Product::SEARCH_TABLE,"product_id as id,CONCAT('',code,' - <b>',brand,' - ',category,'</b>') as text","status='A' ".$CategoryFilter." AND code LIKE '%".$_GET['text']."%' AND organization_id=".$_SESSION['organization_id'],'code','',100);
+		// $Products[] = array("id"=>"-1","text"=>Core::LastQuery());
 		if(empty($Products))
 			$Products[0]=array("id"=>"","text"=>"no-result");
+		else
+			
+		echo json_encode($Products,JSON_HEX_QUOT);	
+	}
+	
+	public static function SearchCodesForRelation()
+	{
+		if($_GET['category'])
+			$CategoryFilter = " AND category_id=".$_GET['category'];
+		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,CONCAT(code,' - <b>',brand,' - ',category,'</b> - STOCK: ',stock) as text","status='A' ".$CategoryFilter." AND code LIKE '".$_GET['text']."%' AND organization_id=".$_SESSION['organization_id'],'code','',100);
+		if(empty($Products))
+			$Products[0]=array("id"=>"","text"=>"no-result");
+		else
+			
 		echo json_encode($Products,JSON_HEX_QUOT);
 		
 	}

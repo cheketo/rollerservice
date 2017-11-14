@@ -87,6 +87,7 @@
             <i class="fa fa-fw fa-circle-o-notch"></i>
             <i class="fa fa-fw fa-circle-thin"></i>
             <i class="fa fa-fw fa-clock-o"></i>
+            <i class="fa fa-fw fa-clipboard"></i>
             <i class="fa fa-fw fa-clone"></i>
             <i class="fa fa-fw fa-close"></i>
             <i class="fa fa-fw fa-cloud"></i>
@@ -129,10 +130,8 @@
             <i class="fa fa-fw fa-exclamation"></i>
             <i class="fa fa-fw fa-exclamation-circle"></i>
             <i class="fa fa-fw fa-exclamation-triangle"></i>
-            <i class="fa-exclamation-triangle"></i>
             <i class="fa fa-fw fa-external-link"></i>
             <i class="fa fa-fw fa-external-link-square"></i>
-            <i class="fa-external-link-square"></i>
             <i class="fa fa-fw fa-eye"></i>
             <i class="fa fa-fw fa-eye-slash"></i>
             <i class="fa fa-fw fa-eyedropper"></i>

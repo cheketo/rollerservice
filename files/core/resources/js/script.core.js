@@ -12,6 +12,11 @@ $(document).ready(function(){
   inputMask();
 	chosenSelect();
 	SetAutoComplete();
+	closeWindow();
+	if($("input[type='file']").length>0)
+	{
+	  CustomizedFilefield();
+	}
 });
 
 ///////// DATE PICKER //////////////////////
@@ -48,35 +53,45 @@ function setDatePicker(element)
 	
 }
 //////////////////////// AUTOCOMPLETE ///////////////////////
-function SetAutoComplete(selector)
+function SetAutoComplete(selector,mode)
 {
   if(typeof selector==="undefined")
   {
     selector = ".TextAutoComplete";
   }
+  if(typeof mode==="undefined")
+  {
+    mode = "notags";
+  }
 	if($(selector).length>0)
 	{
 		$(selector).each(function(){
+		  try {
+		     $(this).destroy();
+		  } catch (e) {}
 			var id = $(this).attr('id').split("TextAutoComplete");
-			var target = $(this).attr("targetauto");
-			var object = $(this).attr("objectauto");
-			var action = $(this).attr("actionauto");
+			
+			if($(this).attr("cacheauto"))
+			  var cache = ($(this).attr("cacheauto")=='true');
 			if($(this).attr("iconauto")) var icon = $(this).attr("iconauto");
 			else var icon = '';
 			if($(this).attr("charsauto")) var minChars = parseInt($(this).attr("charsauto"));
 			else var minChars = 1;
 			if($(this).attr("placeholderauto")) var defaultSearchText = $(this).attr("placeholderauto");
 			else var defaultSearchText = 'Sin resultados';
-			var target = $(this).attr("targetauto");
-			AutoCompleteInput(id[1],target,object,action,icon,minChars,defaultSearchText)
+			AutoCompleteInput(id[1],cache,icon,minChars,defaultSearchText,mode)
 		});
 	}
 }
+
 var xhr;
-function AutoCompleteInput(inputID,target,object,action,icon,minChars,defaultSearchText)
+function AutoCompleteInput(inputID,cache,icon,minChars,defaultSearchText,mode)
 {
   if(typeof minChars==="undefined") {
     minChars = 1;
+  }
+  if(typeof cache==="undefined") {
+    cache = false;
   }
   if(typeof defaultSearchText==="undefined") {
     defaultSearchText = 'Sin resultados';
@@ -86,14 +101,46 @@ function AutoCompleteInput(inputID,target,object,action,icon,minChars,defaultSea
   }else{
   	icon = '';
   }
+  
+  $("#TextAutoComplete"+inputID).on('focusin', function(e){ if (!e.minChars) { $("#TextAutoComplete"+inputID).last_val = '\n'; $("#TextAutoCompleteasoc").trigger('keyup.autocomplete'); } });
+  
 	$("#TextAutoComplete"+inputID).autoComplete({
     minChars: minChars,
+    delay: 600,
+    cache: cache,
+    // hideResults: false,
     source: function(term, response)
     {
+      var target = $("#TextAutoComplete"+inputID).attr("targetauto");
+      var object = $("#TextAutoComplete"+inputID).attr("objectauto");
+			var action = $("#TextAutoComplete"+inputID).attr("actionauto");
+      var variables		= "text="+term+"&object="+object+"&action="+action;
+  	  var field;
+      if($("#TextAutoComplete"+inputID).attr("varsauto")!=undefined)
+  	  {
+    		var properties	= $("#TextAutoComplete"+inputID).attr("varsauto").split('///');
+    		for(var i=0;i<properties.length;i++)
+    		{
+    			field = properties[i].split(":=");
+    			if(field[1])
+    				variables	= variables + "&" + field[0] + "=" + field[1];
+    			else
+    				variables	= variables + "&" + properties[i] + "=" + $("#"+properties[i]).val();
+    		}
+  	  }
+			
       $("#"+inputID).val('');
+      $("#"+inputID).change();
       try { xhr.abort(); } catch(e){}
-      xhr = $.getJSON(target,{text:term,object:object,action:action}, function(data){
+      xhr = $.getJSON(target,variables, function(data){
+        // console.log(data);
         response(data);
+        if (typeof autocompleteResponseFunction === "function") { 
+            autocompleteResponseFunction();
+        }
+        $(".autocomplete-suggestion").click(function(){
+          console.log("entra");
+        })
       });
     },
     renderItem: function (item, search)
@@ -110,13 +157,28 @@ function AutoCompleteInput(inputID,target,object,action,icon,minChars,defaultSea
     },
     onSelect: function(e, term, item)
     {
-      $("#TextAutoComplete"+inputID).val(item.data('key'));
-      $("#"+inputID).val(item.data('id'));
+      if (typeof autocompleteOnSelectBeforeFunction === "function") { 
+          autocompleteOnSelectBeforeFunction(e,term,item);
+      }
+      
+      if (typeof autocompleteOnSelectReplaceFunction === "function") { 
+          autocompleteOnSelectReplaceFunction(e,term,item);
+      }else{
+        var textval = item.data('key');
+        if(mode=="notags")
+          textval = textval.replace(/(<([^>]+)>)/ig,"");
+        $("#TextAutoComplete"+inputID).val(textval);
+        $("#"+inputID).val(item.data('id'));
+        $("#"+inputID).change();
+      }
+      if (typeof autocompleteOnSelectAfterFunction === "function") { 
+          autocompleteOnSelectAfterFunction(e,term,item);
+      }
     }
   });
 	$("#TextAutoComplete"+inputID).focusout(function(){
-	  console.log(inputID);
-	  console.log($("#"+inputID).val());
+	 // console.log(inputID);
+	 // console.log($("#"+inputID).val());
     if(!$("#"+inputID).val())	$("#TextAutoComplete"+inputID).val('');
 	});
 	
@@ -805,3 +867,42 @@ var n = this,
    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
  };
  ///(123456789.12345).formatMoney(2);
+ 
+ ////////////////////////////// ADD DAYS TO A DATE //////////////////////////////////////////////
+function AddDaysToDate(days,adate)
+{
+  if(typeof(adate)==="undefined")
+    adate = new Date();
+  else
+    adate = new Date(adate);
+  var finaldate = adate.getTime()+parseInt(days)*24*60*60*1000;
+  finaldate = new Date(finaldate);
+  var day = finaldate.getUTCDate()
+  if(day<10) day = "0"+day;
+  var month = finaldate.getUTCMonth()+1;
+  if(month<10) month = "0"+month;
+  return day+"/"+month+"/"+finaldate.getUTCFullYear();
+}
+/////////////////////////// WINDOWS /////////////////////////////
+function closeWindow()
+{
+  $(".window .window-border .window-close").click(function(){
+    $(this).parent().parent().parent().parent().addClass("Hidden");
+  });
+}
+
+//////////////////////////////////////////////////// Customized File Field ////////////////////////////////////////////////////
+function CustomizedFilefield()
+{
+	$("input:file").change(function(){
+		$("#File"+$(this).attr("id")).focus();
+		$("#File"+$(this).attr("id")).val($(this).val().replace("C:\\fakepath\\",""));
+		$("#File"+$(this).attr("id")).blur();
+	});
+	$(".CustomizedFileField").click(function(){
+		if($(this).attr("id").substring(0,4)=="File"){
+			$(this).blur();
+			$("#"+$(this).attr("id").substring(4)).click();
+		}
+	});
+}

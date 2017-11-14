@@ -27,6 +27,7 @@
       $Title  = $Prefix.'Proveedores';
       $TitleIcon   = 'shopping-cart';
       $CompanyType = 'sender';
+      $RowTitleClass = 'navy';
     }elseif($Data['customer']=='Y'){
       $Field  = 'customer';
       $Prefix = ' a ';
@@ -34,6 +35,7 @@
       $Title  = $Prefix.'Clientes';
       $TitleIcon   = 'users';
       $CompanyType = 'receiver';
+      $RowTitleClass = 'light-blue';
     }else{
       // Send it back if customer o provider is not obtained
       header('Location: list.php?'.Quotation::GetParams());
@@ -54,6 +56,7 @@
 <?php echo Core::InsertElement("hidden","action",'update'); ?>
 <?php echo Core::InsertElement("hidden","id",$ID); ?>
 <?php echo Core::InsertElement("hidden","items",$TotalItems); ?>
+<?php echo Core::InsertElement("hidden","creation_date",$Data['creation_date']); ?>
 
   <div class="box animated fadeIn" style="min-width:99%">
     <div class="box-header flex-justify-center">
@@ -92,7 +95,7 @@
             <h4 class="subTitleB"><i class="fa fa-cubes"></i> Art&iacute;culos</h4>
             
             <div style="margin:0px 10px; min-width:90%;">
-              <div class="row form-group inline-form-custom bg-light-blue" style="margin-bottom:0px!important;">
+              <div class="row form-group inline-form-custom bg-<?php echo $RowTitleClass; ?>" style="margin-bottom:0px!important;">
                 
                 <div class="col-xs-4 txC">
                   <strong>Art&iacute;culo</strong>
@@ -106,8 +109,11 @@
                 <div class="col-xs-2 txC">
                   <strong>Fecha Entrega</strong>
                 </div>
+                 <div class="col-xs-1 txC">
+                  <strong>D&iacute;as</strong>
+                </div>
                 <div class="col-xs-1 txC"><strong>Costo</strong></div>
-                <div class="col-xs-3 txC">
+                <div class="col-xs-2 txC">
                   <strong>Acciones</strong>
                 </div>
               </div>
@@ -117,8 +123,9 @@
                 <?php $I = 1;
                       foreach($Data['items'] as $Item)
                       {
-                        $Date = Core::FromDBToDate($Item['delivery_date']);
+                        // $Date = Core::FromDBToDate($Item['delivery_date']);
                         echo Core::InsertElement("hidden","creation_date_".$I,$Item['creation_date_item']);
+                        $Days = $Item['days']?$Item['days']:"00";
                       ?>
                 <!--- NEW ITEM --->
                 <div id="item_row_<?php echo $I ?>" item="<?php echo $I ?>" class="row form-group inline-form-custom ItemRow bg-gray" style="margin-bottom:0px!important;padding:10px 0px!important;">
@@ -126,7 +133,7 @@
                   <div class="col-xs-4 txC">
                     <span id="Item<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?>"></span>
                     <?php //echo Core::InsertElement('select','item_'.$I,$Item['product_id'],'ItemField'.$I.' form-control chosenSelect itemSelect','validateEmpty="Seleccione un Art&iacute;culo" data-placeholder="Seleccione un Art&iacute;culo" item="'.$I.'"',$ProductCodes,' ',''); ?>
-                    <?php echo Core::InsertElement("autocomplete","item_".$I,$Item['product_id'].','.$Item['code'],'ItemField'.$I.' txC form-control itemSelect','validateEmpty="Seleccione un Art&iacute;culo" placeholder="Ingrese un c&oacute;digo" placeholderauto="C&oacute;digo no encontrado" item="'.$I.'" iconauto="cog"','Product','SearchCodes');?>
+                    <?php echo Core::InsertElement("autocomplete","item_".$I,$Item['product_id'].','.$Item['code'],'ItemField'.$I.' txC form-control itemSelect','validateEmpty="Seleccione un Art&iacute;culo" placeholder="Ingrese un c&oacute;digo" placeholderauto="C&oacute;digo no encontrado" item="'.$I.'" iconauto="cube"','Product','SearchCodes');?>
                     <?php //echo Core::InsertElement("text","item_1",'','Hidden',''); ?>
                   </div>
                   <div class="col-xs-1 txC">
@@ -138,11 +145,15 @@
                     <?php echo Core::InsertElement('text','quantity_'.$I,$Item['quantity'],'ItemField'.$I.' form-control txC calcable QuantityItem inputMask','data-inputmask="\'mask\': \'9{+}\'" placeholder="Cantidad" validateEmpty="Ingrese una cantidad"'); ?>
                   </div>
                   <div class="col-xs-2 txC">
-                    <span id="Date<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?> QuotationDate"></span>
-                    <?php echo Core::InsertElement('text','date_'.$I,$Date,'ItemField'.$I.' form-control txC delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"'); ?>
+                    <span id="Date<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?> OrderDate"></span>
+                    <?php echo Core::InsertElement('text','date_'.$I,'','ItemField'.$I.' form-control txC delivery_date','disabled="disabled" placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"'); ?>
+                  </div>
+                  <div class="col-xs-1 txC">
+                    <span id="Day<?php echo $I ?>" class="Hidden ItemText<?php echo $I ?> OrderDay"></span>
+                    <?php echo str_replace("00","0",Core::InsertElement('text','day_'.$I,$Days,'ItemField'.$I.' form-control txC DayPicker','placeholder="D&iacute;as de Entrega" validateEmpty="Ingrese una cantidad de d&iacute;as"')); ?>
                   </div>
                   <div id="item_number_<?php echo $I ?>" class="col-xs-1 txC item_number" total="<?php echo $Item['total_item'] ?>" item="<?php echo $I ?>">$ <?php echo $Item['total_item'] ?></div>
-                  <div class="col-xs-3 txC">
+                  <div class="col-xs-2 txC">
   									  <button type="button" id="SaveItem<?php echo $I ?>" class="btn btnGreen SaveItem" style="margin:0px;" item="<?php echo $I ?>"><i class="fa fa-check"></i></button>
   									  <button type="button" id="EditItem<?php echo $I ?>" class="btn btnBlue EditItem Hidden" style="margin:0px;" item="<?php echo $I ?>"><i class="fa fa-pencil"></i></button>
   									  <?php if($I!=1){ ?>
@@ -156,7 +167,7 @@
               </div>
               <!--- TOTALS --->
               <hr style="margin-top:0px!important;">
-              <div class="row form-group inline-form-custom bg-light-blue">
+              <div class="row form-group inline-form-custom bg-<?php echo $RowTitleClass; ?>">
                 <div class="col-xs-4 txC">
                   Art&iacute;culos Totales: <strong id="TotalItems" ><?php echo $TotalItems ?></strong>
                 </div>
@@ -179,10 +190,10 @@
               <div class="col-sm-6 col-xs-12 txC">
                 <div class="input-group">
                 <div class="input-group-btn">
-                  <button type="button" id="ChangeDates" class="btn bg-teal" style="margin:0px;"><i class="fa fa-flash"></i></button>
+                  <button type="button" id="ChangeDays" class="btn bg-teal" style="margin:0px;"><i class="fa fa-flash"></i></button>
                 </div>
                 <!-- /btn-group -->
-                <?php echo Core::InsertElement('text','change_date','','form-control delivery_date',' placeholder="Modificar la fecha de todos los art&iacute;culos"'); ?>
+                <?php echo Core::InsertElement('text','change_day','','form-control',' placeholder="Modificar los d&iacute;as de todos los art&iacute;culos"'); ?>
               </div>
               </div>
             </div>

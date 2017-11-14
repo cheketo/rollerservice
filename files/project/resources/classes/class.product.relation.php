@@ -10,12 +10,26 @@ class ProductRelation
 	const DEFAULT_IMG		= '../../../../skin/images/products/default/default.jpg';
 	const DEFAULT_IMG_DIR	= '../../../../skin/images/products/default/';
 	const IMG_DIR			= '../../../../skin/images/products/';
+	const DEFAULT_FILE_DIR	= '../../../../skin/files/price_list/';
 
 	public function __construct($ID=0)
 	{
 		$this->ID = $ID;
 		$this->GetData();
 		self::SetImg($this->Data['img']);
+	}
+	
+	public static function GetLastImport($CompanyID)
+	{
+		$Data = Core::Select('product_relation_import',"*","status = 'A' AND company_id =".$CompanyID,"creation_date DESC")[0];
+		if(!empty($Data))
+			$Data['items'] = self::GetImportedProducts($Data['import_id']);
+		return $Data;
+	}
+	
+	public static function GetImportedProducts($ImportID)
+	{
+		return Core::Select('product_relation_import_item',"*","import_id=".$ImportID);
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,6 +226,100 @@ class ProductRelation
 		$ID = $_POST['id'];
 		$Data = Core::Select(self::TABLE,self::TABLE_ID.",code",Product::TABLE_ID."=".$ID)[0];
 		echo $Data['code']."///".$Data[self::TABLE_ID];
+	}
+	
+	public function Checkimport()
+	{
+		$ImportID = Core::Select('product_relation_import','*',"status='A' AND company_id=".$_POST['id'],"creation_date DESC")[0]['import_id'];
+		//echo Core::LastQuery();
+		if($ImportID)
+			echo $ImportID;
+	}
+	
+	public function Updateimportstatus($ImportID=0)
+	{
+		if($ImportID)
+			Core::Update('product_relation_import',"status='I'","status='A' AND import_id=".$ImportID);
+		else
+			Core::Update('product_relation_import',"status='I'","status='A' AND company_id=".$_REQUEST['id']);
+	}
+	
+	public function Import()
+	{
+		if(count($_FILES['price_list'])>0)
+		{
+			$CompanyID = $_POST['id'];
+			$OriginalName = $_FILES['price_list']['name'];
+			$FileDir = self::DEFAULT_FILE_DIR.$CompanyID."/";
+			$FileName = date("s").date("i").date("H").date("d").date("m").date("Y");
+			$File = new CoreFileData($_FILES['price_list'],$FileDir,$FileName);
+			$File->SaveFile();
+			$FileURL = $FileDir.$FileName.".".$File->GetExtension();
+			$ImportID = Core::Insert('product_relation_import',Company::TABLE_ID.',file,name,creation_date,created_by,'.CoreOrganization::TABLE_ID,$CompanyID.",'".$FileURL."','".$OriginalName."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+			$this->ReadImportedFile($ImportID);
+		}else{
+			echo "No se encontr&oacute; el archivo";
+		}
+	}
+	
+	private function ReadImportedFile($ImportID)
+	{
+		$Import = Core::Select('product_relation_import','*','import_id='.$ImportID)[0];
+		include("../../../../vendors/PHPExcel/Classes/PHPExcel/IOFactory.php");
+		$FileType	= PHPExcel_IOFactory::identify($Import['file']);
+		$Reader 	= PHPExcel_IOFactory::createReader($FileType);
+		$PHPExcel	= $Reader->load($Import['file']);
+		foreach($PHPExcel->getWorksheetIterator() as $Worksheet)
+		{
+			// echo 'Worksheet - ' , $Worksheet->getTitle() , EOL;
+			foreach($Worksheet->getRowIterator() as $Row)
+			{
+				$RowIndex = $Row->getRowIndex()-1;
+				if($RowIndex>0)
+				{
+					$Data = array();
+					//echo '    Row number - ' . $RowIndex."<br>";
+					$CellIterator = $Row->getCellIterator();
+					// $CellIterator->setIterateOnlyExistingCells(false); // Loop all cells, even if it is not set
+					foreach($CellIterator as $Cell)
+					{
+						if(!is_null($Cell))
+						{
+							// if($Cell->getCoordinate() == 'B'.$Row->getRowIndex() || $Cell->getCoordinate() == 'C'.$Row->getRowIndex() || $Cell->getCoordinate() == 'D'.$Row->getRowIndex() )
+							if($Cell->getCalculatedValue())
+								$Data[] = $Cell->getCalculatedValue();
+							else
+							{
+								switch($Cell->getCoordinate())
+								{
+									case 'A'.$Row->getRowIndex():
+										echo '406';
+										$this->Updateimportstatus($ImportID);
+										die();
+									break;
+									case 'B'.$Row->getRowIndex():
+										$Data[] = "'0'";
+									break;
+									case 'C'.$Row->getRowIndex():
+										$Data[] = "-1";
+									break;
+									case 'D'.$Row->getRowIndex():
+										$Data[] = "";
+									break;
+								}	
+							}
+							//echo '        Cell  - ' . $Cell->getCoordinate() . ' - ' . $Cell->getCalculatedValue()."<br>";
+						}
+					}
+					$Fields = $ImportID.",".$Import['company_id'].",'".$Data[0]."',".$Data[1].",".$Data[2].",'".$Data[3]."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
+					$Values .= $Values? "),(".$Fields : $Fields;
+				}
+			}
+		}
+		$Result = Core::Insert('product_relation_import_item',"import_id,company_id,code,price,stock,brand,creation_date,created_by,organization_id",$Values);
+		if($Result==false)
+			$this->Updateimportstatus($ImportID);
+		//echo Core::LastQuery();
 	}
 }
 ?>

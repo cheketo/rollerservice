@@ -13,10 +13,10 @@
     <button id="alertDemoInfo" type="button" class="btn btnBlue">Info</button>
     <button id="alertDemoWarning" type="button" class="btn btn-warning">Warning</button>
    </div>
-
+    
    <button id="activateLoader" type="button" onclick="toggleLoader()" class="btn btnBlue animated fadeIn">Activate Loader</button>
    <br><br>
-
+   
 <?php
   include('../../../project/resources/includes/inc.bottom.php');
 ?>

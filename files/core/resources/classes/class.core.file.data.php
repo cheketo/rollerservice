@@ -39,7 +39,7 @@ class CoreFileData
 			$this->Extension= $Extension[0];
 			$this->Error	= $File['error'];
 			$this->Size		= $File['size'];
-			$this->Name		= $FileName ? $FileName.".".$this->Type : sha1($this->TmpName.date("Y-m-d H:i:s")).".".$this->Type;
+			$this->Name		= $FileName ? $FileName.".".$this->Extension : sha1($this->TmpName.date("Y-m-d H:i:s")).".".$this->Extension;
 			$this->Url		= $this->Path.$this->Name;
 			
 		}elseif(count(explode(".",$File))>1){
@@ -67,7 +67,7 @@ class CoreFileData
 			$this->Extension= $Extension[0];
 			$this->Error	= $_FILES[$File]['error'];
 			$this->Size		= $_FILES[$File]['size'];
-			$this->Name		= $FileName ? $FileName.".".$this->Type : md5($this->TmpName.date("Y-m-d H:i:s")).".".$this->Type;
+			$this->Name		= $FileName ? $FileName.".".$this->Extension : md5($this->TmpName.date("Y-m-d H:i:s")).".".$this->Extension;
 			$this->Url		= $this->Path.$this->Name;
 		}
 		
@@ -130,12 +130,12 @@ class CoreFileData
 		$this->Width	= $this->NewWidth;
 		$this->Height	= $this->NewHeight;
 		unlink($this->TmpUrl);
-		$this->SaveImage($NewImg,$this->Url,$this->Quality,$this->Type);
+		$this->SaveImage($NewImg,$this->Url,$this->Quality,$this->Extension);
 	}
 	
-	public function SaveImage($Image,$Url,$Quality,$Type="jpg")
+	public function SaveImage($Image,$Url,$Quality,$Ext="jpg")
 	{
-		switch($Type)
+		switch($Ext)
 		{
 			case "png":  imagepng($Image,$Url,intval( $Quality*(9/100)) ); break;
 			case "gif":  imagegif($Image,$Url,$Quality); break;
@@ -158,6 +158,10 @@ class CoreFileData
 	
 	public function SetPath($Path)
 	{
+		if(!file_exists($Path) && !is_dir($Path))
+		{
+			mkdir($Path);
+		}
 		$this->Path	= $Path;	
 	}
 	
@@ -169,6 +173,11 @@ class CoreFileData
 	public function SetFormatType($Extension)
 	{
 		$this->Extension	= $Extension;	
+	}
+	
+	public function GetExtension()
+	{
+		return $this->Extension;
 	}
 	
 	function imagecreatefrombmp($filename)

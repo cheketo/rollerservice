@@ -28,6 +28,9 @@ $(document).ready(function() {
 
   $('#meli_status').iCheck('disable');
 
+  $("#ShowWindow").click(function(){
+    $(".window").removeClass('Hidden');
+  });
 });
 
 $(function(){

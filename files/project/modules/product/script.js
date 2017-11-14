@@ -10,15 +10,15 @@ $(document).ready(function(){
 $(function(){
 	$("#BtnCreate").click(function(){
 		var target		= 'list.php?element='+$('#code').val()+'&msg='+ $("#action").val();
-		askAndSubmit(target,'Product','¿Desea crear la l&iacute;nea <b>'+$('#code').val()+'</b>?');
+		askAndSubmit(target,'Product','¿Desea crear el producto <b>'+$('#code').val()+'</b>?');
 	});
 	$("#BtnCreateNext").click(function(){
 		var target		= 'new.php?element='+$('#code').val()+'&msg='+ $("#action").val();
-		askAndSubmit(target,'Product','¿Desea crear la l&iacute;nea <b>'+$('#code').val()+'</b>?');
+		askAndSubmit(target,'Product','¿Desea crear el producto <b>'+$('#code').val()+'</b>?');
 	});
 	$("#BtnEdit").click(function(){
 		var target		= 'list.php?element='+$('#code').val()+'&msg='+ $("#action").val();
-		askAndSubmit(target,'Product','¿Desea modificar la l&iacute;nea <b>'+$('#code').val()+'</b>?');
+		askAndSubmit(target,'Product','¿Desea modificar el producto <b>'+$('#code').val()+'</b>?');
 	});
 	$("input").keypress(function(e){
 		if(e.which==13){

@@ -299,21 +299,21 @@ table.dataTable td {
   padding-top: 0.25em;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button {
-  box-sizing: border-box;
+  /*box-sizing: border-box;*/
   display: inline-block;
-  min-width: 1.5em;
+  /*min-width: 1.5em;
   padding: 0.5em 1em;
-  margin-left: 2px;
+  margin-left: 2px;*/
   text-align: center;
-  text-decoration: none !important;
+  /*text-decoration: none !important;*/
   cursor: pointer;
   *cursor: hand;
   color: #333 !important;
-  border: 1px solid transparent;
+  /*border: 1px solid transparent;*/
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
   color: #333 !important;
-  border: 1px solid #cacaca;
+  /*border: 1px solid #cacaca;*/
   background-color: white;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, white), color-stop(100%, #dcdcdc));
   /* Chrome,Safari4+ */
@@ -337,7 +337,7 @@ table.dataTable td {
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
   color: white !important;
-  border: 1px solid #111;
+  /*border: 1px solid #111;*/
   background-color: #585858;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));
   /* Chrome,Safari4+ */

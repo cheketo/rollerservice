@@ -604,11 +604,11 @@ function appendPagerUnder30(page)
 function appendPagerUnlimited(page)
 {
 	
-	var html = '<li class="Prev10Page"><a href="#"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li><li class="PrevPage"><a href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></i></a></li>';
 	var totalpages = calculateTotalPages();
 	var separatorA = '';
 	var separatorB = '';
-	
+	var html = '<li class="Prev10Page"><a href="#"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li><li class="PrevPage"><a href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></i></a></li>';
+
 	if((page-2)>2)
 		separatorA = '...';
 	if((page+3)<totalpages)
@@ -685,7 +685,13 @@ function switchPrevNextPage()
 		var page = parseInt($("#view_page").val())+10;
 		if(page<calculateTotalPages())
 		{
-			$(".pageElement[page='"+page+"']").click();
+			if($(".pageElement[page='"+page+"']").length>0)
+			{
+				$(".pageElement[page='"+page+"']").click();
+			}else{
+				$("#view_page").val(page);
+				submitSearch();
+			}
 		}else{
 			$(".pageElement[page='"+calculateTotalPages()+"']").click();
 		}
@@ -694,9 +700,16 @@ function switchPrevNextPage()
 	$('.Prev10Page').click(function(){
 		event.stopPropagation();
 		var page = parseInt($("#view_page").val())-10;
+		console.log(page);
 		if(page>0)
 		{
-			$(".pageElement[page='"+page+"']").click();
+			if($(".pageElement[page='"+page+"']").length>0)
+			{
+				$(".pageElement[page='"+page+"']").click();
+			}else{
+				$("#view_page").val(page);
+				submitSearch();
+			}
 		}else{
 			$(".pageElement[page='1']").click();
 		}

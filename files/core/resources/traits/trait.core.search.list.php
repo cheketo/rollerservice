@@ -393,7 +393,7 @@ trait CoreSearchList
 		$this->SetGroupBy(self::TABLE_ID);
 		// $Rows	= self::GroupRowsByID($this->GetRegs());
 		$Rows	= $this->GetRegs();
-		// echo Core::LastQuery();
+		//echo Core::LastQuery();
 		
 		foreach($Rows as $Row)
 		{

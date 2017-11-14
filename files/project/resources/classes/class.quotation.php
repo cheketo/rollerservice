@@ -13,7 +13,6 @@ class Quotation
 
 	public function __construct($ID=0)
 	{
-		
 		$this->ID = $ID;
 		if($this->ID!=0)
 		{
@@ -165,11 +164,12 @@ class Quotation
 		return '<a href="new.php?'.self::GetParams().'" class="hint--bottom hint--bounce hint--success" aria-label="Nueva Cotizaci&oacute;n"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-plus-square"></i></button></a>';
 	}
 	
-	// public function ConfigureSearchRequest()
-	// {
-		
-	// 	$this->SetSearchRequest();
-	// }
+	public function ConfigureSearchRequest()
+	{
+		$_POST['view_order_mode'] = $_POST['view_order_mode']? $_POST['view_order_mode']:'DESC';
+		$_POST['view_order_field'] = $_POST['view_order_field']? $_POST['view_order_field']:'quotation_id';
+		$this->SetSearchRequest();
+	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// PROCESS METHODS ///////////////////////////////////////////////////////////////////////////////
@@ -186,7 +186,7 @@ class Quotation
 			{
 				$Total += ($_POST['price_'.$I]*$_POST['quantity_'.$I]);
 				$ItemDate = Core::FromDateToDB($_POST['date_'.$I]);
-				$Items[] = array('id'=>$_POST['item_'.$I],'price'=>$_POST['price_'.$I],'quantity'=>$_POST['quantity_'.$I], 'delivery_date'=>$ItemDate );
+				$Items[] = array('id'=>$_POST['item_'.$I],'price'=>$_POST['price_'.$I],'quantity'=>$_POST['quantity_'.$I], 'delivery_date'=>$ItemDate, 'days'=>$_POST['day_'.$I]);
 				if(!$Date)
 				{
 					$Date = $ItemDate;
@@ -208,11 +208,12 @@ class Quotation
 		// INSERT ITEMS
 		foreach($Items as $Item)
 		{
+			$Item['days'] = $Item['days']?intval($Item['days']):"0";
 			if($Fields)
 				$Fields .= "),(";
-			$Fields .= $NewID.",".$CompanyID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",".($Item['price']*$Item['quantity']).",'".$Item['delivery_date']."',".$CurrencyID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
+			$Fields .= $NewID.",".$CompanyID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",".($Item['price']*$Item['quantity']).",'".$Item['delivery_date']."',".$Item['days'].",".$CurrencyID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
 		}
-		Core::Insert(QuotationItem::TABLE,self::TABLE_ID.','.Company::TABLE_ID.','.Product::TABLE_ID.',price,quantity,total,delivery_date,currency_id,creation_date,created_by,'.CoreOrganization::TABLE_ID,$Fields);	
+		Core::Insert(QuotationItem::TABLE,self::TABLE_ID.','.Company::TABLE_ID.','.Product::TABLE_ID.',price,quantity,total,delivery_date,days,currency_id,creation_date,created_by,'.CoreOrganization::TABLE_ID,$Fields);	
 	}
 	
 	public function Update()
@@ -230,7 +231,7 @@ class Quotation
 				$Total += ($_POST['price_'.$I]*$_POST['quantity_'.$I]);
 				$ItemDate = Core::FromDateToDB($_POST['date_'.$I]);
 				$CreationDate = $_POST['creation_date_'.$I]? "'".$_POST['creation_date_'.$I]."'":'NOW()';
-				$Items[] = array('id'=>$_POST['item_'.$I],'price'=>$_POST['price_'.$I],'quantity'=>$_POST['quantity_'.$I], 'delivery_date'=>$ItemDate,'creation_date'=>$CreationDate);
+				$Items[] = array('id'=>$_POST['item_'.$I],'price'=>$_POST['price_'.$I],'quantity'=>$_POST['quantity_'.$I], 'delivery_date'=>$ItemDate,'creation_date'=>$CreationDate,'days'=>$_POST['day_'.$I]);
 				if(!$Date)
 				{
 					$Date = $ItemDate;
@@ -254,11 +255,12 @@ class Quotation
 		// INSERT ITEMS
 		foreach($Items as $Item)
 		{
+			$Item['days'] = $Item['days']?intval($Item['days']):"0";
 			if($Fields)
 				$Fields .= "),(";
-			$Fields .= $ID.",".$CompanyID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",".($Item['price']*$Item['quantity']).",'".$Item['delivery_date']."',".$CurrencyID.",".$Item['creation_date'].",".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
+			$Fields .= $ID.",".$CompanyID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",".($Item['price']*$Item['quantity']).",'".$Item['delivery_date']."',".$Item['days'].",".$CurrencyID.",".$Item['creation_date'].",".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
 		}
-		Core::Insert(QuotationItem::TABLE,self::TABLE_ID.','.Company::TABLE_ID.','.Product::TABLE_ID.',price,quantity,total,delivery_date,currency_id,creation_date,created_by,'.CoreOrganization::TABLE_ID,$Fields);
+		Core::Insert(QuotationItem::TABLE,self::TABLE_ID.','.Company::TABLE_ID.','.Product::TABLE_ID.',price,quantity,total,delivery_date,days,currency_id,creation_date,created_by,'.CoreOrganization::TABLE_ID,$Fields);
 	}
 	
 	public function Store()

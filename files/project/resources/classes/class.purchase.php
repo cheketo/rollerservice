@@ -682,7 +682,7 @@ class Purchase
                 <form id="item_form_'.$ID.'">
                 <div class="col-xs-4 txC">
                 	<span id="Item'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.Core::InsertElement("autocomplete","item_".$ID,'','ItemField'.$ID.' txC form-control','validateEmpty="Seleccione un Art&iacute;culo" placeholder="Ingrese un c&oacute;digo" placeholderauto="C&oacute;digo no encontrado" iconauto="cog"','Product','SearchCodes').'
+                  '.Core::InsertElement("autocomplete","item_".$ID,'','ItemField'.$ID.' itemSelect txC form-control','validateEmpty="Seleccione un Art&iacute;culo" placeholder="Ingrese un c&oacute;digo" placeholderauto="C&oacute;digo no encontrado" iconauto="cube"','Product','SearchCodes').'
                 </div>
                 <div class="col-xs-1 txC">
                 	<span id="Price'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
@@ -694,15 +694,27 @@ class Purchase
                 </div>
                 <div class="col-xs-2 txC">
                   <span id="Date'.$ID.'" class="Hidden ItemText'.$ID.' OrderDate"></span>
-                  '.Core::InsertElement('text','date_'.$ID,'','ItemField'.$ID.' form-control txC delivery_date','placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"').'
+                  '.Core::InsertElement('text','date_'.$ID,'','ItemField'.$ID.' form-control txC delivery_date','disabled="disabled" placeholder="Fecha de Entrega" validateEmpty="Ingrese una fecha"').'
+                </div>
+                 <div class="col-xs-1 txC">
+                  <span id="Day'.$ID.'" class="Hidden ItemText'.$ID.' OrderDay"></span>
+                  '.str_replace("00","0",Core::InsertElement('text','day_'.$ID,'00','ItemField'.$ID.' form-control txC DayPicker','placeholder="D&iacute;as de Entrega" validateEmpty="Ingrese una cantidad de d&iacute;as"')).'
                 </div>
                 <div  id="item_number_'.$ID.'" class="col-xs-1 txC item_number" total="0" item="'.$ID.'">'.$TotalPrice.'</div>
-                <div class="col-xs-3 txC">
+                <div class="col-xs-2 txC">
 				  <button type="button" id="SaveItem'.$ID.'" class="btn btnGreen SaveItem" style="margin:0px;" item="'.$ID.'"><i class="fa fa-check"></i></button>
 				  <button type="button" id="EditItem'.$ID.'" class="btn btnBlue EditItem Hidden" style="margin:0px;" item="'.$ID.'"><i class="fa fa-pencil"></i></button>
 				  <button type="button" id="DeleteItem'.$ID.'" class="btn btnRed DeleteItem" style="margin:0px;" item="'.$ID.'"><i class="fa fa-trash"></i></button>
 				</div>
 				</form>
+				<div class="window Hidden" id="window1">
+				    <div class="window-border"><h4><div class="pull-left"><i class="fa fa-book"></i> Historial de Cotizaciones y Trazabilidad</div><div class="pull-right"><div class="window-close"><i class="fa fa-times"></i></div></div></h4></div>
+				    <div class="window-body">
+					</div>
+				    <div class="window-border txC">
+				        
+				    </div>
+				  </div>
             </div>';
             echo $HTML;
 	}

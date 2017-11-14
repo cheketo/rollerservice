@@ -356,9 +356,11 @@
     	static function InsertElement($Type,$ID='',$Value='',$Class='',$Extra='',$Query='',$FirstValue='',$FirstText='')
     	// Returns Form Elements
     	{
+    	    $Type = strtolower($Type);
     	    if($Type!="autocomplete")
     	    {
         		if($Type=="checkbox")  $Class = 'CheckBox '.$Class;
+        		if($Type=="file") $Class =  'CustomizedFileField '.$Class;
         		$Class	= $Class? ' class="'.$Class.'" ': '';
         		if($Type!="textarea")
         			if(!in_array($Type,array("select","button","multiple")))  $Value	= $Value? ' value="'.$Value.'" ': '';
@@ -366,7 +368,7 @@
     
     
     		
-    		switch(strtolower($Type)){
+    		switch($Type){
     			case 'text': 		return '<input type="text" id="'.$ID.'" name="'.$ID.'"'.$Value.$Class.$Extra.' />'; break;
     			case 'password': 	return '<input type="password" id="'.$ID.'" name="'.$ID.'"'.$Value.$Class.$Extra.' />'; break;
     			case 'textarea': 	return '<textarea id="'.$ID.'" name="'.$ID.'"'.$Class.$Extra.' >'.$Value.'</textarea>'; break;
@@ -374,7 +376,7 @@
     			case 'radio': 		return '<input type="radio" id="'.$ID.'" name="'.$ID.'"'.$Value.$Class.$Extra.' />'; break;
     			case 'hidden': 		return '<input type="hidden" id="'.$ID.'" name="'.$ID.'"'.$Value.$Class.$Extra.' />'; break;
     			case 'image': 		return '<input type="text" readonly="readonly" id="File'.$ID.'" name="FileField"'.$Value.$Class.$Extra.' /><input type="file" id="'.$ID.'" name="'.$ID.'" class="Hidden" />'; break;
-    			case 'file': 		return '<input type="text" readonly="readonly" id="File'.$ID.'" name="FileField"'.$Value.$Class.$Extra.' /><input type="file" id="'.$ID.'" name="'.$ID.'" class="Hidden" />'; break;
+    			case 'file': 		return '<input type="text" readonly="readonly" id="File'.$ID.'" name="FileField"'.$Value.$Class.$Extra.' /><input type="file" id="'.$ID.'" name="'.$ID.'" class="Hidden" accept="'.$Query.'" />'; break;
     			case 'button': 		return '<button id="'.$ID.'" name="'.$ID.'"'.$Class.$Extra.' >'.$Value.'</button>'; break;
     			case 'select': 		$Select	  = 	'<select id="'.$ID.'" name="'.$ID.'"'.$Class.$Extra.' firstvalue="'.$FirstValue.'" firsttext="'.$FirstText.'" >';
     								$Select	 .= $FirstValue || $FirstText ? '<option value="'.$FirstValue.'" >'.$FirstText.'</option>' : '' ;

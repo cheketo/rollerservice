@@ -621,6 +621,47 @@ html {
       top: 2px; }
 .modal .modal-footer {
   border-top: 0; }
+  
+/* MODAL */
+.window {
+  padding:2%;
+  background:rgba(0,0,0,0.3);
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:1050;
+  overflow:hidden;
+  -webkit-overflow-scrolling:touch;
+  /*outline:0;*/
+}
+
+.window .window-border {
+  height: 8%;
+  padding:5px;
+  box-sizing: border-box;
+  background-color: #344956;
+  color:white;
+  padding-left:10px;
+  padding-right:10px;
+}
+
+.window .window-body{
+  height: 84%;
+  max-height: 84%;
+  padding:5px;
+  box-sizing: border-box;
+  background-color: #EEE;
+  color:#595959;
+  position: relative;
+  overflow-y:scroll;
+}
+
+.window .window-border .window-close{
+  color:red;
+  cursor:pointer;
+}
 
 .verical-list ul {
   padding-left: 0;
@@ -1807,5 +1848,10 @@ html {
 
 .label-brown {
   background-color:#61210B;
+  color:#FFF!important;
+}
+
+.bg-brown {
+  background-color:#61210B !important;
   color:#FFF!important;
 }
