@@ -1,6 +1,8 @@
 <?php
   include('../../../core/resources/includes/inc.core.php');
   $List = new Product();
+  
+  $Head->SetStyle('../../../../vendors/autocomplete/jquery.auto-complete.css'); // Autocomplete
   $Head->SetTitle("Art&iacute;culos");
   $Head->SetIcon($Menu->GetHTMLicon());
   $Head->SetSubTitle($Menu->GetTitle());
@@ -13,6 +15,7 @@
   echo $List->InsertSearchList();
   
   /* Footer */
+  $Foot->SetScript('../../../../vendors/autocomplete/jquery.auto-complete.min.js');
   $Foot->SetScript('../../../core/resources/js/script.core.searchlist.js');
   include('../../../project/resources/includes/inc.bottom.php');
 ?>

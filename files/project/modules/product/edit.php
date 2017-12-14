@@ -19,26 +19,26 @@
     // HIDDEN ELEMENTS
     echo Core::InsertElement("hidden","id",$ID);
     echo Core::InsertElement("hidden","action",'update');
-    echo Core::InsertElement("hidden","category",$Data[Category::TABLE_ID]);
+    //echo Core::InsertElement("hidden","category",$Data[Category::TABLE_ID]);
 
 ?>
   <!-- ///////// FIRST SCREEN ////////// -->
-  <div class="CategoryMain box Hidden">
+  <!--<div class="CategoryMain box Hidden">-->
     <!--box-success-->
     <!-- <div class="box-header with-border">
       <h3 class="box-title">Complete el formulario</h3>
     </div>
     <! .box-header -->
-    <div class="box-body categoryBoxBody">
-      <div class="row">
+    <!--<div class="box-body categoryBoxBody">-->
+    <!--  <div class="row">-->
         <!-- First Screen Row -->
         <!-- Categories -->
-        <div class="container productCategory2 animated fadeIn">
+        <!--<div class="container productCategory2 animated fadeIn">-->
           <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>L&iacute;neas</b> | Seleccione una L&iacute;nea</span></div>
-            <ul>
-              <?php 
+          <!--<div class="categoryList">-->
+          <!--  <div class="categoryTitle"><span><b>L&iacute;neas</b> | Seleccione una L&iacute;nea</span></div>-->
+          <!--  <ul>-->
+              <?php /*
                 $Categories = $Category->GetAllCategories();
                 
                 foreach($Categories as $Cat)
@@ -59,22 +59,23 @@
                   echo '<option value="'.$Cat[Category::TABLE_ID].'" '.$Selected.'>'.$Cat['title'].'</option>';
                 }
                 echo '</select></li>';
+                */
               ?>
-              <li id="CountinueBtn" class="">
-                <span>
-                  <i class="fa fa-check"></i>
-                  <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                </span>
-              </li>
-            </ul>
-            <?php echo Core::InsertElement('hidden','maxlevel',$MaxLevel); ?>
-          </div>
+  <!--            <li id="CountinueBtn" class="">-->
+  <!--              <span>-->
+  <!--                <i class="fa fa-check"></i>-->
+  <!--                <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>-->
+  <!--              </span>-->
+  <!--            </li>-->
+  <!--          </ul>-->
+  <!--          <?php echo Core::InsertElement('hidden','maxlevel',$MaxLevel); ?>-->
+  <!--        </div>-->
           <!-- / Item -->
-        </div>
+  <!--      </div>-->
         <!-- Categories -->
-      </div><!-- Firs Screen Row -->
-    </div><!-- /.box-body -->
-  </div><!-- /.box -->
+  <!--    </div><!-- Firs Screen Row -->
+  <!--  </div><!-- /.box-body -->
+  <!--</div><!-- /.box -->
   <!-- ///////// END FIRST SCREEN ////////// -->
 
 
@@ -85,8 +86,14 @@
         <div class="innerContainer">
           <h4 class="subTitleB"><i class="fa fa-cube"></i> Detalles del Art&iacute;culo</h4>
           
-            <div class="form-group">
-              L&iacute;nea: <b><span id="category_selected"></span></b> <button type="button" class="BackToCategory btn btn-warning"><i class="fa fa-pencil"></i></button>
+            <div class="row form-group inline-form-custom">
+              <!--L&iacute;nea: <b><span id="category_selected"></span></b>-->
+              <div class="col-xs-12 col-sm-6">
+                <?php echo Core::InsertElement('select','category',$Data[Category::TABLE_ID],'form-control chosenSelect','data-placeholder="Seleccionar L&iacute;nea" validateEmpty="Seleccione una l&iacute;nea."',Core::Select(Category::TABLE,Category::TABLE_ID.",title","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' ') ?>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <?php echo Core::InsertElement('text','order_number',$Data['order_number'],'form-control','placeholder="N&uacute;mero de Orden" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 0, \'digitsOptional\': false, \'prefix\': \'\', \'placeholder\': \'0\'"') ?>
+              </div>
             </div>
             <!--<div class="form-group">-->
             <!--  <?php //echo Core::InsertElement('text','title','','form-control','placeholder="Nombre del Art&iacute;culo"') ?>-->
@@ -98,7 +105,7 @@
               </div>
               <div class="col-xs-12 col-sm-4">
                 <label for="price">Precio:</label>
-                <?php echo Core::InsertElement('text','price',$Data['price'],'form-control','placeholder="Precio" validateEmpty="Ingrese un precio."  data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$\', \'placeholder\': \'0\'"') ?>
+                <?php echo Core::InsertElement('text','price',$Data['price'],'form-control','placeholder="Precio" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$\', \'placeholder\': \'0\'"') ?>
               </div>
               <div class="col-xs-12 col-sm-4">
                 <label for="rack">Estanter&iacute;a:</label>

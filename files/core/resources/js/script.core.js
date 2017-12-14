@@ -239,7 +239,7 @@ function notifySuccess(msgNotify)
         delay: 15000,
         placement: {
             from: "bottom",
-            align: "right"
+            align: "left"
         }
     });
 }
@@ -256,7 +256,7 @@ function notifyInfo(msgNotify)
         delay: 15000,
         placement: {
             from: "bottom",
-            align: "right"
+            align: "left"
         }
     });
 }
@@ -273,7 +273,7 @@ function notifyWarning(msgNotify)
         delay: 30000,
         placement: {
             from: "bottom",
-            align: "right"
+            align: "left"
         }
     });
 }

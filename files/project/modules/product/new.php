@@ -10,26 +10,27 @@
     
     // HIDDEN ELEMENTS
     echo Core::InsertElement("hidden","action",'insert');
-    echo Core::InsertElement("hidden","category");
+   // echo Core::InsertElement("hidden","category");
 
 ?>
   <!-- ///////// FIRST SCREEN ////////// -->
-  <div class="CategoryMain box">
+  <!--<div class="CategoryMain box">-->
     <!--box-success-->
     <!-- <div class="box-header with-border">
-      <h3 class="box-title">Complete el formulario</h3>
-    </div>
-    <! .box-header -->
-    <div class="box-body categoryBoxBody">
-      <div class="row">
+  <!--    <h3 class="box-title">Complete el formulario</h3>-->
+  <!--  </div>-->
+  <!--  <! .box-header -->
+  <!--  <div class="box-body categoryBoxBody">-->
+  <!--    <div class="row">-->
         <!-- First Screen Row -->
         <!-- Categories -->
-        <div class="container productCategory2 animated fadeIn">
+  <!--      <div class="container productCategory2 animated fadeIn">-->
           <!-- Item -->
-          <div class="categoryList">
-            <div class="categoryTitle"><span><b>L&iacute;neas</b> | Seleccione una L&iacute;nea</span></div>
-            <ul>
+  <!--        <div class="categoryList">-->
+  <!--          <div class="categoryTitle"><span><b>L&iacute;neas</b> | Seleccione una L&iacute;nea</span></div>-->
+  <!--          <ul>-->
               <?php 
+              /*
                 $Categories = $Category->GetAllCategories();
                 
                 foreach($Categories as $Cat)
@@ -49,37 +50,44 @@
                   echo '<option value="'.$Cat[Category::TABLE_ID].'">'.$Cat['title'].'</option>';
                 }
                 echo '</select></li>';
+                */
               ?>
-              <li id="CountinueBtn" class="Hidden">
-                <span>
-                  <i class="fa fa-check"></i>
-                  <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>
-                </span>
-              </li>
-            </ul>
-            <?php echo Core::InsertElement('hidden','maxlevel',$MaxLevel); ?>
-          <div class="txC">
-            <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
-          </div>
-          </div>
+            <!--  <li id="CountinueBtn" class="Hidden">-->
+            <!--    <span>-->
+            <!--      <i class="fa fa-check"></i>-->
+            <!--      <button type="button" class="SelectCategory btn btnBlue categorySelectBtn">Continuar</button>-->
+            <!--    </span>-->
+            <!--  </li>-->
+            <!--</ul>-->
+            <?php //echo Core::InsertElement('hidden','maxlevel',$MaxLevel); ?>
+  <!--        <div class="txC">-->
+  <!--          <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>-->
+  <!--        </div>-->
+  <!--        </div>-->
           <!-- / Item -->
-        </div>
+  <!--      </div>-->
         <!-- Categories -->
-      </div><!-- Firs Screen Row -->
-    </div><!-- /.box-body -->
-  </div><!-- /.box -->
+  <!--    </div><!-- Firs Screen Row -->
+  <!--  </div><!-- /.box-body -->
+  <!--</div><!-- /.box -->
   <!-- ///////// END FIRST SCREEN ////////// -->
 
 
   <!-- ////////// SECOND SCREEN ////////////////// -->
-  <div class="ProductDetails box animated fadeIn Hidden">
+  <div class="ProductDetails box animated fadeIn">
     <div class="box-header flex-justify-center">
       <div class="col-md-6 ">
         <div class="innerContainer">
           <h4 class="subTitleB"><i class="fa fa-cube"></i> Detalles del Art&iacute;culo</h4>
           
-            <div class="form-group">
-              L&iacute;nea: <b><span id="category_selected"></span></b>
+            <div class="row form-group inline-form-custom">
+              <!--L&iacute;nea: <b><span id="category_selected"></span></b>-->
+              <div class="col-xs-12 col-sm-6">
+                <?php echo Core::InsertElement('select','category','','form-control chosenSelect','data-placeholder="Seleccionar L&iacute;nea" validateEmpty="Seleccione una l&iacute;nea."',Core::Select(Category::TABLE,Category::TABLE_ID.",title","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' ') ?>
+              </div>
+              <div class="col-xs-12 col-sm-6">
+                <?php echo Core::InsertElement('text','order_number','','form-control','placeholder="N&uacute;mero de Orden" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 0, \'digitsOptional\': false, \'prefix\': \'\', \'placeholder\': \'0\'"') ?>
+              </div>
             </div>
             <!--<div class="form-group">-->
             <!--  <?php //echo Core::InsertElement('text','title','','form-control','placeholder="Nombre del Art&iacute;culo"') ?>-->
@@ -90,7 +98,7 @@
                 <?php echo Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo" validateEmpty="Ingrese un c&oacute;digo."') ?>
               </div>
               <div class="col-xs-12 col-sm-4">
-                <?php echo Core::InsertElement('text','price','','form-control','placeholder="Precio" validateEmpty="Ingrese un precio." data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$\', \'placeholder\': \'0\'"') ?>
+                <?php echo Core::InsertElement('text','price','','form-control','placeholder="Precio" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$\', \'placeholder\': \'0\'"') ?>
               </div>
               <div class="col-xs-12 col-sm-4">
                 <?php echo Core::InsertElement('text','rack','','form-control','placeholder="Estanter&iacute;a"') ?>
@@ -145,7 +153,8 @@
             <div class="txC">
               <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-check"></i> Finalizar</button>
               <button type="button" class="btn btn-success btnBlue" id="BtnCreateNext"><i class="fa fa-plus"></i> Finalizar y Crear Otro</button>
-              <button type="button" class="BackToCategory btn btnRed">Regresar</button>
+              <!--<button type="button" class="BackToCategory btn btnRed">Regresar</button>-->
+              <button type="button" class="btn btn-error btnRed" id="BtnCancel" name="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
             </div>
         </div>
         <!-- Description (Character Counter) -->

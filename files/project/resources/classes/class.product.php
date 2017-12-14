@@ -40,7 +40,7 @@ class Product
 	{
 		if($_GET['category'])
 			$CategoryFilter = " AND category_id=".$_GET['category'];
-		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,CONCAT(code,' - <b>',brand,' - ',category,'</b> - STOCK: ',stock) as text","status='A' ".$CategoryFilter." AND code LIKE '".$_GET['text']."%' AND organization_id=".$_SESSION['organization_id'],'code','',100);
+		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,CONCAT(code,' - <b>',brand,' - ',category,'</b> - STOCK: ',stock) as text","status='A' ".$CategoryFilter." AND order_number >= ".intval($_GET['text'])." AND organization_id=".$_SESSION['organization_id'],'order_number,code','',200);
 		if(empty($Products))
 			$Products[0]=array("id"=>"","text"=>"no-result");
 		else
@@ -56,6 +56,16 @@ class Product
 	{
 		if($Mode!='grid') $HTML .=	'<a class="hint--bottom hint--bounce" aria-label="M&aacute;s informaci&oacute;n"><button type="button" class="btn bg-navy ExpandButton" id="expand_'.$Object->ID.'"><i class="fa fa-plus"></i></button></a> ';;
 		$HTML	.= 	'<a href="edit.php?id='.$Object->ID.'" class="hint--bottom hint--bounce hint--info" aria-label="Editar"><button type="button" class="btn btnBlue"><i class="fa fa-pencil"></i></button></a>';
+		if($Object->Data['discontinued']=="N")
+		{
+			$ClassDiscontinued = "";
+			$ClassReactivated = "Hidden";
+		}else{
+			$ClassDiscontinued = "Hidden";
+			$ClassReactivated = "";
+		}
+		$HTML	.= '<a class="hint--bottom hint--bounce hint--primary reactivate '.$ClassReactivated.'" aria-label="Normalizar" process="'.PROCESS.'" id="reactivate_'.$Object->ID.'"><button type="button" class="btn bg-purple"><i class="fa fa-level-up"></i></button></a>';
+		$HTML	.= '<a class="hint--bottom hint--bounce hint--error discontinue '.$ClassDiscontinued.'" aria-label="Discontinuar" process="'.PROCESS.'" id="discontinue_'.$Object->ID.'"><button type="button" class="btn bg-maroon"><i class="fa fa-level-down"></i></button></a>';
 		if($Object->Data['status']=="A")
 		{
 			$HTML	.= '<a class="deleteElement hint--bottom hint--bounce hint--error" aria-label="Eliminar" process="'.PROCESS.'" id="delete_'.$Object->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
@@ -191,6 +201,9 @@ class Product
 		$this->SearchFields['category_id'] = Core::InsertElement('select',Category::TABLE_ID,'','form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.',title',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"title"),'','Cualquier L&iacute;nea');
 		$this->SearchFields['price_from'] = Core::InsertElement('text','price_from','','form-control','placeholder="Precio Desde"');
 		$this->SearchFields['price_to'] = Core::InsertElement('text','price_to','','form-control','placeholder="Precio Hasta"');
+		$this->SearchFields['abstract_id'] = Core::InsertElement('autocomplete','abstract_id','','form-control','placeholder="C&oacute;digo Abstracto" placeholderauto="C&oacute;digo no encontrada"','ProductAbstract','SearchAbstractCodes');
+		$this->SearchFields['relation'] = Core::InsertElement('select','relation','','form-control chosenSelect','',array("0"=>"Cualquier relaci&oacute;n","1"=>"Sin relacionar","2"=>"Relacionados"));
+		$this->NoOrderSearchFields['relation']=true;
 	}
 	
 	protected function InsertSearchButtons()
@@ -200,6 +213,19 @@ class Product
 	
 	public function ConfigureSearchRequest()
 	{
+		
+		if($_POST['relation'])
+		{
+			if($_POST['relation']==1)
+				$this->AddWhereString(" AND abstract_id=0");
+			else
+				$this->AddWhereString(" AND abstract_id>0");
+		}
+		if($_POST['abstract_id'])
+		{
+			$_POST['abstract_id_condition'] = "=";
+		}
+		
 		if($_POST['price_from'])
 		{
 			$Price=Core::FromMoneyToDB($_POST['price_from']);
@@ -236,8 +262,9 @@ class Product
 	public function Insert()
 	{
 		$Code		= $_POST['code'];
+		$OrderNumber= $_POST['order_number'];
 		$Category	= $_POST['category'];
-		$Price		= str_replace('$','',$_POST['price']);
+		$Price		= $_POST['price']? str_replace('$','',$_POST['price']):"0.00";
 		$Brand		= $_POST['brand'];
 		$Rack		= $_POST['rack'];
 		$Size		= $_POST['size'];
@@ -253,7 +280,7 @@ class Product
 		if(!$StockMax) $StockMax = 0;
 		if(!$PriceFob) $PriceFob = 0;
 		if(!$PriceDispatch) $PriceDispatch = 0;
-		Core::Insert(self::TABLE,'code,'.Category::TABLE_ID.',price,'.Brand::TABLE_ID.',rack,size,stock_min,stock_max,description,creation_date,organization_id,created_by',"'".$Code."',".$Category.",".$Price.",".$Brand.",'".$Rack."','".$Size."',".$StockMin.",".$StockMax.",'".$Description."',NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
+		Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.',price,'.Brand::TABLE_ID.',rack,size,stock_min,stock_max,description,creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Price.",".$Brand.",'".$Rack."','".$Size."',".$StockMin.",".$StockMax.",'".$Description."',NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
 		//echo $this->LastQuery();
 	}	
 	
@@ -263,8 +290,9 @@ class Product
 		$Edit		= new Product($ID);
 		
 		$Code		= $_POST['code'];
+		$OrderNumber= $_POST['order_number'];
 		$Category	= $_POST['category'];
-		$Price		= str_replace('$','',$_POST['price']);
+		$Price		= $_POST['price']? str_replace('$','',$_POST['price']):"0.00";
 		$Brand		= $_POST['brand'];
 		$Rack		= $_POST['rack'];
 		$Size		= $_POST['size'];
@@ -273,13 +301,25 @@ class Product
 		$Description= $_POST['description'];
 		if(!$StockMin) $StockMin = 0;
 		if(!$StockMax) $StockMax = 0;
-		Core::Update(self::TABLE,"code='".$Code."',".Category::TABLE_ID."=".$Category.",".Brand::TABLE_ID."=".$Brand.",price=".$Price.",rack='".$Rack."',size='".$Size."',stock_min='".$StockMin."',stock_max='".$StockMax."',description='".$Description."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
+		Core::Update(self::TABLE,"code='".$Code."',order_number=".$OrderNumber.",".Category::TABLE_ID."=".$Category.",".Brand::TABLE_ID."=".$Brand.",price=".$Price.",rack='".$Rack."',size='".$Size."',stock_min='".$StockMin."',stock_max='".$StockMax."',description='".$Description."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
 		//echo $this->LastQuery();
 	}
 	
 	public function Validate()
 	{
 		self::ValidateValue("code",$_POST['code'],$_POST['actualcode']);
+	}
+	
+	public function discontinue()
+	{
+		$ID = $_POST['id'];
+		Core::Update(self::TABLE,"discontinued='Y'",self::TABLE_ID."=".$ID);
+	}
+	
+	public function reactivate()
+	{
+		$ID = $_POST['id'];
+		Core::Update(self::TABLE,"discontinued='N'",self::TABLE_ID."=".$ID);
 	}
 }
 ?>

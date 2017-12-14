@@ -26,27 +26,98 @@ $(function(){
 		}
 	});
 });
-//////////////////////////// CREATE/EDIT FUNCTIONS /////////////////////
-function ShowCategoriesList(id)
+
+
+///////////////////////////// LIST FUNCTION ////////////////////////////
+function AdditionalSearchFunctions()
 {
-    $('option[value="'+id+'"]').parent().parent().removeClass("Hidden");
-    id = $('option[value="'+id+'"]').parent().parent().attr("category");
-    if(id>0)
-    {
-        ShowCategoriesList(id);
-    }
+  reactivate();
+  discontinue();
 }
+
+function reactivate()
+{
+  $(".reactivate").click(function(){
+    var id = $(this).attr('id').split("_");
+    alertify.confirm(utf8_decode('¿Desea normalizar el art&iacute;culo seleccionado?'), function(e){
+      if(e){
+        id = id[1];
+    		var string	= 'id='+ id +'&action=reactivate&object=Product';
+    		$.ajax({
+    			type: "POST",
+    			url: process_url,
+    			data: string,
+    			cache: false,
+    			success: function(data)
+    			{
+    				if(data)
+    				{
+    				  notifyError("Ocurri&oacute; un error al intentar reactivar el art&iacute;culo.");
+    				  console.log(data);
+    				}else{
+    				  notifySuccess("El art&iacute;culo ha sido reactivado correctamente.");
+    				  $("#reactivate_"+id).addClass("Hidden");
+    				  $("#discontinue_"+id).removeClass("Hidden");
+    				}
+    			}
+    		});
+      }
+    });
+  });
+}
+
+function discontinue()
+{
+  $(".discontinue").click(function(){
+    var id = $(this).attr('id').split("_");
+    alertify.confirm(utf8_decode('¿Desea discontinuar el art&iacute;culo seleccionado?'), function(e){
+      if(e){
+        id = id[1];
+    		var string	= 'id='+ id +'&action=discontinue&object=Product';
+    		$.ajax({
+    			type: "POST",
+    			url: process_url,
+    			data: string,
+    			cache: false,
+    			success: function(data)
+    			{
+    				if(data)
+    				{
+    				  notifyError("Ocurri&oacute; un error al intentar reactivar el art&iacute;culo.");
+    				  console.log(data);
+    				}else{
+    				  notifySuccess("El art&iacute;culo ha sido reactivado correctamente.");
+    				  $("#reactivate_"+id).removeClass("Hidden");
+    				  $("#discontinue_"+id).addClass("Hidden");
+    				}
+    			}
+    		});
+      }
+    });
+  });
+}
+
+//////////////////////////// CREATE/EDIT FUNCTIONS /////////////////////
+// function ShowCategoriesList(id)
+// {
+//     $('option[value="'+id+'"]').parent().parent().removeClass("Hidden");
+//     id = $('option[value="'+id+'"]').parent().parent().attr("category");
+//     if(id>0)
+//     {
+//         ShowCategoriesList(id);
+//     }
+// }
 
 $(document).ready(function(){
     ////////////////////////// SET VALUES TO SELECT FIELDS ////////////
-    if($('option[selected="selected"]').length>0)
-    {
-        var category = $('option[selected="selected"]');
-        var categoryID = category.attr("value");
-        var html = category.html();
-        $("#category_selected").html(html);
-        ShowCategoriesList(categoryID);
-    }
+    // if($('option[selected="selected"]').length>0)
+    // {
+    //     var category = $('option[selected="selected"]');
+    //     var categoryID = category.attr("value");
+    //     var html = category.html();
+    //     $("#category_selected").html(html);
+    //     ShowCategoriesList(categoryID);
+    // }
 });
 /////////// Show or Hide Icons On subtop //////////////////////
 $(document).ready(function() {
@@ -65,24 +136,24 @@ $(document).ready(function() {
 ///////// Select Product/Item ////////////////////////
 
 $(function(){
-    $(".category_selector").on('change',function(){
-      var id = $(this).val();
-      var html = $('option[value="'+id+'"]').html();
-      var level = parseInt($(this).parent().attr('level'));
-      var nextLevel = level+1;
-      $("#category_selected").html(html);
-      $("#category").val(id);
+    // $(".category_selector").on('change',function(){
+    //   var id = $(this).val();
+    //   var html = $('option[value="'+id+'"]').html();
+    //   var level = parseInt($(this).parent().attr('level'));
+    //   var nextLevel = level+1;
+    //   $("#category_selected").html(html);
+    //   $("#category").val(id);
       
-      if(nextLevel<=$("#maxlevel").val())
-      {
-        HideLevels(nextLevel);
-        $("#CountinueBtn").addClass("Hidden");
-      }
-      if($("#category_"+id).parent().length>0)
-        $("#category_"+id).parent().removeClass('Hidden');
-      else
-        $("#CountinueBtn").removeClass("Hidden");
-    });
+    //   if(nextLevel<=$("#maxlevel").val())
+    //   {
+    //     HideLevels(nextLevel);
+    //     $("#CountinueBtn").addClass("Hidden");
+    //   }
+    //   if($("#category_"+id).parent().length>0)
+    //     $("#category_"+id).parent().removeClass('Hidden');
+    //   else
+    //     $("#CountinueBtn").removeClass("Hidden");
+    // });
     
     $('#dispatch_data').on('click',function(){
       $('#dispatch_data').addClass('Hidden');
@@ -91,14 +162,14 @@ $(function(){
   
 });
 
-function HideLevels(level)
-{
-  $('li[level="'+level+'"]').addClass('Hidden');
-  $('li[level="'+level+'"]').children('select').val(0);
-  level++;
-  if(level<=$("#maxlevel").val())
-    HideLevels(level);
-}
+// function HideLevels(level)
+// {
+//   $('li[level="'+level+'"]').addClass('Hidden');
+//   $('li[level="'+level+'"]').children('select').val(0);
+//   level++;
+//   if(level<=$("#maxlevel").val())
+//     HideLevels(level);
+// }
   
 
 
@@ -126,15 +197,15 @@ $('input, textarea').keyup(function() {
 
 /////////////////////// Categories Behavior ///////////////////////////
 $(function(){
-    $(".BackToCategory").on('click',function(){
-      $('.ProductDetails').addClass('Hidden');
-      $('.CategoryMain').removeClass('Hidden');
-    });
+    // $(".BackToCategory").on('click',function(){
+    //   $('.ProductDetails').addClass('Hidden');
+    //   $('.CategoryMain').removeClass('Hidden');
+    // });
     
-    $('.SelectCategory').click(function(){
-      $('.CategoryMain').addClass('Hidden');
-      $('.ProductDetails').removeClass('Hidden');
-    });
+    // $('.SelectCategory').click(function(){
+    //   $('.CategoryMain').addClass('Hidden');
+    //   $('.ProductDetails').removeClass('Hidden');
+    // });
 });
 
 

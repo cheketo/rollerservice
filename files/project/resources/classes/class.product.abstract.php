@@ -35,7 +35,18 @@ class ProductAbstract
 	
 	public static function SearchCodes()
 	{
-		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,CONCAT('',code,' - <b>',category,'</b> - STOCK:',stock) as text","status='A' AND code LIKE '%".$_GET['text']."%' AND organization_id=".$_SESSION['organization_id'],'code','',100);
+		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,CONCAT('',code,' - <b>',category,'</b> - STOCK:',stock) as text","status='A' AND code LIKE '%".$_GET['text']."%' AND organization_id=".$_SESSION['organization_id'],'code','code',100);
+		if(empty($Products))
+			$Products[0]=array("id"=>"","text"=>"no-result");
+		else
+			
+		echo json_encode($Products,JSON_HEX_QUOT);
+		
+	}
+	
+	public static function SearchAbstractCodes()
+	{
+		$Products =  Core::Select(self::SEARCH_TABLE,self::TABLE_ID." as id,CONCAT('',code,' - <b>',category,'</b>') as text","status='A' AND code LIKE '%".$_GET['text']."%' AND organization_id=".$_SESSION['organization_id'],'code','code',100);
 		if(empty($Products))
 			$Products[0]=array("id"=>"","text"=>"no-result");
 		else
@@ -165,9 +176,10 @@ class ProductAbstract
 	
 	protected function SetSearchFields()
 	{
-		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo Gen&eacute;rico"');
+		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control txC','placeholder="C&oacute;digo Gen&eacute;rico"');
+		$this->SearchFields['order_number'] = Core::InsertElement('text','order_number','','form-control inputMask txC','data-inputmask="\'mask\': \'9{+}\'" placeholder="N&uacute;mero de Orden"');
 		// $this->SearchFields['product_id'] = Core::InsertElement('autocomplete','product_id','','form-control','placeholder="Art&iacute;culo" placeholderauto="C&oacute;digo no encontrado"','Product','SearchCodes');
-		$this->SearchFields['product_code'] = Core::InsertElement('text','product_code','','form-control','placeholder="Art&iacute;culo"');
+		$this->SearchFields['product_code'] = Core::InsertElement('text','product_code','','form-control txC','placeholder="Art&iacute;culo"');
 		$this->SearchFields['brand_id'] = Core::InsertElement('select','brand_id','','form-control chosenSelect','placeholder="Marca"',Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"name"),'','Cualquier Marca');
 		$this->SearchFields['category_id'] = Core::InsertElement('select',Category::TABLE_ID,'','form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.',title',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"title"),'','Cualquier L&iacute;nea');
 	}
@@ -177,15 +189,15 @@ class ProductAbstract
 		return '<a href="new.php" class="hint--bottom hint--bounce hint--success" aria-label="Nuevo Art&iacute;culo Gen&eacute;rico"><button type="button" class="NewElementButton btn btnGreen animated fadeIn"><i class="fa fa-plus-square"></i></button></a>';
 	}
 	
-	// public function ConfigureSearchRequest()
-	// {
-	// 	if($_POST['product'])
-	// 	{
-	// 		$_POST[self::TABLE_ID] = Core::Select(Product::TABLE,self::TABLE_ID,Product::TABLE_ID."=".$_POST['product'])[0][self::TABLE_ID];
-	// 		$_POST[self::TABLE_ID.'_condition'] = "=";
-	// 	}	
-	// 	$this->SetSearchRequest();
-	// }
+	public function ConfigureSearchRequest()
+	{
+		if($_POST['order_number'])
+		{
+			$_POST['order_number_condition'] = ">=";
+			$_POST['view_order_field'] = 'order_number';
+		}	
+		$this->SetSearchRequest();
+	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// PROCESS METHODS ///////////////////////////////////////////////////////////////////////////////
@@ -204,7 +216,10 @@ class ProductAbstract
 				$Codes .= $Codes? ",".$Code:$Code;
 		}
 		if($Codes)
+		{
 			Core::Update(Product::TABLE,self::TABLE_ID."=".$ID,Product::TABLE_ID." IN (".$Codes.")");
+		}
+		
 	}	
 	
 	public function Update()
@@ -226,6 +241,12 @@ class ProductAbstract
 		}
 		if($Codes)
 			Core::Update(Product::TABLE,self::TABLE_ID."=".$ID,Product::TABLE_ID." IN (".$Codes.")");
+		
+		$Products = Core::Select(Product::TABLE,"*",self::TABLE_ID."=".$ID);
+		foreach ($Products as $Product)
+		{
+			Core::Update(ProductRelation::TABLE,Product::TABLE_ID."=".$Product[Product::TABLE_ID],self::TABLE_ID."=".$ID." AND ".Brand::TABLE_ID."=".$Product[Brand::TABLE_ID]);
+		}
 		
 	}
 	

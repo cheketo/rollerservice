@@ -449,15 +449,15 @@ $(function(){
 		$(".searchButton").click();
 	});
 
-	$("input").keypress(function(e){
+	$("#CoreSearcherForm input").keypress(function(e){
 		if(e.which==13){
 			$(".searchButton").click();
 		}
 	});
 	
 	$("#ClearSearchFields").click(function(){
-		$("#SearchFieldsForm").children('.row').children('.input-group').children('input,select,textarea').val('');
-		$("#SearchFieldsForm").children('.row').children('.input-group').children('select').chosen();
+		$("#SearchFieldsForm").children('.row').children('#CoreSearcherForm').children('.input-group').children('input,select,textarea').val('');
+		$("#SearchFieldsForm").children('.row').children('#CoreSearcherForm').children('.input-group').children('select').chosen();
 	})
 });
 
@@ -471,7 +471,7 @@ function multipleInputTransform()
 
 function submitSearch()
 {
-	if(validate.validateFields(''))
+	if(validate.validateFields('CoreSearcherForm'))
 	{
 		if($(".ShowList").hasClass("Hidden"))
 		{
@@ -490,7 +490,7 @@ function submitSearch()
 		{
 			$("input,select").blur();
 			$("#SearchResult").remove();
-			$(".box-body").append(returningData);
+			$("#CoreSearcherResults").append(returningData);
 			rowElementSelected();
 			gridElementSelected();
 			showDeleteButton();
@@ -502,6 +502,12 @@ function submitSearch()
 			selectAllRows();
 			unselectAllRows();
 			showSelectAllButton();
+			chosenSelect();
+			SetAutoComplete();
+			validateDivChange();
+			if (typeof AdditionalSearchFunctions == 'function') { 
+			    AdditionalSearchFunctions(); 
+			}
 			$("#TotalRegs").html($("#totalregs").val());
 			var page = $("#view_page").val();
 			appendPager();
@@ -514,6 +520,12 @@ function submitSearch()
 		return false;
 	}
 }
+
+$(document).ready(function(){
+	if (typeof AdditionalSearchFunctions == 'function') { 
+	    AdditionalSearchFunctions(); 
+	}	
+});
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// ORDERER ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -558,7 +570,7 @@ function appendPager()
 
 function appendPagerUnder7(page)
 {
-	var html = '<li class="PrevPage"><a href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></a></li>';
+	var html = '<li class="PrevPage"><a><i class="fa fa-angle-left" aria-hidden="true"></i></a></li>';
 	var totalpages = calculateTotalPages();
 	for (var i = 1; i <= totalpages; i++)
 	{
@@ -566,14 +578,14 @@ function appendPagerUnder7(page)
 			var pageClass = 'active';
 		else
 			var pageClass = '';
-		html = html + '<li class="'+pageClass+' pageElement" page="'+i+'"><a href="#" class="">'+i+'</a></li>';
+		html = html + '<li class="'+pageClass+' pageElement" page="'+i+'"><a class="">'+i+'</a></li>';
 	}
-	return html + '<li class="NextPage"><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a></li>';
+	return html + '<li class="NextPage"><a><i class="fa fa-angle-right" aria-hidden="true"></i></a></li>';
 }
 
 function appendPagerUnder30(page)
 {
-	var html = '<li class="PrevPage"><a href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></a></li>';
+	var html = '<li class="PrevPage"><a><i class="fa fa-angle-left" aria-hidden="true"></i></a></li>';
 	var totalpages = calculateTotalPages();
 	var separatorA = '';
 	var separatorB = '';
@@ -585,20 +597,20 @@ function appendPagerUnder30(page)
 	
 	
 	if((page-2)>1)
-		html = html + '<li class="pageElement" page="1"><a href="#">1'+separatorA+'</a></li>';
+		html = html + '<li class="pageElement" page="1"><a>1'+separatorA+'</a></li>';
 	if(((page-2)>=1))
-		html = html + '<li class="pageElement" page="'+(page-2)+'"><a href="#">'+(page-2)+'</a></li>';
+		html = html + '<li class="pageElement" page="'+(page-2)+'"><a>'+(page-2)+'</a></li>';
 	if(((page-1)>=1))
-		html = html + '<li class="pageElement" page="'+(page-1)+'"><a href="#">'+(page-1)+'</a></li>';
-	html = html + '<li class="active pageElement" page="'+page+'"><a href="#">'+page+'</a></li>';
+		html = html + '<li class="pageElement" page="'+(page-1)+'"><a>'+(page-1)+'</a></li>';
+	html = html + '<li class="active pageElement" page="'+page+'"><a>'+page+'</a></li>';
 	if(((page+1)<=totalpages))
-		html = html + '<li class="pageElement" page="'+(page+1)+'"><a href="#">'+(page+1)+'</a></li>';
+		html = html + '<li class="pageElement" page="'+(page+1)+'"><a>'+(page+1)+'</a></li>';
 	if(((page+2)<=totalpages))
-		html = html + '<li class="pageElement" page="'+(page+2)+'"><a href="#">'+(page+2)+'</a></li>';
+		html = html + '<li class="pageElement" page="'+(page+2)+'"><a>'+(page+2)+'</a></li>';
 	if((page+2)<totalpages)
-		html = html + '<li class="pageElement" page="'+totalpages+'"><a href="#">'+separatorB+totalpages+'</a></li>';
+		html = html + '<li class="pageElement" page="'+totalpages+'"><a>'+separatorB+totalpages+'</a></li>';
 		
-	return html + '<li class="NextPage"><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a></li>';
+	return html + '<li class="NextPage"><a><i class="fa fa-angle-right" aria-hidden="true"></i></a></li>';
 }
 
 function appendPagerUnlimited(page)
@@ -607,7 +619,7 @@ function appendPagerUnlimited(page)
 	var totalpages = calculateTotalPages();
 	var separatorA = '';
 	var separatorB = '';
-	var html = '<li class="Prev10Page"><a href="#"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li><li class="PrevPage"><a href="#"><i class="fa fa-angle-left" aria-hidden="true"></i></i></a></li>';
+	var html = '<li class="Prev10Page"><a><i class="fa fa-angle-double-left" aria-hidden="true"></i></a></li><li class="PrevPage"><a><i class="fa fa-angle-left" aria-hidden="true"></i></i></a></li>';
 
 	if((page-2)>2)
 		separatorA = '...';
@@ -616,37 +628,37 @@ function appendPagerUnlimited(page)
 	
 	
 	if((page-2)>1)
-		html = html + '<li class="pageElement" page="1"><a href="#">1'+separatorA+'</a></li>';
+		html = html + '<li class="pageElement" page="1"><a>1'+separatorA+'</a></li>';
 	
 	if((page-2)>3)
 	{
 		var interPageA = Math.ceil((page-3)/2);
-		html = html + '<li class="pageElement" page="'+interPageA+'"><a href="#">'+separatorA+interPageA+separatorA+'</a></li>';
+		html = html + '<li class="pageElement" page="'+interPageA+'"><a>'+separatorA+interPageA+separatorA+'</a></li>';
 	}
 		
 	if(((page-2)>=1))
-		html = html + '<li class="pageElement" page="'+(page-2)+'"><a href="#">'+(page-2)+'</a></li>';
+		html = html + '<li class="pageElement" page="'+(page-2)+'"><a>'+(page-2)+'</a></li>';
 	if(((page-1)>=1))
-		html = html + '<li class="pageElement" page="'+(page-1)+'"><a href="#">'+(page-1)+'</a></li>';
+		html = html + '<li class="pageElement" page="'+(page-1)+'"><a>'+(page-1)+'</a></li>';
 		
-	html = html + '<li class="active pageElement" page="'+page+'"><a href="#">'+page+'</a></li>';
+	html = html + '<li class="active pageElement" page="'+page+'"><a>'+page+'</a></li>';
 	
 	if(((page+1)<=totalpages))
-		html = html + '<li class="pageElement" page="'+(page+1)+'"><a href="#">'+(page+1)+'</a></li>';
+		html = html + '<li class="pageElement" page="'+(page+1)+'"><a>'+(page+1)+'</a></li>';
 	if(((page+2)<=totalpages))
-		html = html + '<li class="pageElement" page="'+(page+2)+'"><a href="#">'+(page+2)+'</a></li>';
+		html = html + '<li class="pageElement" page="'+(page+2)+'"><a>'+(page+2)+'</a></li>';
 	
 	if(totalpages-(page+2)>3)
 	{
 		//var interPageB = Math.ceil(totalpages-(page+2)/2);
 		var interPageB = Math.ceil( (totalpages/2) + (page/2));
-		html = html + '<li class="pageElement" page="'+interPageB+'"><a href="#">'+separatorB+interPageB+separatorB+'</a></li>';
+		html = html + '<li class="pageElement" page="'+interPageB+'"><a>'+separatorB+interPageB+separatorB+'</a></li>';
 	}	
 		
 	if((page+2)<totalpages)
-		html = html + '<li class="pageElement" page="'+totalpages+'"><a href="#">'+separatorB+totalpages+'</a></li>';
+		html = html + '<li class="pageElement" page="'+totalpages+'"><a>'+separatorB+totalpages+'</a></li>';
 		
-	return html + '<li class="NextPage"><a href="#"><i class="fa fa-angle-right" aria-hidden="true"></i></a></li><li class="Next10Page"><a href="#"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>';
+	return html + '<li class="NextPage"><a><i class="fa fa-angle-right" aria-hidden="true"></i></a></li><li class="Next10Page"><a><i class="fa fa-angle-double-right" aria-hidden="true"></i></a></li>';
 }
 
 function switchPage()
@@ -680,8 +692,8 @@ function switchPrevNextPage()
 			$(".pageElement[page='"+page+"']").click();
 	});
 	
-	$('.Next10Page').click(function(){
-		event.stopPropagation();
+	$('.Next10Page').click(function(e){
+		e.stopPropagation();
 		var page = parseInt($("#view_page").val())+10;
 		if(page<calculateTotalPages())
 		{
@@ -697,8 +709,8 @@ function switchPrevNextPage()
 		}
 	});
 	
-	$('.Prev10Page').click(function(){
-		event.stopPropagation();
+	$('.Prev10Page').click(function(e){
+		e.stopPropagation();
 		var page = parseInt($("#view_page").val())-10;
 		console.log(page);
 		if(page>0)

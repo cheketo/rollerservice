@@ -1855,3 +1855,7 @@ html {
   background-color:#61210B !important;
   color:#FFF!important;
 }
+
+.pagination li{
+  cursor:pointer;
+}

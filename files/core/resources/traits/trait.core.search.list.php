@@ -9,7 +9,11 @@ trait CoreSearchList
 	var $Order;
 	var $SearchTable;
 	var $SearchFields		= array();
+	var $HiddenSearchFields	= array();
+	var $NoOrderSearchFields= array();
 	var $Fields 			= '*';
+	var $GridButtons		= '<button aria-label="Ver listado" class="ShowList GridElement btn Hidden hint--bottom-left hint--bounce"><i class="fa fa-list"></i></button><button aria-label="Ver grilla" class="ShowGrid ListElement btn hint--bottom-left hint--bounce"><i class="fa fa-th-large"></i></button>';
+	var $FilterButtons		= '<button aria-label="Buscar" class="ShowFilters SearchElement btn hint--bottom hint--bounce"><i class="fa fa-search"></i></button>';
 	
     public function GetWhere()
 	{
@@ -169,13 +173,18 @@ trait CoreSearchList
 		return $From.", ".$To;
 	}
 	
-	public function InsertSearchList()
+	public function InsertSearchList($ShowGrid=false,$ShowFilters=true)
 	{
+		
+		if($ShowFilters) $FilterButtons = $this->FilterButtons;
+		if($ShowGrid) $GridButtons = $this->GridButtons;
 		return '<div class="box">
 			<div class="box-header with-border">
 				<!-- Search Filters -->
 		    	<div class="SearchFilters searchFiltersHorizontal animated fadeIn Hidden" style="margin-bottom:10px;">
 			        <div class="form-inline" id="SearchFieldsForm">
+			        	'.Core::InsertElement('hidden','show_filters',$ShowFilters).'
+			        	'.Core::InsertElement('hidden','show_grid',$ShowGrid).'
 			        	'.Core::InsertElement('hidden','view_type','list').'
 			        	'.Core::InsertElement('hidden','view_page','1').'
 			        	'.Core::InsertElement('hidden','view_order_field',$this->GetOrder()).'
@@ -194,13 +203,12 @@ trait CoreSearchList
     			'.$this->InsertDefaultSearchButtons().$this->InsertSearchButtons().'
 			      '.Core::InsertElement('hidden','selected_ids','').'
 			      <div class="changeView">
-			        <button aria-label="Buscar" class="ShowFilters SearchElement btn hint--bottom hint--bounce"><i class="fa fa-search"></i></button>
-			        <button aria-label="Ver listado" class="ShowList GridElement btn Hidden hint--bottom-left hint--bounce"><i class="fa fa-list"></i></button>
-			        <button aria-label="Ver grilla" class="ShowGrid ListElement btn hint--bottom-left hint--bounce"><i class="fa fa-th-large"></i></button>
+			        '.$FilterButtons.'
+			        '.$GridButtons.'
 			      </div>
 			</div>
 			<!-- /.box-header -->
-    		<div class="box-body">
+    		<div class="box-body" id="CoreSearcherResults">
 			      '.$this->InsertSearchResults().'
 			    </div><!-- /.box-body -->
 			    <div class="box-footer clearfix">
@@ -238,17 +246,20 @@ trait CoreSearchList
 	
 	public function InsertSearchResults()
 	{
-		if($_POST['view_type']=='grid')
-			$ListClass = 'Hidden';
-		else
-			$GridClass = 'Hidden';
+		if($_POST['show_grid'])
+		{
+			if($_POST['view_type']=='grid')
+				$ListClass = 'Hidden';
+			else
+				$GridClass = 'Hidden';
+			$Grid = '<div class="GridView row horizontal-list flex-justify-center GridElement '.$GridClass.' animated fadeIn"><ul>'.$this->MakeGrid().'</ul></div><!-- /.horizontal-list -->';
+		}
+	
+			
+		
 		$this->ConfigureSearchRequest();
 		return '<div class="contentContainer txC" id="SearchResult" object="'.get_class($this).'">
-			        <div class="GridView row horizontal-list flex-justify-center GridElement '.$GridClass.' animated fadeIn">
-			          <ul>
-			            '.$this->MakeGrid().'
-			          </ul>
-			        </div><!-- /.horizontal-list -->
+			        '.$Grid.'
 			        <div class="row ListView ListElement animated fadeIn '.$ListClass.'">
 			          <div class="container-fluid">
 			            '.$this->MakeList().'
@@ -277,17 +288,21 @@ trait CoreSearchList
 	{
 		$this->SetSearchFields();
 		$Activated = 'sort-activated';
-		$SearcherHTML = '<div class="row">';
+		$SearcherHTML = '<div class="row"><form id="CoreSearcherForm" name="CoreSearcherForm">';
 		foreach($this->SearchFields as $Order => $HTML)
-		{
-			
-			$SearcherHTML	.='<div class="input-group col-lg-2 col-md-3 col-sm-5 col-xs-11" style="margin:2px;">
-								<span class="input-group-addon order-arrows '.$Activated.'" order="'.$Order.'" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>
+		{	
+			$OrderButton = $this->NoOrderSearchFields[$Order]?'<span class="input-group-addon"></span>':'<span class="input-group-addon order-arrows '.$Activated.'" order="'.$Order.'" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>';
+			$SearcherHTML	.='<div class="input-group col-lg-3 col-md-3 col-sm-5 col-xs-11" style="margin:2px;">
+								'.$OrderButton.'
 								'.$HTML.'
 							</div>';
         	$Activated = '';
 		}
-		$SearcherHTML .= '</div>';
+		foreach($this->HiddenSearchFields as $ID => $Value)
+		{	
+			$SearcherHTML	.= Core::InsertElement('hidden',$ID,$Value);
+		}
+		$SearcherHTML .= '</form></div>';
         return $SearcherHTML;
 	}
 	
@@ -322,6 +337,13 @@ trait CoreSearchList
 	
 	protected function ConfigureSearchColumns()
 	{
+		
+		foreach($this->HiddenSearchFields as $ID => $Value)
+		{	
+			$_POST[$ID] = $Value;
+			$_POST[$ID.'_condition']='=';
+		}
+		
 		if(!$_POST['status'])
 		{
 			if($_GET['status'])
