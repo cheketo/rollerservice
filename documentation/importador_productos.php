@@ -20,7 +20,7 @@
             $SMax = trim($Row[13])>0? trim($Row[13]):0;
             $Desc = trim($Row[42])? trim($Row[42]):'';
             $Stock = trim($Row[20])>0? trim($Row[20])/100:0;
-            $Stock2 = trim($Row[19])>0? trim($Row[19])/10s0:0;
+            $Stock2 = trim($Row[19])>0? trim($Row[19])/100:0;
             
             if($Code)
             {

@@ -139,7 +139,7 @@ function AutoCompleteInput(inputID,cache,icon,minChars,defaultSearchText,mode)
             autocompleteResponseFunction();
         }
         $(".autocomplete-suggestion").click(function(){
-          console.log("entra");
+          // console.log("entra");
         })
       });
     },
@@ -477,7 +477,7 @@ function submitData()
 
     while(element= variables[i++])
     {
-        data.append(element.id,element.value);
+      data.append(element.id,element.value);
     }
     return data;
 }
@@ -814,7 +814,7 @@ $(document).ajaxStart(function(){
     $("#CloseAjaxLoader").addClass('Hidden');
     // $(".loader").removeClass("Hidden");
     // $('html').css({ 'overflow': 'hidden', 'height': '100%' });
-    toggleLoader();
+    showLoader();
 });
 
 $(document).ajaxComplete(function(){
@@ -822,23 +822,46 @@ $(document).ajaxComplete(function(){
     // $('html').css({ 'overflow-Y': 'scroll', 'height': '100%' });
     chosenSelect();
     inputMask();
-    toggleLoader();
-    $("#CloseAjaxLoader").addClass('Hidden');
+    hideLoader();
+    // $("#CloseAjaxLoader").addClass('Hidden');
 });
 
 function toggleLoader()
 {
-  $('.loader').toggleClass('Hidden');
+  // $('.loader').toggleClass('Hidden');
+  // $("#CloseAjaxLoader").addClass('Hidden');
+  //   if (!$('.loader').hasClass('Hidden')) {
+  //     // This prevents scroll on loader
+  //     setTimeout(function() {
+  //       $("#CloseAjaxLoader").removeClass('Hidden');
+  //     },10000);
+  //     $('html').css({ 'overflow': 'hidden', 'height': '100%' });
+  //   } else {
+  //     $('html').css({ 'overflow-Y': 'scroll', 'height': '100%' });
+  //   }
+  if($(".loader").hasClass('Hidden'))
+  {
+    showLoader();
+  }else{
+    hideLoader();
+  }
+}
+
+function showLoader()
+{
+  $('.loader').removeClass('Hidden');
   $("#CloseAjaxLoader").addClass('Hidden');
-    if (!$('.loader').hasClass('Hidden')) {
-      // This prevents scroll on loader
-      setTimeout(function() {
-        $("#CloseAjaxLoader").removeClass('Hidden');
-      },10000);
-      $('html').css({ 'overflow': 'hidden', 'height': '100%' });
-    } else {
-      $('html').css({ 'overflow-Y': 'scroll', 'height': '100%' });
-    }
+  setTimeout(function() {
+    $("#CloseAjaxLoader").removeClass('Hidden');
+  },10000);
+  $('html').css({ 'overflow': 'hidden', 'height': '100%' });
+}
+
+function hideLoader()
+{
+  $('.loader').addClass('Hidden');
+  $("#CloseAjaxLoader").addClass('Hidden');
+  $('html').css({ 'overflow-Y': 'scroll', 'height': '100%' });
 }
 
 
@@ -905,4 +928,62 @@ function CustomizedFilefield()
 			$("#"+$(this).attr("id").substring(4)).click();
 		}
 	});
+}
+
+//////////////////////////////////////////////////// Get File Icon by file extension ////////////////////////////////////////////////////
+function GetFileIcon(ext)
+{
+  var url = "../../../../skin/images/body/icons/";
+  switch (ext) {
+    case 'pdf':
+      return url+"pdf.png";
+    break;
+    
+    case 'avi':
+    case 'mp4':
+      return url+"avi.png";
+    break;
+    
+    case 'wav':
+    case 'mp3':
+      return url+"mp3.png";
+    break;
+    
+    case "doc":
+		case "dot":
+		case "docx":
+		case "docm":
+		case "dotx":
+		case "dotm":
+      return url+"doc.png";
+    break;
+    
+    case "xls":
+		case "xlsx":
+		case "xlt":
+		case "xltx":
+		case "csv":
+      return url+"xls.png";
+    break;
+    
+    case 'rar':
+    case 'zip':
+      return url+"rar.png";
+    break;
+    
+    case "ppt":
+		case "pot":
+		case "pps":
+      return url+"ppt.png";
+    break;
+    
+    case "bmp":
+		case "jpeg":
+		case "jpg":
+		case "png":
+		  return "self";
+		break;
+    
+    default: return url+"txt.png";
+  }
 }

@@ -26,7 +26,7 @@
               <?php echo Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo" validateEmpty="Ingrese un c&oacute;digo."') ?>
             </div>
             <hr>
-            <div class="AsociateProduct Hidden animated fadeIn">
+            <div class="AsociateProduct animated fadeIn">
               <div class="box box-info Hidden animated fadeIn" id="CodeBox">
                 <div class="box-header with-border">
                   <h3 class="box-title"><i class="fa fa-exchange"></i> C&oacute;digos Asociados</h3>
@@ -66,9 +66,9 @@
               </div>
               <hr>
             </div>
-            <div class="form-group">
-              <?php echo Core::InsertElement('button','asoc_data','Asociar C&oacute;digos','btn btn-primary','style="width:100%;"') ?>
-            </div>
+            <!--<div class="form-group">-->
+            <!--  <?php echo Core::InsertElement('button','asoc_data','Asociar C&oacute;digos','btn btn-primary','style="width:100%;"') ?>-->
+            <!--</div>-->
             <div class="checkbox icheck txC">
               <label>
                 <?php echo Core::InsertElement('checkbox','relation_status',1,'iCheckbox','checked="checked"'); ?> <span>Todas las relaciones han sido establecidas</span>

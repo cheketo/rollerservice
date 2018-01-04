@@ -21,5 +21,10 @@ class Currency
 	{
 	    return Core::Select(self::TABLE,self::TABLE_ID.",CONCAT(title,' (',prefix,')') AS title","","title");
 	}
+	
+	public static function GetCurrencyPrefix($CurrencyID)
+	{
+		return Core::Select(self::TABLE,"prefix",self::TABLE_ID."=".$CurrencyID)[0]['prefix'];
+	}
 }
 ?>

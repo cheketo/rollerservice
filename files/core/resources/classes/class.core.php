@@ -185,7 +185,82 @@
     			case "wmv":
     				$Ext = "wmv";
     			break;
+    			case "bmp":
+    				$Ext = "bmp";
+    			break;
+    			case "jpeg":
+    			case "jpg":
+    				$Ext = "jpg";
+    			break;
+    			case "png":
+    			    $Ext = "png";
+    			break;
     			default: $Ext = "txt"; break;
+    
+    		}
+    		return $Ext;
+    	}
+    	
+    	public static function GetFileIcon($File,$SelfToImages=true)
+    	{
+    	    $Parts = explode(".",$File);
+    	    $Ext = $Parts[count($Parts)-1];
+    	    $URL = '../../../../skin/images/body/icons/';
+    	    switch(strtolower($Ext))
+    		{
+    			case "xls":
+    			case "xlsx":
+    			case "xlt":
+    			case "xltx":
+    			case "csv":
+    				$Ext = $URL."xls.png";
+    			break;
+    			case "doc":
+    			case "dot":
+    			case "docx":
+    			case "docm":
+    			case "dotx":
+    			case "dotm":
+    				$Ext = $URL."doc.png";
+    			break;
+    			case "ppt":
+    			case "pot":
+    			case "pps":
+    				$Ext = $URL."ppt.png";
+    			break;
+    			case "pdf":
+    				$Ext = $URL."pdf.png";
+    			break;
+    			case "avi":
+    				$Ext = $URL."avi.png";
+    			break;
+    			case "mp3":
+    				$Ext = $URL."mp3.png";
+    			break;
+    			case "rar":
+    			case "zip":
+    				$Ext = $URL."rar.png";
+    			break;
+    			case "bmp":
+    			    if($SelfToImages)
+    			        $Ext = $File;
+    			    else
+        				$Ext = $URL."bmp.png";
+    			break;
+    			case "jpeg":
+    			case "jpg":
+    			    if($SelfToImages)
+    			        $Ext = $File;
+    			    else
+    				    $Ext = $URL."jpg.png";
+    			break;
+    			case "png":
+    			    if($SelfToImages)
+    			        $Ext = $File;
+    			    else
+        			    $Ext = $URL."png.png";
+    			break;
+    			default: $Ext = $URL."txt.png"; break;
     
     		}
     		return $Ext;

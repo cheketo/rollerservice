@@ -17,7 +17,7 @@ class CoreFileData
 	var		$Quality	= 100;
 	var		$Path;
 	
-	const DEFAULT_PATH = '/skin/files/';
+	const DEFAULT_PATH = '../../../../skin/files/';
 	
 	public function __construct($File,$Path="",$FileName="")
 	{
@@ -67,7 +67,7 @@ class CoreFileData
 			$this->Extension= $Extension[0];
 			$this->Error	= $_FILES[$File]['error'];
 			$this->Size		= $_FILES[$File]['size'];
-			$this->Name		= $FileName ? $FileName.".".$this->Extension : md5($this->TmpName.date("Y-m-d H:i:s")).".".$this->Extension;
+			$this->Name		= $FileName ? $FileName.".".$this->Extension : sha1($this->TmpName.date("Y-m-d H:i:s")).".".$this->Extension;
 			$this->Url		= $this->Path.$this->Name;
 		}
 		
@@ -149,6 +149,18 @@ class CoreFileData
 		if(file_exists($NewFile))
 			unlink($NewFile);
 		return move_uploaded_file($this->TmpUrl,$NewFile);
+	}
+	
+	public function GetFile()
+	{
+		return $this->Path.$this->Name;
+	}
+	
+	public function MoveFileTo($Path="")
+	{
+		if($Path)
+			$this->SetPath($Path);
+		return rename($this->TmpUrl,$this->GetFile());
 	}
 	
 	public function DeleteFile($Url="")

@@ -60,12 +60,12 @@ $(function(){
 							document.location = "import_selection.php?id="+$('#id').val();
 						}else{
 							$("#action").val('Updateimportstatus');
-							var updateImportStatus = function(data)
+							var UpdtImportStatus = function(data)
 							{
 								console.log(data);
 								notifyError("Se ha producido un error al modificar el estado de la importaci&oacute;n previa.");
 							}
-							sumbitFields(process_url+'?object=ProductRelationItem',haveData,function(){});
+							sumbitFields(process_url+'?object=ProductRelationItem',UpdtImportStatus,function(){});
 							$("#action").val(oldAction);
 						}
 					});

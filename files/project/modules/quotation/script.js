@@ -25,7 +25,7 @@ $(function(){
 		params += '&international='+get['international'];
 	$("#BtnCreate").click(function(){
 		var element = $('#company option:selected').html();
-		var target		= 'list.php?element='+element+'&msg='+msg+params;
+		var target	= 'list.php?element='+element+'&msg='+msg+params;
 		askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?');
 	});
 	$("#BtnCreateNext").click(function(){
@@ -62,6 +62,7 @@ $(document).ready(function(){
 	updateAllDeliveryDates();
 	showHistoryWindow();
 	showHistoryButtons();
+	checkHistoryButtons();
 });
 
 function setDatePicker()
@@ -116,7 +117,7 @@ function checkHistoryButtons()
 {
 	$(".itemSelect").each(function(){
 		var itemid = $(this).attr("item");
-		if($(this).val() && $("#company").val())
+		if($("#item_"+itemid).val()>0 && $("#company").val())
 		{
 			$("#HistoryItem"+itemid).removeClass("Hidden");
 		}else{
@@ -154,6 +155,9 @@ function addItem()
 	                updateRowBackground();
 	                // recalculateItemPrice();
 	                updateDeliveryDateFromDays();
+	                showHistoryWindow();
+	                showHistoryButtons();
+	                checkHistoryButtons();
 	                $("#day_"+id).change();
 	            }else{
 	                console.log('Sin información devuelta. Item='+id);
@@ -327,7 +331,10 @@ function showHistoryWindow()
 {
 	$(".HistoryItem").click(function(){
 		var id = $(this).attr("item");
-		$("#window"+id).removeClass("Hidden");
+		$("#window_traceability").removeClass("Hidden");
+		$("#product").val($("#item_"+id).val());
+		$("#item").val(id);
+		FillTraceabilityWindow();
 	})	
 }
 

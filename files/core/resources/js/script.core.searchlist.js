@@ -68,11 +68,15 @@ function toggleRow(element)
     
     var actions = element.children('.listActions');
     actions.toggleClass('Hidden');
-
+	
+	
+	
 	if(get['status'] && get['status'].toUpperCase()=='I')
+	{
     	showActivateButton();
-    else
+    }else{
 		showDeleteButton();
+    }
 	
 	showSelectAllButton();
 	
@@ -120,7 +124,7 @@ function showDeleteButton()
 
 function showActivateButton()
 {
-    if($('.SelectedRow').length>1 && checkDeleteRestrictions())
+    if($('.SelectedRow').length>1 && checkActiveRestrictions())
     {
         $('.ActivateSelectedElements').removeClass('Hidden');
     }else{
@@ -134,6 +138,20 @@ function checkDeleteRestrictions()
     $('.SelectedRow').each(function(){
         var id = $(this).attr('id').split('_');
         if($("#delete_"+id[1]).length<1)
+        {
+        	x=false;
+        }
+            
+    });
+    return x;
+}
+
+function checkActiveRestrictions()
+{
+    var x=true;
+    $('.SelectedRow').each(function(){
+        var id = $(this).attr('id').split('_');
+        if($("#activate_"+id[1]).length<1)
         {
         	x=false;
         }
@@ -316,7 +334,9 @@ activateListElement();
 
 function massiveElementDelete()
 {
-	$(".DeleteSelectedElements").click(function(){
+	$(".DeleteSelectedElements").click(function(e){
+		e.preventDefault();
+		e.stopPropagation();
 		var delBtn		= $(this);
 		// var elements	= "";
 		// var id;
@@ -353,7 +373,9 @@ massiveElementDelete();
 
 function massiveElementActivate()
 {
-	$(".ActivateSelectedElements").click(function(){
+	$(".ActivateSelectedElements").click(function(e){
+		e.preventDefault();
+		e.stopPropagation();
 		var delBtn = $(this)
 		alertify.confirm(utf8_decode('¿Desea activar los registros seleccionados?'), function(e){
 	        if(e){
@@ -495,7 +517,7 @@ function submitSearch()
 			gridElementSelected();
 			showDeleteButton();
 			deleteListElement();
-			massiveElementDelete();
+			// massiveElementDelete();
 			activateListElement();
 			toggleRowDetailedInformation();
 			toggleSelectedRows();

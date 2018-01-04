@@ -671,7 +671,9 @@ class Purchase
 	
 	public function Additem()
 	{
+		
 		$ID = $_POST['item'];
+		$HistoryButton = '<button type="button" id="HistoryItem'.$ID.'" class="btn btn-github HistoryItem hint--bottom hint--bounce Hidden" aria-label="Trazabilidad" style="margin:0px;" item="'.$ID.'"><i class="fa fa-book"></i></button>';
 		$TotalPrice = "$ 0.00";
 		if($ID % 2 != 0)
 			$BgClass = "bg-gray";
@@ -682,7 +684,7 @@ class Purchase
                 <form id="item_form_'.$ID.'">
                 <div class="col-xs-4 txC">
                 	<span id="Item'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
-                  '.Core::InsertElement("autocomplete","item_".$ID,'','ItemField'.$ID.' itemSelect txC form-control','validateEmpty="Seleccione un Art&iacute;culo" placeholder="Ingrese un c&oacute;digo" placeholderauto="C&oacute;digo no encontrado" iconauto="cube"','Product','SearchCodes').'
+                  '.Core::InsertElement("autocomplete","item_".$ID,'','ItemField'.$ID.' itemSelect txC form-control','item="'.$ID.'" validateEmpty="Seleccione un Art&iacute;culo" placeholder="Ingrese un c&oacute;digo" placeholderauto="C&oacute;digo no encontrado" iconauto="cube"','Product','SearchCodes').'
                 </div>
                 <div class="col-xs-1 txC">
                 	<span id="Price'.$ID.'" class="Hidden ItemText'.$ID.'"></span>
@@ -704,17 +706,10 @@ class Purchase
                 <div class="col-xs-2 txC">
 				  <button type="button" id="SaveItem'.$ID.'" class="btn btnGreen SaveItem" style="margin:0px;" item="'.$ID.'"><i class="fa fa-check"></i></button>
 				  <button type="button" id="EditItem'.$ID.'" class="btn btnBlue EditItem Hidden" style="margin:0px;" item="'.$ID.'"><i class="fa fa-pencil"></i></button>
+				  '.$HistoryButton.'
 				  <button type="button" id="DeleteItem'.$ID.'" class="btn btnRed DeleteItem" style="margin:0px;" item="'.$ID.'"><i class="fa fa-trash"></i></button>
 				</div>
 				</form>
-				<div class="window Hidden" id="window1">
-				    <div class="window-border"><h4><div class="pull-left"><i class="fa fa-book"></i> Historial de Cotizaciones y Trazabilidad</div><div class="pull-right"><div class="window-close"><i class="fa fa-times"></i></div></div></h4></div>
-				    <div class="window-body">
-					</div>
-				    <div class="window-border txC">
-				        
-				    </div>
-				  </div>
             </div>';
             echo $HTML;
 	}

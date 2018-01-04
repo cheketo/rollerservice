@@ -7,6 +7,7 @@ class Quotation
 	const TABLE				= 'quotation';
 	const TABLE_ID			= 'quotation_id';
 	const SEARCH_TABLE		= 'view_quotation_list';
+	const DEFAULT_FILE_DIR	= '../../../../skin/files/quotation/';
 	const DEFAULT_IMG		= '../../../../skin/images/quotations/default/default.png';
 	const DEFAULT_IMG_DIR	= '../../../../skin/images/quotations/default/';
 	const IMG_DIR			= '../../../../skin/images/quotations/';
@@ -268,5 +269,139 @@ class Quotation
 		$ID	= $_POST['id'];
 		Core::Update(self::TABLE,"status = 'F'",self::TABLE_ID."=".$ID);
 	}
+	
+	public function Addnewfile()
+	{
+		if(count($_FILES['tfile'])>0)
+		{
+			$ProductID = $_POST['product'];
+			$QuotationID = $_POST['id'];
+			$FileDir = self::DEFAULT_FILE_DIR."new/";
+			//$FileName = date("s").date("i").date("H").date("d").date("m").date("Y");
+			$FileName = explode(".",str_replace(" ","",$_FILES['tfile']['name']));
+			$Ext = $FileName[count($FileName)-1];
+			unset($FileName[count($FileName)-1]);
+			$FileName = implode(".",$FileName);
+			$File = new CoreFileData($_FILES['tfile'],$FileDir,$FileName);
+			if($Ext!="jpg" || $Ext!="jpeg" || $Ext!="png" || $Ext!="bmp")
+			{
+				$File->SaveFile();
+				$FileURL = $FileDir.$FileName.".".$File->GetExtension();
+			}else{
+				$FileURL = $File	-> BuildImage(200,200);	
+			}
+			
+			
+			
+			$ID = Core::Insert('quotation_file_new',"product_id,name,url,creation_date,created_by,organization_id",$ProductID.",'".$FileName."','".$FileURL."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+			$File = array("id"=>$ID,"name"=>$FileName,"url"=>$FileURL,"ext"=>$Ext);
+			echo json_encode($File,JSON_HEX_QUOT);
+		}
+	}
+	
+	public function Removenewfile()
+	{
+		$FileID = $_GET['fid'];
+		Core::Update('quotation_file_new',"status='I',updated_by=".$_SESSION[CoreUser::TABLE_ID],"file_id=".$FileID);
+	}
+	
+	public function Newquotation()
+	{
+		$ProductID = $_POST['product'];
+		$Days = $_POST['tday'];
+		$Date = Core::FromDateToDB($_POST['tdate']);
+		$Price = $_POST['tprice'];
+		$Quantity = $_POST['tquantity'];
+		$CompanyID = $_POST['tprovider'];
+		$CurrencyID = $_POST['tcurrency'];
+		
+		$Extra = $_POST['textra'];
+		$FilesCount = $_POST['filecount'];
+		$IDs = "0";
+		$Total = $Price*$Quantity;
+		
+		$International = Core::Select(Company::TABLE,'international',Company::TABLE_ID."=".$CompanyID)[0]['international'];
+		$TypeID = $International=='N'? 1:2;
+		
+		$QuotationID = Core::Insert(self::TABLE,"company_id,sender_id,currency_id,total,type_id,status,quotation_date,extra,creation_date,created_by,organization_id",$CompanyID.",".$CompanyID.",".$CurrencyID.",".$Total.",".$TypeID.",'A','".$Date."','".$Extra."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+		$Field = $QuotationID.",".$CompanyID.",".$ProductID.",".$Price.",".$Quantity.",".$Total.",".$Days.",".$CurrencyID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
+		Core::Insert(QuotationItem::TABLE,self::TABLE_ID.','.Company::TABLE_ID.','.Product::TABLE_ID.',price,quantity,total,days,currency_id,creation_date,created_by,'.CoreOrganization::TABLE_ID,$Field);
+		for($I=1;$I<=$FilesCount;$I++)
+		{
+			
+			$FileID = $_POST['fileid_'.$I];
+			if($FileID)
+			{
+				$IDs .= ",".$FileID;
+			}
+		}
+		$Files = Core::Select("quotation_file_new","*","status='A' AND file_id IN (".$IDs.")");
+		$FilePath = '../../../../skin/files/quotation/'.$QuotationID.'/';
+		foreach($Files as $File)
+		{
+			$FileObj = new CoreFileData($File['url']);
+			$FileObj->MoveFileTo($FilePath);
+			$NewUrl = $FileObj->GetFile();
+			
+			$Field = $File['file_id'].",".$QuotationID.",".$ProductID.",'".$File['name']."','".$NewUrl."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
+			$Fields .= $Fields? "),(".$Field:$Field;
+		}
+		if($Fields)
+			Core::Insert("quotation_file","new_id,quotation_id,product_id,name,url,creation_date,created_by,organization_id",$Fields);
+		Core::Delete("quotation_file_new","status='A' AND DATEDIFF(CURDATE(),creation_date)>0");
+		echo json_encode(array("id"=>$QuotationID,"filepath"=>$FilePath,"currency"=>Currency::GetCurrencyPrefix($CurrencyID)),JSON_HEX_QUOT);
+	}
+	
+	public function Fillproviderquotations()
+	{
+		$ProductID = $_POST['product'];
+		$Quotations = Core::Select(self::SEARCH_TABLE,"*","receiver_id=0 AND ".Product::TABLE_ID."=".$ProductID,'quotation_date DESC,creation_date DESC,quotation_id DESC');
+		foreach($Quotations as $Quotation)
+		{
+			$FilesHTML = "";
+			$Files = Core::Select('quotation_file',"*",self::TABLE_ID."=".$Quotation[self::TABLE_ID]);
+			if(count($Files)>0)
+			{
+				foreach($Files as $File)
+				{
+					$IconURL = Core::GetFileIcon($File['url']);
+					$FilesHTML .= '<div><a href="'.$File['url'].'" target="_blank"><img src="'.$IconURL.'" width="32" height="32"> '.$File['name'].'</a></div>';
+				}
+			}
+			$HTML .= '<tr class="ClearWindow">
+		                <td>'.Core::FromDBToDate($Quotation['quotation_date']).'</td>
+		                <td>'.$Quotation['company'].'</td>
+		                <td><span class="label label-success">'.$Quotation['currency'].' '.$Quotation['price'].'</span></td>
+		                <td>'.$Quotation['quantity'].'</td>
+		                <td>'.$Quotation['currency'].' '.$Quotation['total_item'].'</td>
+		                <td>'.$Quotation['days'].' D&iacute;as</td>
+		                <td>'.$Quotation['extra'].'</td>
+		                <td>'.$FilesHTML.'</td>
+		              </tr>';
+		}
+		echo $HTML;
+	}
+	
+	public function Fillcustomerquotations()
+	{
+		$ProductID = $_POST['product'];
+		$CompanyID = $_POST['company'];
+		$Quotations = Core::Select(self::SEARCH_TABLE,"*","sender_id=0 AND ".Company::TABLE_ID."=".$CompanyID." AND ".Product::TABLE_ID."=".$ProductID,'quotation_date DESC,creation_date DESC,quotation_id DESC');
+		foreach($Quotations as $Quotation)
+		{
+			$HTML .= '<tr class="ClearWindow">
+						<td><span class="label label-default">'.Core::FromDBToDate($Quotation['quotation_date']).'</span></td>
+		                <td><span class="label label-success">'.$Quotation['currency'].' '.$Quotation['price'].'</span></td>
+		                <td>'.$Quotation['quantity'].'</td>
+		                <td><span class="label label-success">'.$Quotation['currency'].' '.$Quotation['total_item'].'</span></td>
+		                <td><span class="label label-warning">'.$Quotation['days'].' D&iacute;as</span></td>
+		                <td>
+		                  <button type="button" class="btn btn-github SeeQuotation hint--bottom hint--bounce" aria-label="Ver Cotizaci&oacute;n" style="margin:0px;" item="'.$Quotation[self::TABLE_ID].'"><i class="fa fa-eye"></i></button>
+		                </td>
+		              </tr>';
+		}
+		echo $HTML;
+	}
+	
 }
 ?>
