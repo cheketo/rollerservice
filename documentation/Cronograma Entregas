@@ -1,38 +1,25 @@
 Cronograma de Entregas
 
-ENERO 2018
-16/01/2018 - Desarrollo y Testing del Módulo de Cotizaciones
-17/01/2018 - Ajuste y Correción de Errores del Módulo de Cotizaciones a Clientes Nacionales
-18/01/2018 - Implementación del Módulo de Cotizaciones y Módulos de Artículos, Empresas y Administración del Sistema (ISO)
-23/01/2018 - Desarrollo y Testing del Módulo de Ordenes de Compra a Clientes Nacionales
-31/01/2018 - Desarrollo y Testing del Módulo de Ordenes de Compra a Proveedores Internacionales
-
-FEBRERO 2018
-01/02/2018 - Ajuste y Correción de Errores del Módulo de Ordenes de Compra a Clientes Nacionales y Módulo de Ordenes de Compra a Proveedores Internacionales
-05/02/2018 - Desarrollo y Testing del Módulo de Envío y Recepción de Stock en Almacén
-07/02/2018 - Ajuste y Correción de Errores del Módulo de Envío y Recepción de Stock en Almacén
-
-MARZO 2018
-02/03/2018 - Desarrollo y Testing del Módulo de Facturación e Impuestos
-09/03/2018 - Ajuste y Correción de Errores del Módulo de Facturación e Impuestos
-30/03/2018 - Desarrollo y Testing del Módulo de Contabilidad
-
-ABRIL 2018
-13/04/2018 - Ajuste y Correción de Errores del Módulo de Contabilidad
-19/04/2018 - Desarrollo y Testing del Módulo de Parametrización y Configuración Generál del Sistema
-20/04/2018 - Ajuste y Correción de Errores del Módulo de Parametrización y Configuración Generál del Sistema
-26/04/2018 - Desarrollo y Testing del Módulo de Avisos y Alertas
-27/04/2018 - Ajuste y Correción de Errores del Módulo de Avisos y Alertas
-
-MAYO 2018
-10/05/2018 - Desarrollo y Testing del Módulo de Estadísticas y Reportes
-11/05/2018 - Ajuste y Correción de Errores del Módulo de Estadísticas y Reportes
-15/05/2018 - Ajuste y Correción de Errores Generales del Sistema
-
-JUNIO 2018
-01/06/2018 - Importación y Normalización de la Información del Sistema Antiguo
-08/06/2018 - Implementación de todos los Módulos del Sistema  (ISO)
-
-OCTUBRE 2018
-19/10/2018 - Testing en Paralelo con el Sistema Antiguo y Correción de Errores  (ISO)
-22/10/2018 - Implementación Productiva del Sistema  (ISO)
+04/01/2018 - 16/01/2018 - Desarrollo y Testing del Módulo de Cotizaciones
+16/01/2018 - 17/01/2018 - Ajuste y Correción de Errores del Módulo de Cotizaciones a Clientes Nacionales
+17/01/2018 - 18/01/2018 - Implementación del Módulo de Cotizaciones y Módulos de Artículos, Empresas y Administración del Sistema
+18/01/2018 - 23/01/2018 - Desarrollo y Testing del Módulo de Ordenes de Compra a Clientes Nacionales
+23/01/2018 - 31/01/2018 - Desarrollo y Testing del Módulo de Ordenes de Compra a Proveedores Internacionales
+31/01/2018 - 01/02/2018 - Ajuste y Correción de Errores del Módulo de Ordenes de Compra a Clientes Nacionales y Módulo de Ordenes de Compra a Proveedores Internacionales
+01/02/2018 - 05/02/2018 - Desarrollo y Testing del Módulo de Envío y Recepción de Stock en Almacén
+05/02/2018 - 07/02/2018 - Ajuste y Correción de Errores del Módulo de Envío y Recepción de Stock en Almacén
+07/02/2018 - 02/03/2018 - Desarrollo y Testing del Módulo de Facturación e Impuestos
+02/03/2018 - 09/03/2018 - Ajuste y Correción de Errores del Módulo de Facturación e Impuestos
+09/03/2018 - 30/03/2018 - Desarrollo y Testing del Módulo de Contabilidad
+30/03/2018 - 13/04/2018 - Ajuste y Correción de Errores del Módulo de Contabilidad
+13/04/2018 - 19/04/2018 - Desarrollo y Testing del Módulo de Parametrización y Configuración Generál del Sistema
+19/04/2018 - 20/04/2018 - Ajuste y Correción de Errores del Módulo de Parametrización y Configuración Generál del Sistema
+20/04/2018 - 26/04/2018 - Desarrollo y Testing del Módulo de Avisos y Alertas
+26/04/2018 - 27/04/2018 - Ajuste y Correción de Errores del Módulo de Avisos y Alertas
+27/04/2018 - 10/05/2018 - Desarrollo y Testing del Módulo de Estadísticas y Reportes
+10/05/2018 - 11/05/2018 - Ajuste y Correción de Errores del Módulo de Estadísticas y Reportes
+11/05/2018 - 15/05/2018 - Ajuste y Correción de Errores Generales del Sistema
+15/05/2018 - 01/06/2018 - Importación y Normalización de la Información del Sistema Antiguo
+01/06/2018 - 08/06/2018 - Implementación de todos los Módulos del Sistema
+08/06/2018 - 19/10/2018 - Testing en Paralelo con el Sistema Antiguo y Correción de Errores
+19/10/2018 - 22/10/2018 - Implementación Productiva del Sistema
