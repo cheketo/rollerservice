@@ -26,17 +26,17 @@ $(function(){
 	$("#BtnCreate").click(function(){
 		var element = $('#company option:selected').html();
 		var target	= 'list.php?element='+element+'&msg='+msg+params;
-		askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?');
+		askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
 	});
 	$("#BtnCreateNext").click(function(){
 		var element = $('#company option:selected').html();
 		var target		= 'new.php?element='+element+'&msg='+msg+params;
-		askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?');
+		askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
 	});
 	$("#BtnEdit").click(function(){
 		var element = $('#company option:selected').html();
 		var target		= 'list.php?element='+element+'&msg='+msg+params;
-		askAndSubmit(target,role,'¿Desea modificar la cotizaci&oacute;n de <b>'+element+'</b>?');
+		askAndSubmit(target,role,'¿Desea modificar la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
 	});
 	// $("input").keypress(function(e){
 	// 	if(e.which==13){

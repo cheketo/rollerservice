@@ -244,7 +244,7 @@
   <div class="box animated fadeIn" style="min-width:99%">
     <div class="box-header flex-justify-center">
       <div class="innerContainer main_form" style="min-width:100%">
-            <!--<form id="new_quotation">-->
+            <form id="QuotationForm">
             
             <h4 class="subTitleB"><i class="fa fa-<?php echo $TitleIcon ?>"></i> <?php echo $Role; ?></h4>
             <div class="row form-group inline-form-custom">
@@ -375,8 +375,7 @@
             <button type="button" class="btn btn-success btnBlue" id="BtnCreateNext"><i class="fa fa-plus"></i> Crear y Agregar Otra</button>
             <button type="button" class="btn btn-error btnRed" id="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>
           </div>
-          <!--</form>-->
-        </div>
+        </form></div>
     </div><!-- box -->
   </div><!-- box -->
 <?php
