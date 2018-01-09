@@ -65,7 +65,7 @@
     <div class="window-border"><h4><div class="pull-left"><i class="fa fa-book"></i> Historial de Cotizaciones y Trazabilidad</div><div class="pull-right"><div id="WindowClose" class="BtnWindowClose text-red"><i class="fa fa-times"></i></div></div></h4></div>
     <div class="window-body">
       
-      
+      <?php if($Customer=="Y"){ ?>
       <div id="NewQuotationBox" class="box box-success txC">
         <div class="box-header">
           <h3 class="box-title QuotationBoxTitle cursor-pointer">Nueva Cotización de Proveedor</h3>
@@ -142,7 +142,7 @@
           </div>
         </div>
       </div>
-      
+      <?php } ?>
       <div id="ProvidersBox" class="box box-warning collapsed-box txC">
           <div class="box-header">
             <h3 class="box-title QuotationBoxTitle cursor-pointer">Cotizaciones de Proveedores</h3>
@@ -184,7 +184,7 @@
           </div>
            
         </div>
-      
+      <?php if($Customer=="Y"){ ?>
       <div id="QuotationsBox" class="box box-primary collapsed-box">
         <div class="box-header with-border txC">
           <h3 class="box-title QuotationBoxTitle cursor-pointer">&Uacute;ltimas cotizaciones al cliente</h3>
@@ -244,7 +244,7 @@
         <!--</div>-->
       
       </div>
-      
+      <?php } ?>
       
     </div>
     <div class="window-border txC">

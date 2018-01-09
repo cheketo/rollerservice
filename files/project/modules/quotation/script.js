@@ -111,15 +111,25 @@ function showHistoryButtons()
 	$("#company,.itemSelect").change(function(){
 		checkHistoryButtons();
 	});
+	// $("#company").change(function(){
+		
+	// });
 }
 
 function checkHistoryButtons()
 {
 	$(".itemSelect").each(function(){
 		var itemid = $(this).attr("item");
-		if($("#item_"+itemid).val()>0 && $("#company").val())
+		if($("#item_"+itemid).val()>0)
 		{
 			$("#HistoryItem"+itemid).removeClass("Hidden");
+			if(get['customer']=='Y')
+			{
+				if($("#company").val())
+					$("#QuotationsBox").removeClass("Hidden");
+				else
+					$("#QuotationsBox").addClass("Hidden");
+			}
 		}else{
 			$("#HistoryItem"+itemid).addClass("Hidden");
 		}

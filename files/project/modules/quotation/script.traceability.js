@@ -150,23 +150,26 @@ function FillProviderQuotations()
 
 function FillCustomerQuotations()
 {
-    var MainAction = $("#action").val();
-    $("#action").val('Fillcustomerquotations');
-    var process     = process_url+'?object=Quotation';
-    var haveData = function(data)
+    if(get['customer']=='Y' && $("#company").val())
     {
-        $("#CustomerQuotationWrapper").children("tbody").append(data);
-        // notifySuccess("La cotizaci&oacute;n ha sido cargado correctamente");
-        // console.log(data);
+        var MainAction = $("#action").val();
+        $("#action").val('Fillcustomerquotations');
+        var process     = process_url+'?object=Quotation';
+        var haveData = function(data)
+        {
+            $("#CustomerQuotationWrapper").children("tbody").append(data);
+            // notifySuccess("La cotizaci&oacute;n ha sido cargado correctamente");
+            // console.log(data);
+        }
+        var noData = function()
+        {
+            // notifyError("Ha ocurrido un error al obtener las cotizaciones de este producto.");
+            var HTML = '<tr class="QuotationDeleteable"><td colspan="8"><div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron cotizaciones anteriores del cliente para este art&iacute;culo.</h4></div></td></tr>';
+            $("#CustomerQuotationWrapper").children("tbody").append(HTML);
+        }
+        sumbitFields(process,haveData,noData);
+        $("#action").val(MainAction);
     }
-    var noData = function()
-    {
-        // notifyError("Ha ocurrido un error al obtener las cotizaciones de este producto.");
-        var HTML = '<tr class="QuotationDeleteable"><td colspan="8"><div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron cotizaciones anteriores del cliente para este art&iacute;culo.</h4></div></td></tr>';
-        $("#CustomerQuotationWrapper").children("tbody").append(HTML);
-    }
-    sumbitFields(process,haveData,noData);
-    $("#action").val(MainAction);
 }
 
 function ToggleBox()
@@ -203,12 +206,15 @@ function SaveNewQuotation()
 
 function ClearNewQuotationForm()
 {
-    $("#tform input,#tform textarea").each(function(){
-        $(this).val('');
-    });
-    $("#FileWrapper").html('');
-    $("#filecount").val("0");
-    validate.createErrorDivs();
+    if(get['customer']=='Y')
+    {
+        $("#tform input,#tform textarea").each(function(){
+            $(this).val('');
+        });
+        $("#FileWrapper").html('');
+        $("#filecount").val("0");
+        validate.createErrorDivs();
+    }
 }
 
 function CreateNewQuotation()
