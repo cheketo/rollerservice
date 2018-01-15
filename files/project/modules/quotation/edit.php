@@ -72,7 +72,7 @@
 
           <div class="box-tools">
             
-            <button id="CollapseNewForm" type="button" class="btn btn-box-tool NewQuotationBoxToggle" data-widget="collapse"><i class="fa fa-plus"></i></button>
+            <button id="CollapseNewForm" type="button" class="btn btn-box-tool NewQuotationBoxToggle" data-widget="collapse"><i class="fa fa-minus"></i></button>
               
           </div>
         </div>
@@ -143,7 +143,7 @@
         </div>
       </div>
       <?php } ?>
-      <div id="ProvidersBox" class="box box-warning collapsed-box txC">
+      <div id="ProvidersBox" class="box box-warning txC">
           <div class="box-header">
             <h3 class="box-title QuotationBoxTitle cursor-pointer">Cotizaciones de Proveedores</h3>
             <div class="box-tools pull-right">
@@ -151,7 +151,7 @@
                 <input name="table_search" class="form-control pull-right" placeholder="Buscar" type="text">
                 <div class="input-group-btn">
                   <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                  <button type="button" id="CollapseQuotations" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                  <button type="button" id="CollapseQuotations" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                 </div>
               </div>
             </div>
@@ -185,11 +185,11 @@
            
         </div>
       <?php if($Customer=="Y"){ ?>
-      <div id="QuotationsBox" class="box box-primary collapsed-box">
+      <div id="QuotationsBox" class="box box-primary">
         <div class="box-header with-border txC">
           <h3 class="box-title QuotationBoxTitle cursor-pointer">&Uacute;ltimas cotizaciones al cliente</h3>
           <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
           </div>
         </div>
          
