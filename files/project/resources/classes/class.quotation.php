@@ -386,7 +386,7 @@ class Quotation
 	{
 		$ProductID = $_POST['product'];
 		$CompanyID = $_POST['company'];
-		$Quotations = Core::Select(self::SEARCH_TABLE,"*","sender_id=0 AND ".Company::TABLE_ID."=".$CompanyID." AND ".Product::TABLE_ID."=".$ProductID,'quotation_date DESC,creation_date DESC,quotation_id DESC');
+		$Quotations = Core::Select(self::SEARCH_TABLE,"*","status<>'I' AND sender_id=0 AND ".Company::TABLE_ID."=".$CompanyID." AND ".Product::TABLE_ID."=".$ProductID,'quotation_date DESC,creation_date DESC,quotation_id DESC');
 		foreach($Quotations as $Quotation)
 		{
 			$HTML .= '<tr class="ClearWindow">

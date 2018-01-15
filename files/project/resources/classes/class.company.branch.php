@@ -37,8 +37,6 @@ class CompanyBranch
     
     public static function InsertBranchInfo($ID,$DeleteInfo=false)
 	{
-	    echo "1";
-		
 		// DELETE ALL BRANCHES
 		if($DeleteInfo)
 		{
