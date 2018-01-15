@@ -122,9 +122,25 @@ function FillTraceabilityWindow()
     // {
     $(".QuotationDeleteable").remove();
     ClearTraceabilityWindow();
+    SetTraceabilityProductName();
     FillProviderQuotations();
     FillCustomerQuotations();
     // }
+}
+
+function SetTraceabilityProductName()
+{
+    var item = $("#item").val();
+    var name = $("#TextAutoCompleteitem_"+item).val();
+    // var name = $("#TextAutoCompleteitem_"+item).val().split("-").reverse();
+    // for(i=0;i<count(name);i++)
+    // {
+    //     if(i>2)
+    //     {
+            
+    //     }
+    // }
+    $("#ProductName").html('<kbd>'+name+'</kbd>');
 }
 
 function FillProviderQuotations()
