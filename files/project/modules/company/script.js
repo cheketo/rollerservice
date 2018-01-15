@@ -25,6 +25,8 @@ $(function(){
 				}
 				var target		= 'list.php?element='+$('#name').val()+'&msg='+ $("#action").val()+getVars;
 				askAndSubmit(target,'Company','¿Desea crear la empresa <b>'+$('#name').val()+'</b>?',undefined,'new_company_form');
+			}else{
+				notifyError("Verifique los campos ingresados.");
 			}
 		});
 		$("#BtnCreateNext").click(function(){
@@ -43,6 +45,8 @@ $(function(){
 				}
 				var target		= 'new.php?element='+$('#name').val()+'&msg='+ $("#action").val()+getVars;
 				askAndSubmit(target,'Company','¿Desea crear la empresa <b>'+$('#name').val()+'</b>?',undefined,'new_company_form');
+			}else{
+				notifyError("Verifique los campos ingresados.");
 			}
 		});
 		$("#BtnEdit").click(function(){
@@ -61,6 +65,8 @@ $(function(){
 				}
 				var target		= 'list.php?element='+$('#name').val()+'&msg='+ $("#action").val()+getVars;
 				askAndSubmit(target,'Company','¿Desea modificar la empresa <b>'+$('#name').val()+'</b>?',undefined,'new_company_form');
+			}else{
+				notifyError("Verifique los campos ingresados.");
 			}
 		});
 		$("input").keypress(function(e){
