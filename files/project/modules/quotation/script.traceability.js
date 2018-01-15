@@ -103,7 +103,7 @@ function CloseTraceabilityWindow()
     $(".BtnWindowClose").click(function(){
         $("#window_traceability").addClass('Hidden');
         // ClearTraceabilityWindow();
-        $("#last_product").val($("#product").val());
+        //$("#last_product").val($("#product").val());
         $(".ClearWindow").remove();
     });
 }
@@ -118,13 +118,13 @@ function ClearTraceabilityWindow()
 
 function FillTraceabilityWindow()
 {
-    if($("#product").val()!=$("#last_product").val())
-    {
-        $(".QuotationDeleteable").remove();
-        ClearTraceabilityWindow();
-        FillProviderQuotations();
-        FillCustomerQuotations();
-    }
+    // if($("#product").val()!=$("#last_product").val())
+    // {
+    $(".QuotationDeleteable").remove();
+    ClearTraceabilityWindow();
+    FillProviderQuotations();
+    FillCustomerQuotations();
+    // }
 }
 
 function FillProviderQuotations()

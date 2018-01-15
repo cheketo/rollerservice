@@ -355,7 +355,7 @@ class Quotation
 	public function Fillproviderquotations()
 	{
 		$ProductID = $_POST['product'];
-		$Quotations = Core::Select(self::SEARCH_TABLE,"*","receiver_id=0 AND ".Product::TABLE_ID."=".$ProductID,'quotation_date DESC,creation_date DESC,quotation_id DESC');
+		$Quotations = Core::Select(self::SEARCH_TABLE,"*","status <> 'I' AND receiver_id=0 AND ".Product::TABLE_ID."=".$ProductID,'quotation_date DESC,creation_date DESC,quotation_id DESC');
 		foreach($Quotations as $Quotation)
 		{
 			$FilesHTML = "";

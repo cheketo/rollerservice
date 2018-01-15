@@ -79,7 +79,7 @@
          
         <div class="box-body">
           <?php echo Core::InsertElement('hidden','new_quotation_dir'); ?>
-          <?php echo Core::InsertElement('hidden','last_product',0); ?>
+          <?php //echo Core::InsertElement('hidden','last_product',0); ?>
           <?php echo Core::InsertElement('hidden','product',0); ?>
           <?php echo Core::InsertElement('hidden','item',0); ?>
           <form id="tform">
