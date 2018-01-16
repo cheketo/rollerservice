@@ -173,13 +173,15 @@ $("#asoc").autoComplete({
       var key = item.text;
       var text = item.text;
       var id = item.id;
+      var abstract = item.abstract;
+      // console.log("1: "+abstract);
       if(key=="no-result")
       {
         var defaultSearchText = 'Sin resultados';
         key='';
         text='<i>'+defaultSearchText+'</i>'
       }
-      return '<div class="autocomplete-suggestion" data-key="'+key+'" data-id="'+id+'" data-val="'+search+'">'+text+'</div>';
+      return '<div class="autocomplete-suggestion" data-abstract="'+abstract+'" data-key="'+key+'" data-id="'+id+'" data-val="'+search+'">'+text+'</div>';
     },
     onSelect: function(e, term, item)
     {
@@ -187,6 +189,8 @@ $("#asoc").autoComplete({
         textval = textval.replace(/(<([^>]+)>)/ig,"");
         $("#asoc").val(term);
         var id = item.data('id');
+        var abstract = item.data('abstract');
+        // console.log("2: "+abstract);
         if(id && checkCodeId(id))
         {
           var text = textval.split(" - ").reverse();
@@ -205,16 +209,31 @@ $("#asoc").autoComplete({
                 code = text[i];
             }
           }
-          var rowid = $("#CodeWrapper tr").length+1;
-          $("#CodeWrapper").append('<tr id="tr'+rowid+'"><input type="hidden" code="'+code+'" class="CodeID" id="code_'+rowid+'" value="'+id+'"><td class="text-blue txC"><b>'+code+'</b></td><td class="txC">'+category+'</td><td class="txC"><span class="label label-default">'+brand+'</span></td><td class="txC"><button wrapper="tr'+rowid+'" type="button" class="DeleteCodeRelation btn btnRed hint--top hint--bounce hint--error" style="font-size:8px;" aria-label="Desasociar"><i class="fa fa-times"></i></button></td></tr>')
-          deleteCodeRelation();
-          $("#codes").val(rowid);
-          $("#CodeBox").removeClass("Hidden");
-          $("#asoc").blur();
-          
+          if(abstract)
+          {
+            alertify.confirm("El c&oacute;digo <b>"+code+"</b> se encuentra relacionado con el art&iacute;culo gen&eacute;rico <b>"+abstract+"</b>. Si lo asocia al c&oacute;digo gen&eacute;rico actual perder&aacute; la relaci&oacute;n anterior.<br>¿Desea continuar?", function(e)
+            {
+              if(e)
+              {
+                appendCodeInfo(code,id,category,brand);
+              }
+            });
+          }else{
+            appendCodeInfo(code,id,category,brand);
+          }
         }
     }
 });
+
+function appendCodeInfo(code,id,category,brand)
+{
+  var rowid = $("#CodeWrapper tr").length+1;
+  $("#CodeWrapper").append('<tr id="tr'+rowid+'"><input type="hidden" code="'+code+'" class="CodeID" id="code_'+rowid+'" value="'+id+'"><td class="text-blue txC"><b>'+code+'</b></td><td class="txC">'+category+'</td><td class="txC"><span class="label label-default">'+brand+'</span></td><td class="txC"><button wrapper="tr'+rowid+'" type="button" class="DeleteCodeRelation btn btnRed hint--top hint--bounce hint--error" style="font-size:8px;" aria-label="Desasociar"><i class="fa fa-times"></i></button></td></tr>')
+  deleteCodeRelation();
+  $("#codes").val(rowid);
+  $("#CodeBox").removeClass("Hidden");
+  $("#asoc").blur();
+}
 
 function clickAutocomplete()
 {

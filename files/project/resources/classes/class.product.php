@@ -40,7 +40,7 @@ class Product
 	{
 		if($_GET['category'])
 			$CategoryFilter = " AND category_id=".$_GET['category'];
-		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,CONCAT(code,' - <b>',brand,' - ',category,'</b> - STOCK: ',stock) as text","status='A' ".$CategoryFilter." AND order_number >= ".intval($_GET['text'])." AND organization_id=".$_SESSION['organization_id'],'order_number,code','',200);
+		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,abstract_code as abstract,CONCAT(code,' - <b>',brand,' - ',category,'</b> - STOCK: ',stock) as text","status='A' ".$CategoryFilter." AND order_number >= ".intval($_GET['text'])." AND organization_id=".$_SESSION['organization_id'],'order_number,code','',200);
 		if(empty($Products))
 			$Products[0]=array("id"=>"","text"=>"no-result");
 		else
