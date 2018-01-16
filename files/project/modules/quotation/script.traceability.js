@@ -212,8 +212,8 @@ function SaveNewQuotation()
             if(e)
             {
                 CreateNewQuotation();
-                $("#CollapseNewForm").click();
-                $("#CollapseQuotations").click();
+                // $("#CollapseNewForm").click();
+                // $("#CollapseQuotations").click();
             }
             });
         }
