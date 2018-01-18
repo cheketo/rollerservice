@@ -272,17 +272,19 @@ class Quotation
 	
 	public function Addnewfile()
 	{
-		if(count($_FILES['tfile'])>0)
+		// Core::Insert('core_log_error','error,type,description,created_by,creation_date',"'DEBUG','LOG','".print_r($_FILES,true)."',8,NOW()");
+		
+		if(count($_FILES['file'])>0)
 		{
-			$ProductID = $_POST['product'];
-			$QuotationID = $_POST['id'];
+			$ProductID = $_REQUEST['product'];
+			// $QuotationID = $_GET['id'];
 			$FileDir = self::DEFAULT_FILE_DIR."new/";
 			//$FileName = date("s").date("i").date("H").date("d").date("m").date("Y");
-			$FileName = explode(".",str_replace(" ","",$_FILES['tfile']['name']));
+			$FileName = explode(".",preg_replace('#[^A-Za-z0-9\. -]+#', '',str_replace(' ', '-',$_FILES['file']['name'])));
 			$Ext = $FileName[count($FileName)-1];
 			unset($FileName[count($FileName)-1]);
 			$FileName = implode(".",$FileName);
-			$File = new CoreFileData($_FILES['tfile'],$FileDir,$FileName);
+			$File = new CoreFileData($_FILES['file'],$FileDir,$FileName);
 			if($Ext!="jpg" || $Ext!="jpeg" || $Ext!="png" || $Ext!="bmp")
 			{
 				$File->SaveFile();
@@ -291,10 +293,8 @@ class Quotation
 				$FileURL = $File	-> BuildImage(200,200);	
 			}
 			
-			
-			
-			$ID = Core::Insert('quotation_file_new',"product_id,name,url,creation_date,created_by,organization_id",$ProductID.",'".$FileName."','".$FileURL."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
-			$File = array("id"=>$ID,"name"=>$FileName,"url"=>$FileURL,"ext"=>$Ext);
+			$FID = Core::Insert('quotation_file_new',"product_id,name,url,creation_date,created_by,organization_id",$ProductID.",'".$FileName."','".$FileURL."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+			$File = array("id"=>$FID,"name"=>$FileName,"url"=>$FileURL,"ext"=>$Ext);
 			echo json_encode($File,JSON_HEX_QUOT);
 		}
 	}

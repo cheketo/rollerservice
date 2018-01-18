@@ -444,9 +444,12 @@ function submitData()
         elementID   = $(this).attr("id");
         if($(this).attr("type")=="file")
         {
+          if($(this).attr("id"))
+          {
             formFiles       = document.getElementById(elementID).files;
             element = {id:elementID,value:formFiles[0]}
             variables[variables.length] = element;
+          }
         }else{
             element = {id:elementID,value:$(this).val()};
             variables[variables.length] = element;
@@ -931,9 +934,16 @@ function CustomizedFilefield()
 }
 
 //////////////////////////////////////////////////// Get File Icon by file extension ////////////////////////////////////////////////////
-function GetFileIcon(ext)
+function GetFileIcon(ext,size)
 {
-  var url = "../../../../skin/images/body/icons/";
+  if(typeof(size)==="undefined")
+    size = "small";
+  
+  if(size=="big")
+    var url = "../../../../skin/images/body/icons/big/";
+  else
+    var url = "../../../../skin/images/body/icons/";
+    
   switch (ext) {
     case 'pdf':
       return url+"pdf.png";
@@ -975,6 +985,10 @@ function GetFileIcon(ext)
 		case "pot":
 		case "pps":
       return url+"ppt.png";
+    break;
+    
+    case "eml":
+      return url+"eml.png";
     break;
     
     case "bmp":
