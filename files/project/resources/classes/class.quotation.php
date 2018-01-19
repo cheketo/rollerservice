@@ -39,6 +39,34 @@ class Quotation
 			$Params .= '&international=N';
 		return $Params;
 	}
+	
+	public static function SaveAndMoveFiles($QuotationID,$FilesCount,$PrefixID="qfileid",$ProductID=0)
+	{
+		$IDs = "0";
+		for($I=1;$I<=$FilesCount;$I++)
+		{
+			
+			$FileID = $_POST[$PrefixID.'_'.$I];
+			if($FileID)
+			{
+				$IDs .= ",".$FileID;
+			}
+		}
+		$Files = Core::Select("quotation_file_new","*","status='A' AND file_id IN (".$IDs.")");
+		$FilePath = '../../../../skin/files/quotation/'.$QuotationID.'/';
+		foreach($Files as $File)
+		{
+			$FileObj = new CoreFileData($File['url']);
+			$FileObj->MoveFileTo($FilePath);
+			$NewUrl = $FileObj->GetFile();
+			
+			$Field = $File['file_id'].",".$QuotationID.",".$ProductID.",'".$File['name']."','".$NewUrl."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
+			$Fields .= $Fields? "),(".$Field:$Field;
+		}
+		if($Fields)
+			Core::Insert("quotation_file","new_id,quotation_id,product_id,name,url,creation_date,created_by,organization_id",$Fields);
+		Core::Delete("quotation_file_new","status='A' AND DATEDIFF(CURDATE(),creation_date)>0");
+	}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// SEARCHLIST FUNCTIONS ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,7 +203,6 @@ class Quotation
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// PROCESS METHODS ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 	public function Insert()
 	{
 		// ITEMS DATA
@@ -205,16 +232,19 @@ class Quotation
 		$CurrencyID		= $_POST['currency'];
 		$Extra			= $_POST['extra'];
 		$Field			= $_POST['company_type'].'_id';
-		$NewID			= Core::Insert(self::TABLE,'type_id,company_id,'.$Field.',agent_id,currency_id,total,extra,delivery_date,status,creation_date,created_by,'.CoreOrganization::TABLE_ID,$TypeID.",".$CompanyID.",".$CompanyID.",".$AgentID.",".$CurrencyID.",".$Total.",'".$Extra."','".$Date."','A',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION['organization_id']);
+		$ID			= Core::Insert(self::TABLE,'type_id,company_id,'.$Field.',agent_id,currency_id,total,extra,delivery_date,status,creation_date,created_by,'.CoreOrganization::TABLE_ID,$TypeID.",".$CompanyID.",".$CompanyID.",".$AgentID.",".$CurrencyID.",".$Total.",'".$Extra."','".$Date."','A',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION['organization_id']);
 		// INSERT ITEMS
 		foreach($Items as $Item)
 		{
 			$Item['days'] = $Item['days']?intval($Item['days']):"0";
 			if($Fields)
 				$Fields .= "),(";
-			$Fields .= $NewID.",".$CompanyID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",".($Item['price']*$Item['quantity']).",'".$Item['delivery_date']."',".$Item['days'].",".$CurrencyID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
+			$Fields .= $ID.",".$CompanyID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",".($Item['price']*$Item['quantity']).",'".$Item['delivery_date']."',".$Item['days'].",".$CurrencyID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
 		}
 		Core::Insert(QuotationItem::TABLE,self::TABLE_ID.','.Company::TABLE_ID.','.Product::TABLE_ID.',price,quantity,total,delivery_date,days,currency_id,creation_date,created_by,'.CoreOrganization::TABLE_ID,$Fields);	
+		
+		// INSERT FILES
+		self::SaveAndMoveFiles($ID,$_POST['qfilecount']);
 	}
 	
 	public function Update()
@@ -262,6 +292,9 @@ class Quotation
 			$Fields .= $ID.",".$CompanyID.",".$Item['id'].",".$Item['price'].",".$Item['quantity'].",".($Item['price']*$Item['quantity']).",'".$Item['delivery_date']."',".$Item['days'].",".$CurrencyID.",".$Item['creation_date'].",".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
 		}
 		Core::Insert(QuotationItem::TABLE,self::TABLE_ID.','.Company::TABLE_ID.','.Product::TABLE_ID.',price,quantity,total,delivery_date,days,currency_id,creation_date,created_by,'.CoreOrganization::TABLE_ID,$Fields);
+		
+		// INSERT FILES
+		self::SaveAndMoveFiles($ID,$_POST['qfilecount']);
 	}
 	
 	public function Store()
@@ -270,14 +303,35 @@ class Quotation
 		Core::Update(self::TABLE,"status = 'F'",self::TABLE_ID."=".$ID);
 	}
 	
+	public function Getquotationfiles()
+	{
+		$QuotationID = $_REQUEST['quotation'];
+		$Files = Core::Select('quotation_file',"file_id as id,name,url","status='A' AND quotation_id=".$QuotationID);
+		for($I=0;$I<count($Files);$I++)
+		{
+			if(file_exists($Files[$I]['url']))
+			{
+				$Files[$I]['size']=filesize($Files[$I]['url'])/1024;
+				$Name = array_reverse(explode("/",$Files[$I]['url']));
+				$Files[$I]['full_name']=$Name[0];
+				$Type = array_reverse(explode(".",$Name[0]));
+				$Files[$I]['type']=$Type[0];
+			}else{
+				unset($Files[$I]);
+			}
+		}
+		echo json_encode($Files,JSON_HEX_QUOT);	
+	}
+
+	
 	public function Addnewfile()
 	{
 		// Core::Insert('core_log_error','error,type,description,created_by,creation_date',"'DEBUG','LOG','".print_r($_FILES,true)."',8,NOW()");
 		
 		if(count($_FILES['file'])>0)
 		{
-			$ProductID = $_REQUEST['product'];
-			// $QuotationID = $_GET['id'];
+			$ProductID = $_REQUEST['product']?$_REQUEST['product']:0;
+			// $QuotationID = $_REQUEST['quotation']?$_REQUEST['quotation']:0;
 			$FileDir = self::DEFAULT_FILE_DIR."new/";
 			//$FileName = date("s").date("i").date("H").date("d").date("m").date("Y");
 			$FileName = explode(".",preg_replace('#[^A-Za-z0-9\. -]+#', '',str_replace(' ', '-',$_FILES['file']['name'])));
@@ -302,7 +356,19 @@ class Quotation
 	public function Removenewfile()
 	{
 		$FileID = $_GET['fid'];
-		Core::Update('quotation_file_new',"status='I',updated_by=".$_SESSION[CoreUser::TABLE_ID],"file_id=".$FileID);
+		$File = Core::Select('quotation_file_new','url',"file_id=".$FileID)[0];
+		if($File['url'])
+		{
+			if(file_exists($File['url']))
+				unlink($File['url']);
+			Core::Update('quotation_file_new',"status='I',updated_by=".$_SESSION[CoreUser::TABLE_ID],"file_id=".$FileID);
+		}
+	}
+	
+	public function Removequotationfile()
+	{
+		$FileID = $_GET['fid'];
+		Core::Update('quotation_file',"status='I',updated_by=".$_SESSION[CoreUser::TABLE_ID],"file_id=".$FileID);
 	}
 	
 	public function Newquotation()
@@ -316,8 +382,6 @@ class Quotation
 		$CurrencyID = $_POST['tcurrency'];
 		
 		$Extra = $_POST['textra'];
-		$FilesCount = $_POST['filecount'];
-		$IDs = "0";
 		$Total = $Price*$Quantity;
 		
 		$International = Core::Select(Company::TABLE,'international',Company::TABLE_ID."=".$CompanyID)[0]['international'];
@@ -326,29 +390,11 @@ class Quotation
 		$QuotationID = Core::Insert(self::TABLE,"company_id,sender_id,currency_id,total,type_id,status,quotation_date,extra,creation_date,created_by,organization_id",$CompanyID.",".$CompanyID.",".$CurrencyID.",".$Total.",".$TypeID.",'A','".$Date."','".$Extra."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
 		$Field = $QuotationID.",".$CompanyID.",".$ProductID.",".$Price.",".$Quantity.",".$Total.",".$Days.",".$CurrencyID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
 		Core::Insert(QuotationItem::TABLE,self::TABLE_ID.','.Company::TABLE_ID.','.Product::TABLE_ID.',price,quantity,total,days,currency_id,creation_date,created_by,'.CoreOrganization::TABLE_ID,$Field);
-		for($I=1;$I<=$FilesCount;$I++)
-		{
-			
-			$FileID = $_POST['fileid_'.$I];
-			if($FileID)
-			{
-				$IDs .= ",".$FileID;
-			}
-		}
-		$Files = Core::Select("quotation_file_new","*","status='A' AND file_id IN (".$IDs.")");
+		
+		// INSERT FILES
+		self::SaveAndMoveFiles($QuotationID,$_POST['filecount'],'fileid',$ProductID);
+		
 		$FilePath = '../../../../skin/files/quotation/'.$QuotationID.'/';
-		foreach($Files as $File)
-		{
-			$FileObj = new CoreFileData($File['url']);
-			$FileObj->MoveFileTo($FilePath);
-			$NewUrl = $FileObj->GetFile();
-			
-			$Field = $File['file_id'].",".$QuotationID.",".$ProductID.",'".$File['name']."','".$NewUrl."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
-			$Fields .= $Fields? "),(".$Field:$Field;
-		}
-		if($Fields)
-			Core::Insert("quotation_file","new_id,quotation_id,product_id,name,url,creation_date,created_by,organization_id",$Fields);
-		Core::Delete("quotation_file_new","status='A' AND DATEDIFF(CURDATE(),creation_date)>0");
 		echo json_encode(array("id"=>$QuotationID,"filepath"=>$FilePath,"currency"=>Currency::GetCurrencyPrefix($CurrencyID)),JSON_HEX_QUOT);
 	}
 	

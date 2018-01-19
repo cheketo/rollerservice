@@ -45,6 +45,7 @@
 <?php echo Core::InsertElement("hidden","company_type",$CompanyType); ?>
 <?php echo Core::InsertElement("hidden","creation_date",date('Y-m-d')); ?>
 <?php //echo Core::InsertElement("autocomplete","cocolo",'','form-control','iconauto="building"','Purchase','GetCompanies');?>
+<?php echo Core::InsertElement('hidden','qfilecount',"0.00"); ?>
 
 <?php include_once('window.quotation.php'); ?>
 
@@ -72,9 +73,19 @@
                 <?php echo Core::InsertElement('select','currency','','form-control chosenSelect','validateEmpty="Seleccione una Moneda" data-placeholder="Seleccione una Moneda"',Core::Select('currency','currency_id,title',"",'title DESC'),' ',''); ?>
               </div>
             </div>
+            <?php if($Provider=="Y"){ ?>
+            <h4 class="subTitleB"><i class="fa fa-file"></i> Archivos Adjuntos</h4>
+            <div class="row form-group inline-form-custom">
+              <div class="col-xs-12">
+                <div id="DropzoneQuotation" class="dropzone">
+                </div>
+              </div>
+            </div>
+            <div class="row Hidden" id="QFileWrapper">
+            </div>
             <br>
+            <?php } ?>
             <h4 class="subTitleB"><i class="fa fa-cubes"></i> Art&iacute;culos</h4>
-            
             <div style="margin:0px 10px; min-width:90%;">
               <div class="row form-group inline-form-custom bg-<?php echo $RowTitleClass; ?>" style="margin-bottom:0px!important;">
                 
@@ -190,6 +201,7 @@ $Foot->SetScript('../../../../vendors/inputmask3/jquery.inputmask.bundle.min.js'
 $Foot->SetScript('../../../../vendors/autocomplete/jquery.auto-complete.min.js');
 $Foot->SetScript('../../../../vendors/datepicker/bootstrap-datepicker.js');
 $Foot->SetScript('../../../../vendors/dropzone/dropzone.min.js');
+$Foot->SetScript('script.dropzone.js');
 $Foot->SetScript('script.traceability.js');
 include('../../../project/resources/includes/inc.bottom.php');
 ?>

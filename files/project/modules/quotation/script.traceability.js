@@ -15,7 +15,7 @@ if($('#DropzoneContainer').length)
         thumbnailHeight:107,
         accept: function(file, done) {
             
-            var thumbnail = $('.dropzone .dz-preview.dz-file-preview .dz-image:last').children("img");
+            var thumbnail = $('#DropzoneContainer .dz-preview.dz-file-preview .dz-image:last').children("img");
      
             switch (file.type)
             {
@@ -144,12 +144,12 @@ if($('#DropzoneContainer').length)
         }
     });
     myDropzone.on("drop",function(file){
-        $(".dz-default").hide();
+        $("#DropzoneContainer .dz-default").hide();
     });
     myDropzone.on("complete",function(file){
         if($(".DeleteFileFromWrapper").length==0)
         {
-            $(".dz-default").show();
+            $("#DropzoneContainer .dz-default").show();
         }
     });
 }
@@ -172,13 +172,12 @@ function TraceabilityFunctions()
 ///////////////////////////////// New Quotation Form Functions /////////////////////////////////
 function DeleteFileFromWrapper(btn)
 {
-    // $(".DeleteFileFromWrapper").click(function(e){
-        // e.preventDefault();
-        // e.stopPropagation();
-        var filewrapper = btn;
-        var filename = filewrapper.attr('filename');
-        alertify.confirm("¿Desea eliminar el archivo <b>"+filename+"</b>?", function(e){
-        if(e){
+    var filewrapper = btn;
+    var filename = filewrapper.attr('filename');
+    alertify.confirm("¿Desea eliminar el archivo <b>"+filename+"</b>?", function(e)
+    {
+        if(e)
+        {
             var file = filewrapper.attr('fid');
             var elemid=filewrapper.attr('id');
             var process     = process_url+'?object=Quotation&action=Removenewfile&fid='+file;
@@ -203,76 +202,17 @@ function DeleteFileFromWrapper(btn)
                             if(FileHTML.childNodes[12].attributes[0].value==elemid)
                                 FileHTML.parentNode.removeChild(files[i].previewElement);
                         }
-                        // myDropzone.files.each(function(file){
-                        //   if(file.previewElement.children("#tfile_"+fileid).length>0)
-                        //     myDropzone.removeFile(file);
-                        // });
                         files = myDropzone.getAcceptedFiles();
                         if($(".DeleteFileFromWrapper").length==0)
                         {
-                            $(".dz-default").show();
+                            $("#DropzoneContainer .dz-default").show();
                         }
                     }
                 }
             });
         }
-        });
-    // })
+    });
 }
-
-
-// function UploadQuotationFile()
-// {
-//     $("#tfile").change(function(){
-//         if($("#tfile").val())
-//         {
-//             var MainAction = $("#action").val();
-//             $("#action").val('Addnewfile');
-//             var process     = process_url+'?object=Quotation';
-//             var haveData = function(data)
-//             {
-//                 // console.log(data);
-//                 try
-//                 {
-//                 data = JSON.parse(data);
-//                 }
-//                 catch(e)
-//                 {
-//                     notifyError("Ha ocurrido un error al intentar borrar el archivo seleccionado.");
-//                     console.log("Error: "+data);
-//                 }
-//                 if(data.id)
-//                 {
-//                     var count = parseInt($("#filecount").val())+1;
-//                     var FileURLarray = data.url.split(".");
-//                     var FileIconURL = GetFileIcon(FileURLarray[FileURLarray.length-1]);
-//                     if(FileIconURL == 'self')
-//                     {
-//                         FileIconURL = data.url;
-//                     }
-//                     // notifySuccess("El archivo <b>"+data.name+"</b> ha sido cargado correctamente");
-//                     var NewFileHTML = '<div class="col-md-4 col-sm-6 col-xs-12 txC FileInfoDiv" style="margin-top:10px;" fid="'+data.id+'" id="tfile_'+count+'" filename="'+data.name+'" fileurl="'+data.url+'">'+
-//                                         '<span class="btn btn-danger DeleteFileFromWrapper" style="padding:0px 3px;"><i class="fa fa-times"></i></span>'+
-//                                         '&nbsp;<img src="'+FileIconURL+'" height="32" width="32"> <a href="'+data.url+'" target="_blank">'+data.name+'</a>'+
-//                                         '<input type="hidden" id="fileid_'+count+'" value="'+data.id+'" >'+
-//                                       '</div>';
-//                     $("#FileWrapper").append(NewFileHTML);
-//                     $("#Filetfile").val('');
-//                     $("#filecount").val(count);
-//                     DeleteFileFromWrapper();
-                    
-//                 }
-//             }
-//             var noData = function()
-//             {
-//                 notifyError("Ha ocurrido un error al intentar borrar el archivo seleccionado.");
-//                 console.log("Sin error asociado");    
-//             }
-//             sumbitFields(process,haveData,noData);
-//             $("#action").val(MainAction);
-//         }
-//     })
-// }
 
 function CloseTraceabilityWindow()
 {

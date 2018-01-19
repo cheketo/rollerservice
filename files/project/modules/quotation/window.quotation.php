@@ -2,6 +2,7 @@
     <div class="window-border"><h4><div class="pull-left"><i class="fa fa-book"></i> Historial de Cotizaciones y Trazabilidad <span id="ProductName" class="font-weight-bold"></span></div><div class="pull-right"><div id="WindowClose" class="BtnWindowClose text-red"><i class="fa fa-times"></i></div></div></h4></div>
     <div class="window-body">
       <?php echo Core::InsertElement('hidden','product',0); ?>
+      <?php echo Core::InsertElement('hidden','item',0); ?>
       <?php if($Customer=="Y"){ ?>
       <div id="NewQuotationBox" class="box box-success txC">
         <div class="box-header">
@@ -17,7 +18,6 @@
         <div class="box-body">
           <?php echo Core::InsertElement('hidden','new_quotation_dir'); ?>
           <?php //echo Core::InsertElement('hidden','last_product',0); ?>
-          <?php echo Core::InsertElement('hidden','item',0); ?>
           <?php echo Core::InsertElement('hidden','filecount',0); ?>
           <form id="tform">
             <div class="row">
@@ -50,17 +50,11 @@
             <div class="row">
               <div class="col-xs-12">
                 <div id="DropzoneContainer" class="dropzone">
-                  <?php echo Core::InsertElement('file','dropzonefile','','Hidden form-control','placeholder="Cargar Archivo"'); ?>
+                  <?php //echo Core::InsertElement('file','dropzonefile','','Hidden form-control','placeholder="Cargar Archivo"'); ?>
                 </div>
               </div>
             </div>
             <div class="row txC" id="FileWrapper">
-              <!--<div class="col-md-4 col-sm-6 col-xs-12 txC FileInfoDiv" style="margin-top:10px;" id="tfile_1" filename="Cotizaci&oacute;nRoller1" fileurl="../../../../skin/files/quotation/file.pdf">-->
-              <!--  <span class="btn btn-danger DeleteFileFromWrapper" style="padding:0px 3px;"><i class="fa fa-times"></i></span>-->
-              <!--  <img src="../../../../skin/images/body/icons/pdf.png" height="64" width="64"> <a href="../../../../skin/files/quotation/file.pdf" target="_blank">CotizaciónRoller1</a>-->
-              <!--  <?php echo Core::InsertElement('hidden','fileid_1','20'); ?>-->
-              <!--</div>-->
-              
             </div>
             <br>
             <div class="row">
@@ -107,16 +101,6 @@
                 <th class="txC">Datos Adicionales</th>
                 <th class="txC">Archivos</th>
               </tr>
-              <!--<tr class="ClearWindow">-->
-              <!--  <td>18/10/2017</td>-->
-              <!--  <td>SNK Australia</td>-->
-              <!--  <td><span class="label label-success">$200</span></td>-->
-              <!--  <td>20</td>-->
-              <!--  <td>$200</td>-->
-              <!--  <td>2 D&iacute;as</td>-->
-              <!--  <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>-->
-              <!--  <td><div><a href="../../../../skin/files/quotation/file.pdf" target="_blank"><img src="../../../../skin/images/body/icons/pdf.png"> CotizaciónRoller</a></div></td>-->
-              <!--</tr>-->
               
             </tbody></table>
           </div>
@@ -145,31 +129,7 @@
               </tr>
               </thead>
               <tbody>
-                <!--<tr class="ClearWindow">-->
-                <!--  <td><span class="label label-default">18/10/2017</span></td>-->
-                <!--  <td><span class="label label-success">$312.87</span></td>-->
-                <!--  <td>10</td>-->
-                <!--  <td><span class="label label-success">$3128.70</span></td>-->
-                <!--  <td><span class="label label-warning">2 D&iacute;as</span></td>-->
-                <!--  <td>-->
-                <!--    <button type="button" class="btn btn-github SeeQuotation hint--bottom hint--bounce" aria-label="Ver Cotizaci&oacute;n" style="margin:0px;" item="1"><i class="fa fa-eye"></i></button>-->
-                <!--    <button type="button" class="btn btn-primary CopyQuotation hint--bottom hint--bounce hint--info" aria-label="Copiar Datos" style="margin:0px;" item="1"><i class="fa fa-files-o"></i></button>-->
-                <!--  </td>-->
-                <!--</tr>-->
-                <!--<tr class="ClearWindow">-->
-                <!--  <td><span class="label label-default">02/01/2017</span></td>-->
-                <!--  <td><span class="label label-success">$206.44</span></td>-->
-                <!--  <td>5</td>-->
-                <!--  <td><span class="label label-success">$1032.20</span></td>-->
-                <!--  <td><span class="label label-warning">3 D&iacute;as</span></td>-->
-                <!--  <td>-->
-                <!--    <button type="button" class="btn btn-github SeeQuotation hint--bottom hint--bounce" aria-label="Ver Cotizaci&oacute;n" style="margin:0px;" item="1"><i class="fa fa-eye"></i></button>-->
-                <!--    <button type="button" class="btn btn-primary CopyQuotation hint--bottom hint--bounce hint--info" aria-label="Copiar Datos" style="margin:0px;" item="1"><i class="fa fa-files-o"></i></button>-->
-                <!--  </td>-->
-                <!--</tr>-->
-                <!--<tr>-->
-                <!--  <td></td>-->
-                <!--</tr>-->
+                
               </tbody>
             </table>
           </div>
