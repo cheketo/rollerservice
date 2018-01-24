@@ -197,7 +197,7 @@ class CompanyBranch
     		$BodyEm = 24;
     	}else{
     		$TopEm = 11;
-    		$BodyEm = 41;
+    		$BodyEm = 37;
     	}
     	
         $HTML .= '
