@@ -1,5 +1,4 @@
 <?php
-
 class Quotation 
 {
 	use CoreSearchList,CoreCrud,CoreImage;
@@ -22,6 +21,14 @@ class Quotation
 			$this->Data['items'] = $Data;
 		}
 	}
+	
+	public function GetSentEmails()
+	{
+		$this->Data['emails'] = Core::Select("quotation_email","*","quotation_id=".$this->ID);
+		return $this->Data['emails'];
+		
+	}
+	
 	
 	public static function GetParams()
 	{
@@ -66,6 +73,7 @@ class Quotation
 		if($Fields)
 			Core::Insert("quotation_file","new_id,quotation_id,product_id,name,url,creation_date,created_by,organization_id",$Fields);
 		Core::Delete("quotation_file_new","status='A' AND DATEDIFF(CURDATE(),creation_date)>0");
+		
 	}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// SEARCHLIST FUNCTIONS ///////////////////////////////////////////////////////////////////////////
@@ -231,8 +239,10 @@ class Quotation
 		$AgentID 		= $_POST['agent']? $_POST['agent']: 0;
 		$CurrencyID		= $_POST['currency'];
 		$Extra			= $_POST['extra'];
+		$ExpireDays		= $_POST['expire_days']?$_POST['expire_days']:0;
+		$ExpireDate		= Core::FromDateToDB($_POST['expire_date']);
 		$Field			= $_POST['company_type'].'_id';
-		$ID			= Core::Insert(self::TABLE,'type_id,company_id,'.$Field.',agent_id,currency_id,total,extra,delivery_date,status,creation_date,created_by,'.CoreOrganization::TABLE_ID,$TypeID.",".$CompanyID.",".$CompanyID.",".$AgentID.",".$CurrencyID.",".$Total.",'".$Extra."','".$Date."','A',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION['organization_id']);
+		$ID				= Core::Insert(self::TABLE,'type_id,company_id,'.$Field.',agent_id,currency_id,total,extra,expire_days,expire_date,delivery_date,status,creation_date,created_by,'.CoreOrganization::TABLE_ID,$TypeID.",".$CompanyID.",".$CompanyID.",".$AgentID.",".$CurrencyID.",".$Total.",'".$Extra."',".$ExpireDays.",'".$ExpireDate."','".$Date."','A',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION['organization_id']);
 		// INSERT ITEMS
 		foreach($Items as $Item)
 		{
@@ -245,6 +255,39 @@ class Quotation
 		
 		// INSERT FILES
 		self::SaveAndMoveFiles($ID,$_POST['qfilecount']);
+		
+		// SEND EMAIL
+		self::Sendemail($ID,$_POST['receiver'],$_POST['show_brands'],$_POST['show_extra']);
+	}
+	
+	public static function Sendemail($QID,$Receiver,$ShowBrands,$ShowExtra)
+	{
+		if($Receiver)
+		{
+			//Create PDF file
+			$PDF = new Pdf();
+			$PDF->SetOutputType("F");
+			$Quotation = new Quotation($QID);
+			$File = $PDF->Quotation($QID,$ShowBrands,$ShowExtra);
+		
+			//Create and send email
+			$Mail = new Mailer();
+			$Sender = 'ventas@rollersevice.com.ar';
+			//Add BCC
+			$BCC = "ventas@rollerservice.com.ar";
+			$Mail->AddBCC($BCC, "Ventas Roller Service");
+			$Subject = 'Cotización N°'.$QID;
+			$Sent = $Mail->QuotationEmail($Receiver,$Quotation->Data['company'],$Subject,$File,$Sender);
+			
+			//Check for errors
+			if(!$Sent)
+			{
+			    echo "Mailer Error: " . $Mail->ErrorInfo;
+			}else{
+			    //Insert Sent Email
+			    Core::Insert("quotation_email",self::TABLE_ID.",email_from,email_to,subject,message,file,status,cc,bcc,creation_date,created_by,organization_id",$QID.",'".$Sender."','".$Receiver."','".$Subject."','".$Message."','".$File."','P','".$CC."','".$BCC."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+			}	
+		}
 	}
 	
 	public function Update()
@@ -278,7 +321,10 @@ class Quotation
 		$AgentID 		= $_POST['agent']? $_POST['agent']: 0;
 		$CurrencyID		= $_POST['currency'];
 		$Extra			= $_POST['extra'];
-		$Update		= Core::Update(self::TABLE,Company::TABLE_ID."=".$CompanyID.",agent_id=".$AgentID.",currency_id=".$CurrencyID.",delivery_date='".$Date."',extra='".$Extra."',total=".$Total.",updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
+		$Extra			= $_POST['extra'];
+		$ExpireDays		= $_POST['expire_days']?$_POST['expire_days']:0;
+		$ExpireDate		= Core::FromDateToDB($_POST['expire_date']);
+		$Update			= Core::Update(self::TABLE,Company::TABLE_ID."=".$CompanyID.",agent_id=".$AgentID.",currency_id=".$CurrencyID.",delivery_date='".$Date."',extra='".$Extra."',expire_days=".$ExpireDays.",expire_date='".$ExpireDate."',total=".$Total.",updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
 		
 		// DELETE OLD ITEMS
 		QuotationItem::DeleteItems($ID);
@@ -295,6 +341,9 @@ class Quotation
 		
 		// INSERT FILES
 		self::SaveAndMoveFiles($ID,$_POST['qfilecount']);
+		
+		// SEND EMAIL
+		self::Sendemail($ID,$_POST['receiver'],$_POST['show_brands'],$_POST['show_extra']);
 	}
 	
 	public function Store()

@@ -28,22 +28,30 @@ $(function(){
 		var target	= 'list.php?element='+element+'&msg='+msg+params;
 		askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
 	});
-	$("#BtnCreateNext").click(function(){
-		var element = $('#company option:selected').html();
-		var target		= 'new.php?element='+element+'&msg='+msg+params;
-		askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
-	});
+	// $("#BtnCreateNext").click(function(){
+	// 	var element = $('#company option:selected').html();
+	// 	var target		= 'new.php?element='+element+'&msg='+msg+params;
+	// 	askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
+	// });
 	$("#BtnEdit").click(function(){
 		var element = $('#company option:selected').html();
 		var target		= 'list.php?element='+element+'&msg='+msg+params;
 		askAndSubmit(target,role,'¿Desea modificar la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
 	});
-	// $("input").keypress(function(e){
-	// 	if(e.which==13){
-	// 		$("#BtnCreate,#BtnEdit").click();
-	// 	}
-	// });
+	
+	$("#SaveAndSend").click(function(){
+		if($("#action").val()=='insert')
+			var action = 'crear';
+		else
+			var action = 'editar';
+		var element = $('#company option:selected').html();
+		var target		= 'list.php?email=yes&element='+element+'&msg='+msg+params;
+		askAndSubmit(target,role,'¿Desea '+action+' la cotizaci&oacute;n de <b>'+element+'</b> y enviarla por email al destinatario <b>'+$("#receiver").val()+'</b>? Una vez enviada por email no podra volver a editarse.','','EmailWindowForm');	
+	});
+	
+	
 });
+
 
 ///////////////////////////// QUOTATION FUNCTIONS ///////////////////////////
 $(document).ready(function(){
@@ -63,6 +71,7 @@ $(document).ready(function(){
 	showHistoryWindow();
 	showHistoryButtons();
 	checkHistoryButtons();
+	updateExpireDate();
 });
 
 function setDatePicker()
@@ -91,6 +100,18 @@ function setADatePicker()
 		autoclose:true,
 		todayHighlight: true,
 		language: 'es'
+	});
+}
+
+function updateExpireDate()
+{
+	$("#expire_days").change(function(){
+		if(parseInt($(this).val())>-1)
+		{
+			var creation_date = $("#creation_date").val();
+			var ExpireDate = AddDaysToDate($(this).val(),creation_date);
+			$("#expire_date").val(ExpireDate);
+		}
 	});
 }
 
@@ -312,7 +333,7 @@ function changeDates()
 		var days = $("#change_day").val();
 		alertify.confirm(utf8_decode('¿Desea establecer '+days+' d&iacute;as de entrega para todos los art&iacute;culos ?'), function(e){
 		if(e)
-		{	
+		{
 			$(".DayPicker").each(function(){
 				if(!$(this).hasClass('Restricted'))
 					$(this).val(days);

@@ -154,41 +154,44 @@ $(document).ready(function(){
                     notifyError("Ha ocurrido un error al intentar subir el archivo seleccionado.");
                     console.log("Error: "+data);
                 }
-                if(data.length>0)
+                if(data)
                 {
                     $.each(data, function(key,value)
                     {
-                        var mockFile = { name: value.full_name, size: value.size };
-                        mainQuotationDropzone.emit("addedfile", mockFile);
-                        mainQuotationDropzone.emit("complete", mockFile);
-                        
-                        var count = parseInt($("#efilecount").val())+1;
-                        var NewFileHTML = '<input type="hidden" id="efileid_'+count+'" value="'+value.id+'" >';
-                        $("#QFileWrapper").append(NewFileHTML);
-                        $("#efilecount").val(count);
-                        
-                        var HTMLRemoveBtn = $('#lastremovebuttonq');
-                        HTMLRemoveBtn.addClass('DeleteQuotationFileFromWrapper');
-                        HTMLRemoveBtn.attr("id",'efile_'+count);
-                        HTMLRemoveBtn.attr("fid",value.id);
-                        HTMLRemoveBtn.attr("filename",value.full_name);
-                        HTMLRemoveBtn.attr("fileurl",value.url);
-                        
-                        $('#lastlinkq').attr("href",value.url);
-                        $('#lastlinkq').attr("id","qlink_"+count);
-                        
-                        var imageurl = value.url;
-                        
-                        var thumbnail = $('#DropzoneQuotation .dz-preview.dz-file-preview .dz-image:last').children("img");
-                        if(value.type!="jpg" && value.type!="png" && value.type!="bmp" && value.type!="jpeg")
+                        if(value.size>0)
                         {
-                            thumbnail.attr('src',GetFileIcon(value.type,"big"));
-                            thumbnail.attr("width","100%");
-                            thumbnail.attr("height","100%");
-                        }else{
-                            thumbnail.attr('src',value.url);
-                            thumbnail.attr("width","100%");
-                            thumbnail.attr("height","100%");
+                            var mockFile = { name: value.full_name, size: value.size };
+                            mainQuotationDropzone.emit("addedfile", mockFile);
+                            mainQuotationDropzone.emit("complete", mockFile);
+                            
+                            var count = parseInt($("#efilecount").val())+1;
+                            var NewFileHTML = '<input type="hidden" id="efileid_'+count+'" value="'+value.id+'" >';
+                            $("#QFileWrapper").append(NewFileHTML);
+                            $("#efilecount").val(count);
+                            
+                            var HTMLRemoveBtn = $('#lastremovebuttonq');
+                            HTMLRemoveBtn.addClass('DeleteQuotationFileFromWrapper');
+                            HTMLRemoveBtn.attr("id",'efile_'+count);
+                            HTMLRemoveBtn.attr("fid",value.id);
+                            HTMLRemoveBtn.attr("filename",value.full_name);
+                            HTMLRemoveBtn.attr("fileurl",value.url);
+                            
+                            $('#lastlinkq').attr("href",value.url);
+                            $('#lastlinkq').attr("id","qlink_"+count);
+                            
+                            var imageurl = value.url;
+                            
+                            var thumbnail = $('#DropzoneQuotation .dz-preview.dz-file-preview .dz-image:last').children("img");
+                            if(value.type!="jpg" && value.type!="png" && value.type!="bmp" && value.type!="jpeg")
+                            {
+                                thumbnail.attr('src',GetFileIcon(value.type,"big"));
+                                thumbnail.attr("width","100%");
+                                thumbnail.attr("height","100%");
+                            }else{
+                                thumbnail.attr('src',value.url);
+                                thumbnail.attr("width","100%");
+                                thumbnail.attr("height","100%");
+                            }
                         }
                     });
                     $("#DropzoneQuotation .dz-default").hide();

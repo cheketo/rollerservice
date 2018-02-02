@@ -440,14 +440,14 @@ class ProductRelationItem
 							$BID = $SearchID;
 					}
 					if($BID)
-						$Relation = Core::Select(ProductRelation::TABLE,"*",Company::TABLE_ID."=".$Import[Company::TABLE_ID]." AND ".Brand::TABLE_ID."=".$BID." AND code='".$Data[0]."'")[0];
+						$Relation = Core::Select(ProductRelation::TABLE,"*",Company::TABLE_ID."=".$Import[Company::TABLE_ID]." AND ".Brand::TABLE_ID."=".$BID." AND REPLACE(code,' ','')='".str_replace(' ','',$Data[0])."'")[0];
 					
 					if(!$Relation)
-						$Relation = Core::Select(ProductAbstract::TABLE,ProductAbstract::TABLE_ID,"code='".$Data[0]."'")[0];
+						$Relation = Core::Select(ProductAbstract::TABLE,ProductAbstract::TABLE_ID,"REPLACE(code,' ','')='".str_replace(' ','',$Data[0])."'")[0];
 						
 					if(!$Relation[Product::TABLE_ID] && $BID)
 					{
-						$Product = Core::Select(Product::TABLE,Product::TABLE_ID.",".ProductAbstract::TABLE_ID,"code='".$Data[0]."' AND ".Brand::TABLE_ID."=".$BID)[0];
+						$Product = Core::Select(Product::TABLE,Product::TABLE_ID.",".ProductAbstract::TABLE_ID,"REPLACE(code,' ','')='".str_replace(' ','',$Data[0])."' AND ".Brand::TABLE_ID."=".$BID)[0];
 						$Relation[Product::TABLE_ID] = $Product[Product::TABLE_ID];
 						if($Relation[Product::TABLE_ID] && !$Relation[ProductAbstract::TABLE_ID])
 						{
@@ -457,7 +457,6 @@ class ProductRelationItem
 					}
 					$ProductID = $Relation[Product::TABLE_ID]?$Relation[Product::TABLE_ID]:0;
 					$AbstractID = $Relation[ProductAbstract::TABLE_ID]?$Relation[ProductAbstract::TABLE_ID]:0;
-					
 					
 					$Fields = $ImportID.",".$Import[Company::TABLE_ID].",".$BID.",".$AbstractID.",".$ProductID.",'".$Data[0]."',".$Data[1].",".$Data[2].",'".$Data[3]."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
 					$Values .= $Values? "),(".$Fields : $Fields;
@@ -482,7 +481,7 @@ class ProductRelationItem
 		foreach ($Items as $Item)
 		{
 			$ProductID = 0;
-			$Relation = Core::Select(ProductRelation::TABLE,"*",Company::TABLE_ID."=".$CompanyID." AND code='".$Item['code']."' AND ".Brand::TABLE_ID."=".$Item[Brand::TABLE_ID])[0];
+			$Relation = Core::Select(ProductRelation::TABLE,"*",Company::TABLE_ID."=".$CompanyID." AND REPLACE(code,' ','')='".str_replace(' ','',$Item['code'])."' AND ".Brand::TABLE_ID."=".$Item[Brand::TABLE_ID])[0];
 			$Item[ProductAbstract::TABLE_ID] = $Item[ProductAbstract::TABLE_ID]?$Item[ProductAbstract::TABLE_ID]:0;
 			if($Item[ProductAbstract::TABLE_ID]>0 && $Item[Product::TABLE_ID]==0)
 			{

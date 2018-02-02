@@ -341,5 +341,24 @@ class Company
 	{
 		echo self::ValidateValue('name',$_POST['name'],$_POST['actualname']);
 	}
+	
+	public function Getcompanyemail()
+	{
+		$CID = $_POST['company'];
+		$AID = $_POST['agent'];
+		if($AID>0)
+		{
+			$Email = Core::Select('company_agent','email',"agent_id=".$AID)[0]['email'];
+			if($Email)
+			{
+				echo $Email;
+			}else{
+				if($CID>0)
+					$Email = Core::Select(self::SEARCH_TABLE,'email',"email<>'' AND company_id=".$CID,'branch_id ASC,email DESC')[0]['email'];
+					if($Email)
+						$Email;
+			}
+		}
+	}
 }
 ?>

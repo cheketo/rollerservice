@@ -284,6 +284,15 @@ class Product
 		//echo $this->LastQuery();
 	}	
 	
+	public function Quickinsert()
+	{
+		$Code		= $_POST['code'];
+		$OrderNumber= $_POST['order_number'];
+		$Category	= $_POST['category'];
+		$Brand		= $_POST['brand'];
+		Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.','.Brand::TABLE_ID.',creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Brand.",NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
+	}
+	
 	public function Update()
 	{
 		$ID 		= $_POST['id'];
