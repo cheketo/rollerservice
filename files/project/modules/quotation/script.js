@@ -46,7 +46,7 @@ $(function(){
 			var action = 'editar';
 		var element = $('#company option:selected').html();
 		var target		= 'list.php?email=yes&element='+element+'&msg='+msg+params;
-		askAndSubmit(target,role,'¿Desea '+action+' la cotizaci&oacute;n de <b>'+element+'</b> y enviarla por email al destinatario <b>'+$("#receiver").val()+'</b>? Una vez enviada por email no podra volver a editarse.','','EmailWindowForm');	
+		askAndSubmit(target,role,'¿Desea '+action+' la cotizaci&oacute;n de <b>'+element+'</b> y enviarla por email al destinatario <b>'+$("#receiver").val()+'</b>?','','EmailWindowForm');	
 	});
 	
 	

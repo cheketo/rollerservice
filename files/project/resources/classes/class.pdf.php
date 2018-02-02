@@ -90,7 +90,7 @@ class Pdf extends TCPDF
         }else{
             $File = realpath(__DIR__.'/'.$Path).'/'.$Name.".pdf";
             $this->Output($File, $this->OutputType);
-            echo $Path.$Name.".pdf";
+            // echo $Path.$Name.".pdf";
             return $Path.$Name.".pdf";
         }
     }
