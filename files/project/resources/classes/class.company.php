@@ -253,9 +253,9 @@ class Company
 		{
 			if(!$_POST['cuit']) echo 'CUIT incompleto';
 			if(!$_POST['iva']) echo 'IVA incompleto';
-			if(!$_POST['gross_income_number']) echo 'IIBB incompleto';
+			// if(!$_POST['gross_income_number']) echo 'IIBB incompleto';
 		}else{
-			if(!$_POST['vat']) echo 'VAT incompleto';
+			// if(!$_POST['vat']) echo 'VAT incompleto';
 		}
 	}
 	public function Insert()
