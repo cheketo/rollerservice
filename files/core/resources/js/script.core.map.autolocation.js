@@ -12,7 +12,7 @@ function validateMap(id)
       if($(this).val())
         total++;
     });
-    if(total>3)
+    if(total>3 || $("#address_"+id).val())
     {
         $("#map"+id+"_ErrorMsg").addClass("Hidden");
         return true;

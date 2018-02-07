@@ -63,7 +63,7 @@
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12">
                   <?php 
-                    $CompanyName = $Field=="provider"?"CONCAT(name,' - ',old_id)":"CONCAT(name,' - ',company_id)";
+                    $CompanyName = $Field=="provider"?"CONCAT(name,' - ',IF(old_id>0,old_id,company_id)":"CONCAT(name,' - ',company_id)";
                     echo Core::InsertElement('select','company','','form-control chosenSelect','validateEmpty="Seleccione un '.$Role.'" data-placeholder="Seleccione un '.$Role.'"',Core::Select(Company::TABLE,Company::TABLE_ID.','.$CompanyName,$Field."= 'Y' ".$FieldInternational." AND status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],'name'),' ','');
                   ?>
               </div>

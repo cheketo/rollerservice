@@ -62,8 +62,8 @@ class CompanyBranch
 					$Branches[$I]['main_branch']			= 'N';
 					
 				// LOCATION DATA
-				$Branches[$I]['lat']			= $_POST['map'.$I.'_lat'];
-				$Branches[$I]['lng']			= $_POST['map'.$I.'_lng'];
+				$Branches[$I]['lat']			= $_POST['map'.$I.'_lat']?$_POST['map'.$I.'_lat']:'000';
+				$Branches[$I]['lng']			= $_POST['map'.$I.'_lng']?$_POST['map'.$I.'_lng']:'000';
 				
 				$Branches[$I]['address']		= $_POST['map'.$I.'_address_short'];
 				if(!$Branches[$I]['address'])
@@ -82,11 +82,20 @@ class CompanyBranch
 				$Branches[$I]['province']		= $_POST['map'.$I.'_province'];
 				$Branches[$I]['country']		= $_POST['map'.$I.'_country'];
 			
-				// INSERT NEW LOCATIONS
-				$Branches[$I]['country_id']		= Geolocation::InsertCountry($Branches[$I]['country'],$Branches[$I]['country_short']);
-				$Branches[$I]['province_id']	= Geolocation::InsertProvince($Branches[$I]['province'],$Branches[$I]['province_short'],$Branches[$I]['country_id']);
-				$Branches[$I]['region_id']		= Geolocation::InsertRegion($Branches[$I]['region'],$Branches[$I]['region_short'],$Branches[$I]['country_id'],$Branches[$I]['province_id']);
-				$Branches[$I]['zone_id']		= Geolocation::InsertZone($Branches[$I]['zone'],$Branches[$I]['zone_short'],$Branches[$I]['country_id'],$Branches[$I]['province_id'],$Branches[$I]['region_id']);
+				if(!$Branches[$I]['country'] && !$Branches[$I]['country_short'])
+				{
+    				$Branches[$I]['country_id']		= '000';
+    				$Branches[$I]['province_id']	= '000';
+    				$Branches[$I]['region_id']		= '000';
+    				$Branches[$I]['zone_id']		= '000';
+    				$Branches[$I]['address']	    = $_POST['address_'.$I];
+				}else{
+				    // INSERT NEW LOCATIONS
+    				$Branches[$I]['country_id']		= Geolocation::InsertCountry($Branches[$I]['country'],$Branches[$I]['country_short']);
+    				$Branches[$I]['province_id']	= Geolocation::InsertProvince($Branches[$I]['province'],$Branches[$I]['province_short'],$Branches[$I]['country_id']);
+    				$Branches[$I]['region_id']		= Geolocation::InsertRegion($Branches[$I]['region'],$Branches[$I]['region_short'],$Branches[$I]['country_id'],$Branches[$I]['province_id']);
+    				$Branches[$I]['zone_id']		= Geolocation::InsertZone($Branches[$I]['zone'],$Branches[$I]['zone_short'],$Branches[$I]['country_id'],$Branches[$I]['province_id'],$Branches[$I]['region_id']);    
+				}
 				
 				$BranchID 		                = Core::Insert("company_branch",Company::TABLE_ID.",country_id,province_id,region_id,zone_id,name,address,phone,email,website,fax,postal_code,main_branch,lat,lng,creation_date,created_by,".CoreOrganization::TABLE_ID,$ID.",".$Branches[$I]['country_id'].",".$Branches[$I]['province_id'].",".$Branches[$I]['region_id'].",".$Branches[$I]['zone_id'].",'".$Branches[$I]['name']."','".$Branches[$I]['address']."','".$Branches[$I]['phone']."','".$Branches[$I]['email']."','".$Branches[$I]['website']."','".$Branches[$I]['fax']."','".$Branches[$I]['postal_code']."','".$Branches[$I]['main_branch']."',".$Branches[$I]['lat'].",".$Branches[$I]['lng'].",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
 				// echo Core::LastQuery();
@@ -218,13 +227,13 @@ class CompanyBranch
                             <div class="col-xs-12 col-sm-6">
                                 <span class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
-                                    '.Core::InsertElement('text','address_'.$ID,$Data['address'],'form-control','disabled="disabled" placeholder="Direcci&oacute;n" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."').'
+                                    '.Core::InsertElement('text','address_'.$ID,$Data['address'],'form-control','placeholder="Direcci&oacute;n" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."').'
                                 </span>
                             </div>
                             <div class="col-xs-12 col-sm-6 margin-top1em">
                                 <span class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-bookmark"></i></span>
-                                    '.Core::InsertElement('text','postal_code_'.$ID,$Data['postal_code'],'form-control','disabled="disabled" placeholder="C&oacute;digo Postal" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."').'
+                                    '.Core::InsertElement('text','postal_code_'.$ID,$Data['postal_code'],'form-control','placeholder="C&oacute;digo Postal" validateMinLength="4///La direcci&oacute;n debe contener 4 caracteres como m&iacute;nimo."').'
                                 </span>
                             </div>
                         </div>
