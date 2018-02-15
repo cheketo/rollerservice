@@ -130,6 +130,7 @@ class ProductRelation
 	protected function SetSearchFields()
 	{
 		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo"');
+		$this->SearchFields['code_relation'] = Core::InsertElement('text','code_relation','','form-control','placeholder="C&oacute;digo relacionado (exacto)"');
 		
 		// $this->SearchFields['product_id'] = Core::InsertElement('select',Product::TABLE_ID,'','form-control chosenSelect','',Product::GetFullCodes(),'','Cualquier Art&iacute;culo');
 		$this->SearchFields['abstract_id'] = Core::InsertElement('autocomplete','abstract_id','','form-control','placeholder="C&oacute;digo Gen&eacute;rico" placeholderauto="C&oacute;digo no encontrado"','ProductAbstract','SearchAbstractCodes');
@@ -154,6 +155,18 @@ class ProductRelation
 		{
 			// $_POST['company_id'] = $_GET['company_id'];
 			unset($_GET['company_id']);
+		}
+		
+		if($_POST['code_relation'])
+		{
+			$AbstractID = Core::Select(self::TABLE,ProductAbstract::TABLE_ID,"code='".$_POST['code_relation']."'")[0][ProductAbstract::TABLE_ID];
+			if($AbstractID)
+			{
+				$_POST['abstract_id'] = $AbstractID;
+				$_POST['view_order_field'] = "code";
+			}else{
+				$_POST['abstract_id'] = -1;
+			}
 		}
 		
 		if($_POST['abstract_id'])
@@ -213,7 +226,7 @@ class ProductRelation
 			// Search for Product ID if it's related to an abstract ID with a specific brand ID 
 			$ProductID = Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID,ProductAbstract::TABLE_ID."=".$AbstractID." AND ".Brand::TABLE_ID."=".$BrandID)[0][Product::TABLE_ID];
 		}
-		
+		if(!$ProductID)$ProductID=0;
 		if(!$RelationID)
 		{
 			Core::Insert(self::TABLE,'code,'.Company::TABLE_ID.','.Product::TABLE_ID.','.ProductAbstract::TABLE_ID.','.Brand::TABLE_ID.','.Currency::TABLE_ID.',price,stock,creation_date,'.CoreOrganization::TABLE_ID.',list_date,created_by',"'".$Code."',".$CompanyID.",".$ProductID.",".$AbstractID.",".$BrandID.",".$CurrencyID.",".$Price.",".$Stock.",NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",NOW(),".$_SESSION[CoreUser::TABLE_ID]);		

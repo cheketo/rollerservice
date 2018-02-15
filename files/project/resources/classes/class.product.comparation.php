@@ -1,12 +1,12 @@
 <?php
 
-class ProductRelation
+class ProductComparation
 {
 	use CoreSearchList,CoreCrud,CoreImage;
 	
-	const TABLE				= 'product_relation';
-	const TABLE_ID			= 'relation_id';
-	const SEARCH_TABLE		= 'view_product_relation_list';
+	const TABLE				= 'product_comparation';
+	const TABLE_ID			= 'comparation_id';
+	const SEARCH_TABLE		= 'view_product_comparation_list';
 	const DEFAULT_IMG		= '../../../../skin/images/products/default/default2.png';
 	const DEFAULT_IMG_DIR	= '../../../../skin/images/products/default/';
 	const IMG_DIR			= '../../../../skin/images/products/';
@@ -19,20 +19,20 @@ class ProductRelation
 		self::SetImg($this->Data['img']);
 	}
 	
-	public static function GetLastImport($CompanyID)
-	{
-		$Data = Core::Select('product_relation_import',"*","status = 'A' AND company_id =".$CompanyID,"creation_date DESC")[0];
-		if(!empty($Data))
-			$Data['items'] = self::GetImportedProducts($Data['import_id']);
-		else
-			$Data = false;
-		return $Data;
-	}
+	// public static function GetLastImport($CompanyID)
+	// {
+	// 	$Data = Core::Select('product_relation_import',"*","status = 'A' AND company_id =".$CompanyID,"creation_date DESC")[0];
+	// 	if(!empty($Data))
+	// 		$Data['items'] = self::GetImportedProducts($Data['import_id']);
+	// 	else
+	// 		$Data = false;
+	// 	return $Data;
+	// }
 	
-	public static function GetImportedProducts($ImportID)
-	{
-		return Core::Select('product_relation_import_item',"*","import_id=".$ImportID);
-	}
+	// public static function GetImportedProducts($ImportID)
+	// {
+	// 	return Core::Select('product_relation_import_item',"*","import_id=".$ImportID);
+	// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////// SEARCHLIST FUNCTIONS ///////////////////////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ class ProductRelation
 	
 	public static function MakeNoRegsHTML()
 	{
-		return '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron relaciones de art&iacute;culos.</h4><p>Puede crear una nueva relaci&oacute;n de art&iacute;culo haciendo click <a href="new.relation.php">aqui</a>.</p></div>';	
+		return '<div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron art&iacute;culos para comparar.</h4><p>Puede realizar una nueva comparaci&oacute;n de art&iacute;culo haciendo click <a href="compare_price_list.php">aqui</a>.</p></div>';	
 	}
 	
 	protected function SetSearchFields()
@@ -132,15 +132,15 @@ class ProductRelation
 		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo"');
 		
 		// $this->SearchFields['product_id'] = Core::InsertElement('select',Product::TABLE_ID,'','form-control chosenSelect','',Product::GetFullCodes(),'','Cualquier Art&iacute;culo');
-		$this->SearchFields['abstract_id'] = Core::InsertElement('autocomplete','abstract_id','','form-control','placeholder="C&oacute;digo Gen&eacute;rico" placeholderauto="C&oacute;digo no encontrado"','ProductAbstract','SearchAbstractCodes');
-		$this->SearchFields['brand_id'] = Core::InsertElement('select',Brand::TABLE_ID,'','form-control chosenSelect','',Core::Select(Brand::TABLE,Brand::TABLE_ID.',name',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"name"),'','Cualquier Marca');
+		// $this->SearchFields['abstract_id'] = Core::InsertElement('autocomplete','abstract_id','','form-control','placeholder="C&oacute;digo Gen&eacute;rico" placeholderauto="C&oacute;digo no encontrado"','ProductAbstract','SearchAbstractCodes');
+		// $this->SearchFields['brand_id'] = Core::InsertElement('select',Brand::TABLE_ID,'','form-control chosenSelect','',Core::Select(Brand::TABLE,Brand::TABLE_ID.',name',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"name"),'','Cualquier Marca');
 		// $this->SearchFields['category_id'] = Core::InsertElement('select',Category::TABLE_ID,'','form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.',title',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"title"),'','Cualquier L&iacute;nea');
-		$this->SearchFields['company_id'] = Core::InsertElement('autocomplete','company_id',$_GET['company_id'].",".$_GET['element'],'form-control','placeholder="Empresa" placeholderauto="Empresa no encontrada"','Company','SearchCompanies');
-		$this->SearchFields['price_from'] = Core::InsertElement('text','price_from','','form-control','placeholder="Precio Desde" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros"');
-		$this->SearchFields['price_to'] = Core::InsertElement('text','price_to','','form-control','placeholder="Precio Hasta" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros"');
-		$this->SearchFields['stock_from'] = Core::InsertElement('text','stock_from','','form-control','placeholder="Stock Desde" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros"');
-		$this->SearchFields['stock_to'] = Core::InsertElement('text','stock_to','','form-control','placeholder="Stock Hasta" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros"');
-		$this->HiddenSearchFields['removeget'] = 1;
+		// $this->SearchFields['company_id'] = Core::InsertElement('autocomplete','company_id',$_GET['company_id'].",".$_GET['element'],'form-control','placeholder="Empresa" placeholderauto="Empresa no encontrada"','Company','SearchCompanies');
+		// $this->SearchFields['price_from'] = Core::InsertElement('text','price_from','','form-control','placeholder="Precio Desde" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros"');
+		// $this->SearchFields['price_to'] = Core::InsertElement('text','price_to','','form-control','placeholder="Precio Hasta" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros"');
+		// $this->SearchFields['stock_from'] = Core::InsertElement('text','stock_from','','form-control','placeholder="Stock Desde" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros"');
+		// $this->SearchFields['stock_to'] = Core::InsertElement('text','stock_to','','form-control','placeholder="Stock Hasta" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros"');
+		// $this->HiddenSearchFields['removeget'] = 1;
 	}
 	
 	protected function InsertSearchButtons()
@@ -150,44 +150,23 @@ class ProductRelation
 	
 	public function ConfigureSearchRequest()
 	{
-		if($_POST['removeget'])
+		
+		// if($_GET['abstract_id'])
+		// {
+		// 	$_POST['abstract_id_condition']="=";
+		// }
+		
+		if($_GET['id'])
 		{
-			// $_POST['company_id'] = $_GET['company_id'];
-			unset($_GET['company_id']);
+			$this->AddWhereString(" AND ".self::TABLE_ID."=".$_GET['id']);
 		}
 		
-		if($_POST['abstract_id'])
-		{
-			$_POST['abstract_id_condition']="=";
-		}
 		
-		if($_POST['price_from'])
-		{
-			$Price=$_POST['price_from'];
-			$this->AddWhereString(" AND price>=".$Price);
-		}
-		if($_POST['price_to'])
-		{
-			$Price=$_POST['price_to'];
-			$this->AddWhereString(" AND price<=".$Price);
-		}
+		// if($_POST['view_order_field']=="price_from" || $_POST['view_order_field']=="price_to")
+		// 	$_POST['view_order_field'] = "price";
 		
-		if($_POST['stock_from'])
-		{
-			$Stock=$_POST['stock_from'];
-			$this->AddWhereString(" AND stock>=".$Stock);
-		}
-		if($_POST['stock_to'])
-		{
-			$Stock=$_POST['stock_to'];
-			$this->AddWhereString(" AND stock<=".$Stock);
-		}
-		
-		if($_POST['view_order_field']=="price_from" || $_POST['view_order_field']=="price_to")
-			$_POST['view_order_field'] = "price";
-		
-		if($_POST['view_order_field']=="stock_from" || $_POST['view_order_field']=="stock_to")
-			$_POST['view_order_field'] = "stock";
+		// if($_POST['view_order_field']=="stock_from" || $_POST['view_order_field']=="stock_to")
+		// 	$_POST['view_order_field'] = "stock";
 			
 		$this->SetSearchRequest();
 	}
@@ -198,7 +177,8 @@ class ProductRelation
 	
 	public function Compare()
 	{
-		
+		$Companies = $_POST['companies'];
+		$
 	}
 }
 ?>

@@ -27,9 +27,9 @@
             
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12 col-sm-12">
-                Proveedores:
+                Proveedores con lista de precio:
                 <?php //echo Core::InsertElement('autocomplete','company_id',$SelectedCompany,'txC form-control','placeholder="Seleccionar Empresa" validateEmpty="Seleccione una Empresa" placeholderauto="Empresa no encontrada" iconauto="building"','Company','SearchCompanies'); ?>
-                <?php echo Core::InsertElement('multiple','companies','','txC form-control chosenSelect','data-placeholder="Todos los proveedores"',$Companies); ?>
+                <?php echo Core::InsertElement('multiple','companies','','txC form-control chosenSelect','data-placeholder="Todos los proveedores con lista de precio"',$Companies); ?>
               </div>
             </div>
             
@@ -37,7 +37,7 @@
               <div class="col-xs-12 col-sm-12">
                 Marcas:
                 
-                <?php echo Core::InsertElement('multiple','brands','','txC form-control chosenSelect','data-placeholder="Todas las Marcas"',$Brands); ?>
+                <?php echo Core::InsertElement('multiple','brands','','txC form-control chosenSelect','data-placeholder="Todas las Marcas en listas de precio"',$Brands); ?>
               </div>
             </div>
             

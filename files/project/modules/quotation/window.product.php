@@ -9,7 +9,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6">
                         <?php //echo Core::InsertElement('text','price','','form-control','placeholder="Precio" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$\', \'placeholder\': \'0\'"') ?>
-                        <?php echo Core::InsertElement('text','new_product_order_number','','form-control','placeholder="N&uacute;mero de Orden" validateEmpty="Ingrese un N&uacute;mero de Orden" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 0, \'digitsOptional\': false, \'prefix\': \'\', \'placeholder\': \'0\'"') ?>
+                        <?php echo Core::InsertElement('text','new_product_order_number','','form-control','placeholder="N&uacute;mero de Orden" validateOnlyNumbers="Ingrese n&uacute;meros &uacute;nicamente." validateEmpty="Ingrese un N&uacute;mero de Orden" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 0, \'digitsOptional\': false, \'prefix\': \'\', \'placeholder\': \'0\'"') ?>
                     </div>
                 </div>
                 <div class="row form-group inline-form-custom">

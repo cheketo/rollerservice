@@ -261,8 +261,8 @@ class Product
 	
 	public function Insert()
 	{
-		$Code		= $_POST['code'];
-		$OrderNumber= $_POST['order_number'];
+		$Code		= trim($_POST['code']);
+		$OrderNumber= trim($_POST['order_number']);
 		$Category	= $_POST['category'];
 		$Price		= $_POST['price']? str_replace('$','',$_POST['price']):"0.00";
 		$Brand		= $_POST['brand'];
@@ -286,8 +286,8 @@ class Product
 	
 	public function Quickinsert()
 	{
-		$Code		= $_POST['code'];
-		$OrderNumber= $_POST['order_number'];
+		$Code		= trim($_POST['code']);
+		$OrderNumber= trim($_POST['order_number']);
 		$Category	= $_POST['category'];
 		$Brand		= $_POST['brand'];
 		Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.','.Brand::TABLE_ID.',creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Brand.",NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
@@ -298,8 +298,8 @@ class Product
 		$ID 		= $_POST['id'];
 		$Edit		= new Product($ID);
 		
-		$Code		= $_POST['code'];
-		$OrderNumber= $_POST['order_number'];
+		$Code		= trim($_POST['code']);
+		$OrderNumber= trim($_POST['order_number']);
 		$Category	= $_POST['category'];
 		$Price		= $_POST['price']? str_replace('$','',$_POST['price']):"0.00";
 		$Brand		= $_POST['brand'];
