@@ -48,14 +48,19 @@ class Currency
 	protected static function MakeListHTML($Object)
 	{
 		$HTML = '
-		<div class="col-lg-4 col-md-5 col-sm-5 col-xs-5">
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
 			<div class="listRowInner">
 				<span class="listTextStrong">'.$Object->Data['prefix'].'</span>
 			</div>
 		</div>
-		<div class="col-lg-4 col-md-5 col-sm-5 col-xs-5">
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
 			<div class="listRowInner">
 				<span class="listTextStrong">'.$Object->Data['title'].'</span>
+			</div>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6">
+			<div class="listRowInner">
+				<span class="listTextStrong">'.$Object->Data['afip_code'].'</span>
 			</div>
 		</div>
 		<div class="col-lg-1 col-md-1 col-sm-1 hideMobile990"></div>';
