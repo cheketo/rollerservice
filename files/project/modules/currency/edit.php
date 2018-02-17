@@ -30,7 +30,7 @@
         <h4 class="subTitleB"><i class="fa fa-qrcode"></i> C&oacute;digo AFIP</h4>
         <div class="row form-group inline-form-custom">
           <div class="col-xs-12">
-              <?php echo Core::InsertElement('text','afip_code',$Data['afip_code'],'form-control','validateEmpty="Ingrese un c&oacute;digo" placeholder="Ingrese un c&oacute;digo"'); ?>
+              <?php echo Core::InsertElement('text','afip_code',$Data['afip_code'],'form-control','validateEmpty="Ingrese un c&oacute;digo" validateMinLength="3///Ingrese 3 caracteres" validateMaxLength="3///Ingrese 3 caracteres" placeholder="Ingrese un c&oacute;digo"'); ?>
           </div>
         </div>
         <hr>
