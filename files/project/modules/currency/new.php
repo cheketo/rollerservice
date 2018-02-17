@@ -28,6 +28,12 @@
               <?php echo Core::InsertElement('text','prefix','','form-control','validateEmpty="Ingrese un S&iacute;mbolo" placeholder="Ingrese un S&iacute;mbolo"'); ?>
           </div>
         </div>
+        <h4 class="subTitleB"><i class="fa fa-qrcode"></i> C&oacute;digo AFIP</h4>
+        <div class="row form-group inline-form-custom">
+          <div class="col-xs-12">
+              <?php echo Core::InsertElement('text','afip_code','','form-control','validateEmpty="Ingrese un c&oacute;digo" placeholder="Ingrese un c&oacute;digo"'); ?>
+          </div>
+        </div>
         <hr>
         <div class="row txC">
           <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-plus"></i> Crear Moneda</button>

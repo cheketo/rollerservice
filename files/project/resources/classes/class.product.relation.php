@@ -163,10 +163,14 @@ class ProductRelation
 			if($AbstractID)
 			{
 				$_POST['abstract_id'] = $AbstractID;
-				$_POST['view_order_field'] = "code";
 			}else{
 				$_POST['abstract_id'] = -1;
 			}
+		}
+		
+		if($_POST['view_order_field']='code_relation')
+		{
+			$_POST['view_order_field'] = "code";
 		}
 		
 		if($_POST['abstract_id'])

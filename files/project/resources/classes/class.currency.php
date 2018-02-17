@@ -102,7 +102,8 @@ class Currency
 		// Basic Data
 		$Title	= $_POST['title'];
 		$Prefix	= $_POST['prefix'];
-		Core::Insert(self::TABLE,'title,prefix,creation_date,created_by'.CoreOrganization::TABLE_ID,"'".$Title."','".$Prefix.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+		$AFIP	= $_POST['afip_code'];
+		Core::Insert(self::TABLE,'title,prefix,afip_code,creation_date,created_by'.CoreOrganization::TABLE_ID,"'".$Title."','".$Prefix.",'".$AFIP."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
 	}	
 	
 	public function Update()
@@ -114,7 +115,8 @@ class Currency
 		// Basic Data
 		$Title	= $_POST['title'];
 		$Prefix	= $_POST['prefix'];
-		Core::Update(self::TABLE,"title='".$Title."',prefix='".$Prefix."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
+		$AFIP	= $_POST['afip_code'];
+		Core::Update(self::TABLE,"title='".$Title."',prefix='".$Prefix."',afip_code='".$AFIP."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
 	}
 	
 	public function Validate()
