@@ -290,7 +290,10 @@ class Product
 		$OrderNumber= trim($_POST['order_number']);
 		$Category	= $_POST['category'];
 		$Brand		= $_POST['brand'];
-		Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.','.Brand::TABLE_ID.',creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Brand.",NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
+		if($Code && $OrderNumber && $Category && $Brand)
+			Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.','.Brand::TABLE_ID.',creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Brand.",NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
+		else
+			echo 402;
 	}
 	
 	public function Update()

@@ -14,10 +14,10 @@
                 </div>
                 <div class="row form-group inline-form-custom">
                     <div class="col-xs-12 col-sm-6">
-                        <?php echo Core::InsertElement('select','new_product_category','','form-control chosenSelect','data-placeholder="Seleccionar L&iacute;nea" validateEmpty="Seleccione una l&iacute;nea."',Core::Select(Category::TABLE,Category::TABLE_ID.",title","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'0','L&iacute;nea') ?>
+                        <?php echo Core::InsertElement('select','new_product_category','','form-control chosenSelect','data-placeholder="Seleccionar L&iacute;nea" validateEmpty="Seleccione una l&iacute;nea."',Core::Select(Category::TABLE,Category::TABLE_ID.",title","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),' ','') ?>
                     </div>
                     <div class="col-xs-12 col-sm-6">
-                        <?php echo Core::InsertElement('select','new_product_brand','','form-control chosenSelect','data-placeholder="Seleccionar Marca" validateEmpty="Seleccione una marca." style="width:100%!important;"',Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'0','Marca'); ?>
+                        <?php echo Core::InsertElement('select','new_product_brand','','form-control chosenSelect','data-placeholder="Seleccionar Marca" validateEmpty="Seleccione una marca." style="width:100%!important;"',Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),' ',''); ?>
                     </div>
                 </div>
             </div>
