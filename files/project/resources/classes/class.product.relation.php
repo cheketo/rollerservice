@@ -225,12 +225,33 @@ class ProductRelation
 		$Price		= $_POST['price']>0?$_POST['price']:0;
 		$Stock		= $_POST['stock']>0?$_POST['stock']:0;
 		
+		if(!$AbstractID && $BrandID)
+		{
+			$IDs = Core::Select(Product::SEARCH_TABLE,"product_id,abstract_id","REPLACE(code,' ','')='".str_replace(' ','',$Code)."' AND ".Brand::TABLE_ID."=".$BrandID)[0];
+			if($IDs['abstract_id'])
+			{
+				$AbstractID = $IDs['abstract_id'];
+				if($IDs['product_id']) $ProductID = $IDs['product_id'];
+			}else{
+				$IDs = Core::Select(Product::SEARCH_TABLE,"product_id,abstract_id","REPLACE(abstract_code,' ','')='".str_replace(' ','',$Code)."' AND ".Brand::TABLE_ID."=".$BrandID)[0];
+				if($IDs['abstract_id'])
+				{
+					$AbstractID = $IDs['abstract_id'];
+					if($IDs['product_id']) $ProductID = $IDs['product_id'];
+				}else{
+					$IDs = Core::Select(ProductAbstract::SEARCH_TABLE,"abstract_id","REPLACE(code,' ','')='".str_replace(' ','',$Code)."'")[0];
+					$AbstractID = $IDs['abstract_id']?$IDs['abstract_id']:$AbstractID;
+				}
+			}
+		}
 		if(!$ProductID && $AbstractID && $BrandID)
 		{
 			// Search for Product ID if it's related to an abstract ID with a specific brand ID 
 			$ProductID = Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID,ProductAbstract::TABLE_ID."=".$AbstractID." AND ".Brand::TABLE_ID."=".$BrandID)[0][Product::TABLE_ID];
 		}
+		
 		if(!$ProductID)$ProductID=0;
+		if(!$AbstractID)$AbstractID=0;
 		if(!$RelationID)
 		{
 			Core::Insert(self::TABLE,'code,'.Company::TABLE_ID.','.Product::TABLE_ID.','.ProductAbstract::TABLE_ID.','.Brand::TABLE_ID.','.Currency::TABLE_ID.',price,stock,creation_date,'.CoreOrganization::TABLE_ID.',list_date,created_by',"'".$Code."',".$CompanyID.",".$ProductID.",".$AbstractID.",".$BrandID.",".$CurrencyID.",".$Price.",".$Stock.",NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",NOW(),".$_SESSION[CoreUser::TABLE_ID]);		

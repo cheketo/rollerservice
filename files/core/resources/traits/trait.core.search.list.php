@@ -412,10 +412,11 @@ trait CoreSearchList
 	
 	public function MakeRegs($Mode="list")
 	{
-		$this->SetGroupBy(self::TABLE_ID);
+		$GroupBy = defined("self::GROUP_BY")?self::GROUP_BY:self::TABLE_ID;
+		$this->SetGroupBy($GroupBy);
 		// $Rows	= self::GroupRowsByID($this->GetRegs());
 		$Rows	= $this->GetRegs();
-		//echo Core::LastQuery();
+		// echo Core::LastQuery();
 		
 		foreach($Rows as $Row)
 		{
@@ -454,10 +455,10 @@ trait CoreSearchList
 		$Regs = array();
 		foreach($Rows as $Row)
 		{
-			if($Row[self::TABLE_ID]!=$ID)
+			if($Row[$GroupBy]!=$ID)
 			{
 				$Regs[] = $Row;
-				$ID = $Row[self::TABLE_ID];
+				$ID = $Row[$GroupBy];
 			}
 		}
 		return $Regs;

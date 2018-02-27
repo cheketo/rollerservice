@@ -50,7 +50,7 @@ class Mailer extends PHPMailer
 	    else
 	        $FileLog = $Files;
 		$Error = $this->ErrorInfo?$this->ErrorInfo:"";
-    	$LogID = Core::Insert(self::LOG_TABLE,'sender,receiver,subject,message,file,sent,error,associated_id',"'".$Sender."','".$Receiver."','".$Subject."','".$Message."','".$FileLog."','".$Sent."','".$Error."',".$AssocID);
+    	$LogID = Core::Insert(self::LOG_TABLE,'sender,receiver,subject,message,file,sent,error,associated_id,creation_date,created_by,organization_id',"'".$Sender."','".$Receiver."','".$Subject."','".$Message."','".$FileLog."','".$Sent."','".$Error."',".$AssocID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
     	if(!$Sent)
     		return $Sent;
     	else

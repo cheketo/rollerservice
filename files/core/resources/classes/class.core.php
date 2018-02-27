@@ -201,6 +201,32 @@
     		return $Ext;
     	}
     	
+    	function BubbleSort($Array,$Field='')
+        {
+        	do
+        	{
+        		$Swapped = false;
+        		for($I=0,$C=count($Array)-1;$I<$C;$I++)
+        		{
+        		    if($Field)
+        		    {
+        		        $Compare1 = $Array[$I][$Field];
+        		        $Compare2 = $Array[$I+1][$Field];
+        		    }else{
+        		        $Compare1 = $Array[$I];
+        		        $Compare2 = $Array[$I+1];
+        		    }
+        			if($Compare1>$Compare2)
+        			{
+        				list($Array[$I+1],$Array[$I])=array($Array[$I],$Array[$I+1]);
+        				$Swapped = true;
+        			}
+        		}
+        	}
+        	while($Swapped);
+            return $Array;
+        }
+    	
     	public static function GetFileIcon($File,$SelfToImages=true)
     	{
     	    $Parts = explode(".",$File);

@@ -46,6 +46,13 @@
     $FieldInternational = $_GET['international']? "AND international='".$_GET['international']."' ":"";
     $ProductCodes = Product::GetFullCodes();
     
+    $Date1 = date_create(Core::DateTimeFormat($Edit->Data['creation_date'],'date'));
+    $Date2 = date_create(Core::DateTimeFormat($Edit->Data['expire_date'],'date'));
+    $Interval = date_diff($Date1, $Date2);
+    $ExpireDays = $Interval->format('%a');
+     
+    
+    
     $Head->SetTitle("Cotizaci&oacute;n de ".$Data['company']);
     $Head->SetSubTitle($Menu->GetTitle().$Prefix.$Role);
     $Head->SetIcon($Menu->GetHTMLicon());
@@ -115,10 +122,10 @@
             <h4 class="subTitleB"><i class="fa fa-calendar-times-o"></i> Vencimiento</h4>
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12 col-sm-3">
-                <?php echo Core::InsertElement('text','expire_days',$Edit->Data['expire_days'],'form-control','validateEmpty="Ingrese cantidad de d&iacute;as" placeholder="Ingrese cantidad de d&iacute;as"'); ?>
+                <?php echo Core::InsertElement('text','expire_days',$ExpireDays,'form-control','validateEmpty="Ingrese cantidad de d&iacute;as" placeholder="Ingrese cantidad de d&iacute;as"'); ?>
               </div>
               <div class="col-xs-12 col-sm-9">
-                <?php echo Core::InsertElement('text','expire_date',date('d/m/Y',$Edit->Data['expire_date']),'form-control','disabled="disabled" placeholder="Fecha Vencimiento"'); ?>
+                <?php echo Core::InsertElement('text','expire_date',Core::FromDBToDate($Edit->Data['expire_date']),'form-control','disabled="disabled" placeholder="Fecha Vencimiento"'); ?>
               </div>
             </div>
             

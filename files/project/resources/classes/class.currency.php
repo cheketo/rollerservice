@@ -106,10 +106,10 @@ class Currency
 	{
 		// Basic Data
 		$Title	= $_POST['title'];
-		$Prefix	= $_POST['prefix'];
+		$Prefix	= htmlentities($_POST['prefix']);
 		$AFIP	= $_POST['afip_code'];
 		if(strlen($AFIP)==3)
-			Core::Insert(self::TABLE,'title,prefix,afip_code,creation_date,created_by'.CoreOrganization::TABLE_ID,"'".$Title."','".$Prefix.",'".$AFIP."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+			Core::Insert(self::TABLE,'title,prefix,afip_code,creation_date,created_by,'.CoreOrganization::TABLE_ID,"'".$Title."','".$Prefix."','".$AFIP."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
 		else
 			echo "402";
 	}	
@@ -122,7 +122,7 @@ class Currency
 		
 		// Basic Data
 		$Title	= $_POST['title'];
-		$Prefix	= $_POST['prefix'];
+		$Prefix	= htmlentities($_POST['prefix']);
 		$AFIP	= $_POST['afip_code'];
 		if(strlen($AFIP)==3)
 			Core::Update(self::TABLE,"title='".$Title."',prefix='".$Prefix."',afip_code='".$AFIP."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
