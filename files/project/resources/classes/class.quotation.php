@@ -277,6 +277,7 @@ class Quotation
 			$BCC = "ventas@rollerservice.com.ar";
 			$Mail->AddBCC($BCC, "Ventas Roller Service");
 			$Subject = 'Cotización N°'.$QID;
+			echo "Antes de enviar --";
 			$Sent = $Mail->QuotationEmail($Receiver,$Quotation->Data['company'],$Subject,$File,$Sender);
 			
 			//Check for errors
@@ -286,7 +287,8 @@ class Quotation
 			}else{
 			    //Insert Sent Email
 			    Core::Insert("quotation_email",self::TABLE_ID.",email_from,email_to,subject,message,file,status,cc,bcc,creation_date,created_by,organization_id",$QID.",'".$Sender."','".$Receiver."','".$Subject."','".$Message."','".$File."','P','".$CC."','".$BCC."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
-			}	
+			    echo "Luego de guardar el mail";
+			}
 		}
 	}
 	

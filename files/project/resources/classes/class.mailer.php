@@ -24,6 +24,7 @@ class Mailer extends PHPMailer
 		$this->Subject = $Subject;
 		$this->msgHTML($HTML);
 		$this->AltBody = $AltBody;
+		echo "Antes de enviar (dentro de la clase) --";
 		if($Attachments)
 		{
 		    if(is_array($Attachments))
@@ -37,7 +38,9 @@ class Mailer extends PHPMailer
 		    }
 		}
 		$Sent = $this->send();
+		echo "Luego de enviar (dentro de la clase) --";
 		$this->EmailLog($Sent,$ReceiverAddress,$Sender,$Subject,$HTML,$Attachments);
+		echo "Luego de log de envio (dentro de la clase) --";
 		return $Sent;
     }
     
