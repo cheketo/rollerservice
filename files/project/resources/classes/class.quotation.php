@@ -269,7 +269,7 @@ class Quotation
 			$PDF->SetOutputType("F");
 			$Quotation = new Quotation($QID);
 			$File = $PDF->Quotation($QID,$ShowBrands,$ShowExtra);
-		
+			
 			//Create and send email
 			$Mail = new Mailer();
 			$Sender = 'ventas@rollersevice.com.ar';
@@ -277,7 +277,9 @@ class Quotation
 			$BCC = "ventas@rollerservice.com.ar";
 			$Mail->AddBCC($BCC, "Ventas Roller Service");
 			$Subject = 'Cotización N°'.$QID;
-			$Sent = $Mail->QuotationEmail($Receiver,$Quotation->Data['company'],$Subject,$File,$Sender);
+			//Set Batch TRUE to send emails through remote server
+			$Mail->SetBatch(true);
+			$Sent = $Mail->QuotationEmail($QID,$Receiver,$Quotation->Data['company'],$Subject,$File,$Sender);
 			
 			//Check for errors
 			if(!$Sent)
