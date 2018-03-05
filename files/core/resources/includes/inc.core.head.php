@@ -6,7 +6,11 @@
 <!-- Bootstrap 3.3.6 -->
 <link rel="stylesheet" href="../../../../vendors/bootstrap/bootstrap.min.css">
 <!-- Font Awesome -->
-<script src="../../../../vendors/fontawesome/font-awesome.min.js"></script>
+<!--<script src="../../../../vendors/fontawesome/font-awesome.min.js"></script>-->
+<link rel="stylesheet" href="../../../../vendors/font-awesome/css/font-awesome.css">
+<!--<script src="../../../../vendors/font-awesome/scss/font-awesome.scss"></script>-->
+<!--<script src="../../../../vendors/font-awesome/css/font-awesome.css"></script>-->
+
 <link rel="stylesheet" href="../../../../vendors/fontawesome/font-awesome-animation.min.css">
 <!-- Ionicons -->
 <link rel="stylesheet" href="../../../../vendors/ionicons/ionicons.min.css">
