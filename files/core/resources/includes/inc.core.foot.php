@@ -1,5 +1,5 @@
 <!-- jQuery 2.2.3 -->
-<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+<script src="../../../../vendors/jquery/jquery.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="../../../../vendors/bootstrap/bootstrap.min.js"></script>
 <!-- Bootstrap Notify -->
