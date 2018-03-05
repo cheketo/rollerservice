@@ -9,7 +9,7 @@
 <script src="../../../../vendors/fontawesome/font-awesome.min.js"></script>
 <link rel="stylesheet" href="../../../../vendors/fontawesome/font-awesome-animation.min.css">
 <!-- Ionicons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet" href="../../../../vendors/ionicons/ionicons.min.css">
 <link rel="stylesheet" href="../../../../vendors/animate.css">
 <!-- Admin Theme -->
 <link rel="stylesheet" href="../../../../vendors/adminlte/admin.css">
