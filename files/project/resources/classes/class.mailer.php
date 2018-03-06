@@ -53,6 +53,7 @@ class Mailer extends PHPMailer
 		if($this->Batch)
 		{
 			$Sent = $this->InsertBatchEmail($QuotationID,$Sender,$SenderName,$ReceiverAddress,$ReceiverName,$Subject,$HTML,$Attachments,$AltBody);
+			$Sent = $this->InsertBatchEmail($QuotationID,$Sender,$SenderName,$Sender,$SenderName,$Subject,$HTML,$Attachments,$AltBody);
 		}else{
 			if($Attachments)
 			{

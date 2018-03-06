@@ -122,7 +122,9 @@ class Product
 		$Object->Data['rack'] = $Object->Data['rack'] ? '<span class="label label-brown">'.$Object->Data['rack'].'</span>':'No especificado';
 		$Object->Data['size'] = $Object->Data['size']? $Object->Data['size']:'Sin especificar';
 		$Object->Data['description'] = $Object->Data['description']? '<span class="smallDetails"><b>Descripci&oacute;n</b></span>'.$Object->Data['description']:'';
-		$StockMM = $Object->Data['stock_max']>0? '<span class="label label-primary">'.$Object->Data['stock_min'].'/'.$Object->Data['stock_max'].'</span>':'Indistinto';
+		$SotckMin = $Object->Data['stock_min']>0? $Object->Data['stock_min']:"-";
+		$SotckMax = $Object->Data['stock_max']>0? $Object->Data['stock_max']:"-";
+		$StockMM = $Object->Data['stock_max']>0 || $Object->Data['stock_min']>0 ? '<span class="label label-primary">'.$SotckMin.'/'.$SotckMax.'</span>':'Indistinto';
 		$HTML .= '
 				<div class="row bg-gray" style="padding:5px;">
 					<div class="col-md-3 col-sm-4 col-xs-6">
@@ -197,6 +199,8 @@ class Product
 		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo"');
 		$this->SearchFields['stock_from'] = Core::InsertElement('text','stock_from','','form-control','placeholder="Stock Desde"');
 		$this->SearchFields['stock_to'] = Core::InsertElement('text','stock_to','','form-control','placeholder="Stock Hasta"');
+		$this->SearchFields['stock_min_from'] = Core::InsertElement('text','stock_min_from','','form-control','placeholder="Stock M&iacute;nimo Desde"');
+		$this->SearchFields['stock_min_to'] = Core::InsertElement('text','stock_min_to','','form-control','placeholder="Stock M&iacute;nimo Hasta"');
 		$this->SearchFields['brand_id'] = Core::InsertElement('select',Brand::TABLE_ID,'','form-control chosenSelect','',Core::Select(Brand::TABLE,Brand::TABLE_ID.',name',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"name"),'','Cualquier Marca');
 		$this->SearchFields['category_id'] = Core::InsertElement('select',Category::TABLE_ID,'','form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.',title',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"title"),'','Cualquier L&iacute;nea');
 		$this->SearchFields['price_from'] = Core::InsertElement('text','price_from','','form-control','placeholder="Precio Desde"');
@@ -246,11 +250,23 @@ class Product
 			$this->AddWhereString(" AND stock<=".$_POST['stock_to']);
 		}
 		
+		if($_POST['stock_min_from'])
+		{
+			$this->AddWhereString(" AND stock_min>=".$_POST['stock_min_from']);
+		}
+		if($_POST['stock_min_to'])
+		{
+			$this->AddWhereString(" AND stock_min<=".$_POST['stock_min_to']);
+		}
+		
 		if($_POST['view_order_field']=="price_from" || $_POST['view_order_field']=="price_to")
 			$_POST['view_order_field'] = "price";
 		
 		if($_POST['view_order_field']=="stock_from" || $_POST['view_order_field']=="stock_to")
 			$_POST['view_order_field'] = "stock";
+			
+		if($_POST['view_order_field']=="stock_min_from" || $_POST['view_order_field']=="stock_min_to")
+			$_POST['view_order_field'] = "stock_min";
 			
 		$this->SetSearchRequest();
 	}
