@@ -90,6 +90,9 @@ class Mailer extends PHPMailer
     
     public function SendBatchEmails($ShowLogs=false)
     {
+    	if(!$_SESSION[CoreOrganization::TABLE_ID]) $_SESSION[CoreOrganization::TABLE_ID]="000";
+		if(!$_SESSION[CoreUser::TABLE_ID]) $_SESSION[CoreUser::TABLE_ID]="000";
+		
     	if($ShowLogs) echo "Excuting emails query.<br><br>";
     	$Emails = Core::Select(self::BATCH_TABLE,'*',"status='P'");
     	if($ShowLogs) echo "Emails query executed :<br>".Core::LastQuery()."<br><br>";
