@@ -1,7 +1,7 @@
 <?php
     include('../../../core/resources/includes/inc.core.php');
     
-    if(($_SESSION[CoreUser::TABLE_ID] && $_SESSION[CoreOrganization::TABLE_ID]) || $_SESSION['batch_id'])
+    if(($_SESSION[CoreUser::TABLE_ID] && $_SESSION[CoreOrganization::TABLE_ID]) || $_SESSION['batch_id'] || ($_POST['loginaction']=='login' && $_POST['pagetarget']=='login'))
     {
         if($_GET['action'])
         {
