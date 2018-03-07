@@ -157,10 +157,18 @@ $("#asoc").autoComplete({
     cache: false,
     source: function(term, response)
     {
+      var products = '';
+      $(".CodeID").each(function(element){
+        if(products)
+          products = products+','+$(this).val();
+        else
+          products = $(this).val();
+      })
+      
       var target = "../../../core/resources/processes/proc.core.php";
       var object = "Product";
 			var action = "SearchCodesForRelation";
-      var variables		= "text="+term+"&object="+object+"&action="+action+"&category="+$("#category").val();
+      var variables		= "text="+term+"&object="+object+"&action="+action+"&category="+$("#category").val()+'&products='+products;
   	    
       
       try { xhr.abort(); } catch(e){}

@@ -5,7 +5,12 @@ $(document).ready(function(){
 	if(get['msg']=='insert')
 		notifySuccess('La cotizaci&oacute;n de <b>'+get['element']+'</b> ha sido creada correctamente.');
 	if(get['msg']=='update')
-		notifySuccess('La cotizaci&oacute;n de <b>'+get['element']+'</b> ha sido modificada correctamente.');
+	{
+		var popuptext = 'La cotizaci&oacute;n de <b>'+get['element']+'</b> ha sido modificada correctamente'
+		if(get['emailsent'])
+			popuptext = popuptext + ' y un email fue enviado a <b>'+get['emailsent']+'</b> con la cotizaci&oacute;n.';
+		notifySuccess(popuptext);
+	}
 	if(get['error']=="status")
 		notifyError('La cotizaci&oacute;n no puede ser editada ya que no se encuentra en estado activo.');
 	if(get['error']=="user")
@@ -25,7 +30,7 @@ $(function(){
 		params += '&international='+get['international'];
 	$("#BtnCreate").click(function(){
 		var element = $('#company option:selected').html();
-		var target	= 'list.php?element='+element+'&msg='+msg+params;
+		var target	= 'list.php?msg='+msg+params+'&element='+element;
 		askAndSubmit(target,role,'¿Desea crear la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
 	});
 	// $("#BtnCreateNext").click(function(){
@@ -35,7 +40,7 @@ $(function(){
 	// });
 	$("#BtnEdit").click(function(){
 		var element = $('#company option:selected').html();
-		var target		= 'list.php?element='+element+'&msg='+msg+params;
+		var target		= 'list.php?msg='+msg+params+'&element='+element;
 		askAndSubmit(target,role,'¿Desea modificar la cotizaci&oacute;n de <b>'+element+'</b>?','','QuotationForm');
 	});
 	
@@ -45,7 +50,7 @@ $(function(){
 		else
 			var action = 'editar';
 		var element = $('#company option:selected').html();
-		var target		= 'list.php?email=yes&element='+element+'&msg='+msg+params;
+		var target		= 'list.php?msg='+msg+params+'&emailsent='+$('#receiver').val()+'&element='+element;
 		askAndSubmit(target,role,'¿Desea '+action+' la cotizaci&oacute;n de <b>'+element+'</b> y enviarla por email al destinatario <b>'+$("#receiver").val()+'</b>?','','EmailWindowForm');	
 	});
 	

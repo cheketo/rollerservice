@@ -40,7 +40,11 @@ class Product
 	{
 		if($_GET['category'])
 			$CategoryFilter = " AND category_id=".$_GET['category'];
-		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,abstract_code as abstract,CONCAT(code,' - <b>',brand,' - ',category,'</b> - STOCK: ',stock) as text","status='A' ".$CategoryFilter." AND order_number >= ".intval($_GET['text'])." AND organization_id=".$_SESSION['organization_id'],'order_number,code','',200);
+		
+		if($_GET['products'])
+			$ExcludeFilter = " AND ".Product::TABLE_ID." NOT IN (".$_GET['products'].")";
+			
+		$Products =  Core::Select(Product::SEARCH_TABLE,Product::TABLE_ID." as id,abstract_code as abstract,CONCAT(code,' - <b>',brand,' - ',category,'</b> - STOCK: ',stock) as text","status='A' ".$CategoryFilter.$ExcludeFilter." AND order_number >= ".intval($_GET['text'])." AND organization_id=".$_SESSION['organization_id'],'order_number,code','',200);
 		if(empty($Products))
 			$Products[0]=array("id"=>"","text"=>"no-result");
 		else
@@ -86,6 +90,7 @@ class Product
 	{
 		$StockLabel = $Object->Data['stock_min']>$Object->Data['stock'] || $Object->Data['stock_max']<$Object->Data['stock']? 'warning':'primary';
 		$StockLabel = $Object->Data['stock']==0? 'danger':$StockLabel;
+		$AbstractCode = $Object->Data['abstract_code']?'<span class="label bg-purple">'.$Object->Data['abstract_code'].'</span>':'Sin Relacionar';
 		
 		$HTML = '<div class="col-lg-3 col-md-4 col-sm-4 col-xs-7">
 					<div class="listRowInner">
@@ -104,6 +109,12 @@ class Product
 					<div class="listRowInner">
 						<span class="listTextStrong">Precio</span>
 						<span class="listTextStrong"><span class="label label-success">'.Core::FromDBToMoney($Object->Data['price']).'</span></span>
+					</div>
+				</div>
+				<div class="col-lg-2 col-md-2 col-sm-2 col-xs-5">
+					<div class="listRowInner">
+						<span class="listTextStrong">C&oacute;digo Gen&eacute;rico</span>
+						<span class="smallTitle">'.$AbstractCode.'</span>
 					</div>
 				</div>
 				<div class="col-lg-2 col-md-3 col-sm-4 hideMobile990">
@@ -153,7 +164,7 @@ class Product
 							'.$Object->Data['rack'].'
 						</div>
 					</div>
-					<div class="col-md-1 col-sm-2 col-xs-6"">
+					<div class="col-md-1 col-sm-2 col-xs-6">
 						<div class="listRowInner">
 							<span class="smallDetails"><b>Medidas</b></span>
 							'.$Object->Data['size'].'
@@ -205,7 +216,7 @@ class Product
 		$this->SearchFields['category_id'] = Core::InsertElement('select',Category::TABLE_ID,'','form-control chosenSelect','',Core::Select(Category::TABLE,Category::TABLE_ID.',title',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"title"),'','Cualquier L&iacute;nea');
 		$this->SearchFields['price_from'] = Core::InsertElement('text','price_from','','form-control','placeholder="Precio Desde"');
 		$this->SearchFields['price_to'] = Core::InsertElement('text','price_to','','form-control','placeholder="Precio Hasta"');
-		$this->SearchFields['abstract_id'] = Core::InsertElement('autocomplete','abstract_id','','form-control','placeholder="C&oacute;digo Abstracto" placeholderauto="C&oacute;digo no encontrada"','ProductAbstract','SearchAbstractCodes');
+		$this->SearchFields['abstract_id'] = Core::InsertElement('autocomplete','abstract_id','','form-control','placeholder="C&oacute;digo Gen&eacute;rico" placeholderauto="C&oacute;digo no encontrada"','ProductAbstract','SearchAbstractCodes');
 		$this->SearchFields['relation'] = Core::InsertElement('select','relation','','form-control chosenSelect','',array("0"=>"Cualquier relaci&oacute;n","1"=>"Sin relacionar","2"=>"Relacionados"));
 		$this->NoOrderSearchFields['relation']=true;
 	}

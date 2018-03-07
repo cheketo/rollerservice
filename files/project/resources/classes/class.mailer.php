@@ -23,7 +23,7 @@ class Mailer extends PHPMailer
     	$this->Batch = $Batch;
     }
     
-    public function InsertBatchEmail($AssocID,$Sender,$SenderName,$Receiver,$ReceiverName,$Subject,$HTML,$Files="",$AltBody="")
+    public function InsertBatchEmail($AssocID,$Sender,$SenderName,$Receiver,$ReceiverName,$Subject,$HTML,$Files="",$AltBody="",$CC="",$BCC="")
     {
     	if($Files)
 		{
@@ -37,24 +37,72 @@ class Mailer extends PHPMailer
 		        $Attachment = $Files;
 		    }
 		}
-		return Core::Insert(self::BATCH_TABLE,'sender,sender_name,receiver,receiver_name,subject,message,files,alt_message,associated_id,creation_date,created_by,organization_id',"'".$Sender."','".$SenderName."','".$Receiver."','".$ReceiverName."','".$Subject."','".$HTML."','".$Attachment."','".$AltBody."',".$AssocID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+		
+		if(is_array($CC))
+		{
+			foreach ($CC as $CCemail) {
+				if(is_array($CCemail))
+					$cc .= $cc?",".$CCemail[0]." ---> ".$CCemail[1]:$CCemail[0]." ---> ".$CCemail[1];
+				else
+					$cc .= $cc?",".$CCemail." ---> ".$CCemail:$CCemail." ---> ".$CCemail;
+			}
+		}else{
+			$cc .= $CC." ---> ".$CC;
+		}
+		$CC = $cc;
+		
+		if(is_array($BCC))
+		{
+			foreach ($BCC as $BCCemail) {
+				if(is_array($BCCemail))
+					$bcc .= $bcc?",".$BCCemail[0]." ---> ".$BCCemail[1]:$BCCemail[0]." ---> ".$BCCemail[1];
+				else
+					$bcc .= $bcc?",".$BCCemail." ---> ".$BCCemail:$BCCemail." ---> ".$BCCemail;
+			}
+		}else{
+			$bcc .= $BCC." ---> ".$BCC;
+		}
+		$BCC = $bcc;
+		
+		return Core::Insert(self::BATCH_TABLE,'sender,sender_name,receiver,receiver_name,subject,message,files,alt_message,cc,bcc,associated_id,creation_date,created_by,organization_id',"'".$Sender."','".$SenderName."','".$Receiver."','".$ReceiverName."','".$Subject."','".$HTML."','".$Attachment."','".$AltBody."','".$CC."','".$BCC."',".$AssocID.",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
     }
     
-    function QuotationEmail($QuotationID,$ReceiverAddress,$ReceiverName,$Subject,$Attachments,$Sender='ventas@rollersevice.com.ar',$HTML='<html><body>Cotizaci&oacute;n Roller Service S.A.</body></html>',$AltBody='Cotización Roller Service')
+    function QuotationEmail($QuotationID,$ReceiverAddress,$ReceiverName,$Subject,$Attachments,$Sender='ventas@rollersevice.com.ar',$HTML='<html><body>Cotizaci&oacute;n Roller Service S.A.</body></html>',$AltBody='Cotización Roller Service',$CC="",$BCC="ventas@rollersevice.com.ar")
     {
     	$SenderName = 'Roller Service S.A.';
-        $this->isSendmail();
-		$this->setFrom($Sender, $SenderName);
-		$this->addReplyTo($Sender, $SenderName);
-		$this->addAddress($ReceiverAddress, $ReceiverName);
-		$this->Subject = $Subject;
-		$this->msgHTML($HTML);
-		$this->AltBody = $AltBody;
 		if($this->Batch)
 		{
-			$Sent = $this->InsertBatchEmail($QuotationID,$Sender,$SenderName,$ReceiverAddress,$ReceiverName,$Subject,$HTML,$Attachments,$AltBody);
-			$Sent = $this->InsertBatchEmail($QuotationID,$Sender,$SenderName,$Sender,$SenderName,$Subject,$HTML,$Attachments,$AltBody);
+			$Sent = $this->InsertBatchEmail($QuotationID,$Sender,$SenderName,$ReceiverAddress,$ReceiverName,$Subject,$HTML,$Attachments,$AltBody,$CC,$BCC);
 		}else{
+			$this->isSendmail();
+			$this->setFrom($Sender, $SenderName);
+			$this->addReplyTo($Sender, $SenderName);
+			$this->addAddress($ReceiverAddress, $ReceiverName);
+			$this->Subject = $Subject;
+			$this->msgHTML($HTML);
+			$this->AltBody = $AltBody;
+			if(is_array($CC))
+			{
+				foreach ($CC as $CCemail) {
+					if(is_array($CCemail))
+						$this->AddCC($CCemail[0], $CCemail[1]);
+					else
+						$this->AddCC($CCemail, $CCemail);
+				}
+			}else{
+				$this->AddCC($CC, $CC);
+			}
+			if(is_array($BCC))
+			{
+				foreach ($BCC as $BCCemail) {
+					if(is_array($BCCemail))
+						$this->AddBCC($BCCemail[0], $BCCemail[1]);
+					else
+						$this->AddBCC($BCCemail, $BCCemail);
+				}
+			}else{
+				$this->AddBCC($BCC, $BCC);
+			}
 			if($Attachments)
 			{
 			    if(is_array($Attachments))
@@ -109,6 +157,22 @@ class Mailer extends PHPMailer
 			$this->Subject = $Email['subject'];
 			$this->msgHTML($Email['message']);
 			$this->AltBody = $Email['alt_message'];
+			
+			$CC = explode(",",$Email['cc']);
+			$BCC = explode(",",$Email['bcc']);
+			foreach($CC as $EmailCC)
+			{
+				$EmailCC = explode(" ---> ",$EmailCC);
+				if($ShowLogs) echo "Adding ".$EmailCC[0]." as CC.<br>";
+				$this->AddCC($EmailCC[0], $EmailCC[1]);
+			}
+			foreach($BCC as $EmailBCC)
+			{
+				$EmailBCC = explode(" ---> ",$EmailBCC);
+				if($ShowLogs) echo "Adding ".$EmailBCC[0]." as BCC.<br>";
+				$this->AddBCC($EmailBCC[0], $EmailBCC[1]);
+			}
+			
 			if($Email['files'])
 			{
 				if($ShowLogs) echo "Adding files of email N&deg;".$Email['email_id'].".<br>";
