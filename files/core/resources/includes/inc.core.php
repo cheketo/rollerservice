@@ -1,6 +1,6 @@
 <?php
 	session_name("rollerservice");
-	session_cache_expire(15800);
+	session_cache_expire(18000);
 	session_start();
 	
 	// $ROOT = $_SERVER['DOCUMENT_ROOT'];

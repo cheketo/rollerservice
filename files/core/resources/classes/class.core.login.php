@@ -11,7 +11,7 @@ class CoreLogin
 	var 	$Target;
 	var		$Return;
 
-	const 	HOURS 		= 2;
+	const 	HOURS 		= 3;
 	const 	MAX_TRIES	= 13;
 
 	public function __construct()
