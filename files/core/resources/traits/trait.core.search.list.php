@@ -11,6 +11,7 @@ trait CoreSearchList
 	var $SearchFields		= array();
 	var $HiddenSearchFields	= array();
 	var $NoOrderSearchFields= array();
+	var $InitialOrderMode	= 'ASC';
 	var $Fields 			= '*';
 	var $GridButtons		= '<button aria-label="Ver listado" class="ShowList GridElement btn Hidden hint--bottom-left hint--bounce"><i class="fa fa-list"></i></button><button aria-label="Ver grilla" class="ShowGrid ListElement btn hint--bottom-left hint--bounce"><i class="fa fa-th-large"></i></button>';
 	var $FilterButtons		= '<button aria-label="Buscar" class="ShowFilters SearchElement btn hint--bottom hint--bounce"><i class="fa fa-search"></i></button>';
@@ -175,7 +176,6 @@ trait CoreSearchList
 	
 	public function InsertSearchList($ShowGrid=false,$ShowFilters=true)
 	{
-		
 		if($ShowFilters) $FilterButtons = $this->FilterButtons;
 		if($ShowGrid) $GridButtons = $this->GridButtons;
 		return '<div class="box">
@@ -188,7 +188,7 @@ trait CoreSearchList
 			        	'.Core::InsertElement('hidden','view_type','list').'
 			        	'.Core::InsertElement('hidden','view_page','1').'
 			        	'.Core::InsertElement('hidden','view_order_field',$this->GetOrder()).'
-			        	'.Core::InsertElement('hidden','view_order_mode','asc').'
+			        	'.Core::InsertElement('hidden','view_order_mode',$this->InitialOrderMode).'
 			        	'.$this->InsertSearchField().'
 			          <!-- Submit Button -->
 			          <button type="button" class="btn btnGreen searchButton">Buscar</button>
@@ -281,6 +281,9 @@ trait CoreSearchList
 		    	<!-- Activate All -->
 		    	<button type="button" aria-label="Activar Seleccionados" class="btn btnGreen animated fadeIn NewElementButton Hidden ActivateSelectedElements hint--bottom hint--bounce hint--success"><i class="fa fa-check-circle"></i></button>
 		    	<!-- /Activate All -->
+		    	<!-- Expand All -->
+		    	<button type="button" aria-label="Expandir Seleccionados" title="Expandir registros seleccionados" class="btn bg-blue animated fadeIn NewElementButton Hidden ExpandSelectedElements hint--bottom hint--bounce hint--primary"><i class="fa fa-list-alt"></i></button>
+		    	<!-- /Expand All -->
 		    	';
 	}
 	
@@ -291,7 +294,9 @@ trait CoreSearchList
 		$SearcherHTML = '<div class="row"><form id="CoreSearcherForm" name="CoreSearcherForm">';
 		foreach($this->SearchFields as $Order => $HTML)
 		{	
-			$OrderButton = $this->NoOrderSearchFields[$Order]?'<span class="input-group-addon"></span>':'<span class="input-group-addon order-arrows '.$Activated.'" order="'.$Order.'" mode="asc"><i class="fa fa-sort-alpha-asc"></i></span>';
+			$this->FieldOrderMode[$Order] = $this->FieldOrderMode[$Order]?$this->FieldOrderMode[$Order]:$this->InitialOrderMode;
+			$OrderIcon = $this->FieldOrderMode[$Order] == 'asc'? "fa-sort-alpha-asc":"fa-sort-alpha-desc";
+			$OrderButton = $this->NoOrderSearchFields[$Order]?'<span class="input-group-addon"></span>':'<span class="input-group-addon order-arrows '.$Activated.'" order="'.$Order.'" mode="'.$this->FieldOrderMode[$Order].'"><i class="fa '.$OrderIcon.'"></i></span>';
 			$SearcherHTML	.='<div class="input-group col-lg-3 col-md-3 col-sm-5 col-xs-11" style="margin:2px;">
 								'.$OrderButton.'
 								'.$HTML.'
@@ -324,7 +329,10 @@ trait CoreSearchList
 			$this->SetWhereCondition($Field,$Config['condition'],$Config['value']);
 		}
 		
-		$Mode = $_POST['view_order_mode']? $_POST['view_order_mode']: 'ASC';
+		$Mode = $_POST['view_order_mode']? $_POST['view_order_mode']: $this->InitialOrderMode;
+		
+		if($this->InitialOrderField)
+			$this->SetOrder($this->InitialOrderField." ".$Mode);
 		
 		if($_POST['view_order_field'])
 			$this->SetOrder($_POST['view_order_field']." ".$Mode);

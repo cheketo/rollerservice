@@ -77,7 +77,7 @@ function toggleRow(element)
     }else{
 		showDeleteButton();
     }
-	
+	showExpandButton();
 	showSelectAllButton();
 	
     //Toggle grid
@@ -99,18 +99,23 @@ function toggleRowDetailedInformation()
 {
 	$('.ExpandButton,ContractButton').on('click',function(event){
 		event.stopPropagation();
-		var ElementID = $(this).attr("id");
-		var ID = ElementID.split('_');
-		var RowID = ID[1];
-		var InfoDetail = $("#row_"+RowID).children(".DetailedInformation");
-		$(this).toggleClass('ContractButton');
-		$(this).toggleClass('ExpandButton');
-		$(this).children('i').toggleClass('fa-plus');
-		$(this).children('i').toggleClass('fa-minus');
-		InfoDetail.toggleClass('Hidden');
+		toggleExpandRow($(this));
 	});
 }
 toggleRowDetailedInformation();
+
+function toggleExpandRow(element)
+{
+	var ElementID = element.attr("id");
+	var ID = ElementID.split('_');
+	var RowID = ID[1];
+	var InfoDetail = $("#row_"+RowID).children(".DetailedInformation");
+	element.toggleClass('ContractButton');
+	element.toggleClass('ExpandButton');
+	element.children('i').toggleClass('fa-plus');
+	element.children('i').toggleClass('fa-minus');
+	InfoDetail.toggleClass('Hidden');
+}
 
 function showDeleteButton()
 {
@@ -129,6 +134,16 @@ function showActivateButton()
         $('.ActivateSelectedElements').removeClass('Hidden');
     }else{
         $('.ActivateSelectedElements').addClass('Hidden');
+    }
+}
+
+function showExpandButton()
+{
+    if($('.SelectedRow').length>1)
+    {
+        $('.ExpandSelectedElements').removeClass('Hidden');
+    }else{
+        $('.ExpandSelectedElements').addClass('Hidden');
     }
 }
 
@@ -234,6 +249,15 @@ function activateElement(element)
     return result;
 }
 
+// function expandElement(element)
+// {
+// 	// var elementID	= element.attr('id').split("_");
+// 	// var id			= elementID[1];
+// 	// var row			= $("#row_"+id);
+// 	// var grid		= $("#grid_"+id);
+// 	element.click();
+// }
+
 
 function deleteListElement()
 {
@@ -331,6 +355,20 @@ function activateListElement()
 	});
 }
 activateListElement();
+
+
+function massiveRowExpand()
+{
+	$('.ExpandSelectedElements').click(function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		$(".SelectedRow").children('.listActions').children('div').children('.roundItemActionsGroup').children('a').children('.ExpandButton').each(function(){
+			toggleExpandRow($(this));
+		});
+		unselectAll();
+	})
+}
+massiveRowExpand();
 
 function massiveElementDelete()
 {
@@ -516,6 +554,7 @@ function submitSearch()
 			rowElementSelected();
 			gridElementSelected();
 			showDeleteButton();
+			showExpandButton();
 			deleteListElement();
 			// massiveElementDelete();
 			activateListElement();

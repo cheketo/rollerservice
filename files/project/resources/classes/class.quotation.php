@@ -14,6 +14,7 @@ class Quotation
 	public function __construct($ID=0)
 	{
 		$this->ID = $ID;
+		$this->InitialOrderMode = 'DESC';
 		if($this->ID!=0)
 		{
 			$Data = Core::Select(self::SEARCH_TABLE,'*',self::TABLE_ID."=".$this->ID,self::TABLE_ID);
@@ -191,6 +192,7 @@ class Quotation
 	
 	protected function SetSearchFields()
 	{
+		$this->FieldOrderMode['quotation_id'] = 'desc';
 		$this->SearchFields['quotation_id'] = Core::InsertElement('text','quotation_id','','form-control','placeholder="N&uacute;mero de Cotizaci&oacute;n"');
 		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control inputMask','placeholder="Art&iacute;culo"');
 		$this->SearchFields['order_number'] = Core::InsertElement('text','order_number','','form-control ','placeholder="N&uacute;mero de Orden" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros."');
@@ -204,7 +206,9 @@ class Quotation
 	
 	public function ConfigureSearchRequest()
 	{
-		$_POST['view_order_mode'] = $_POST['view_order_mode']? $_POST['view_order_mode']:'DESC';
+		
+		// $this->InitialOrderField = 'quotation_id';
+		// $_POST['view_order_mode'] = $_POST['view_order_mode']? $_POST['view_order_mode']:'DESC';
 		$_POST['view_order_field'] = $_POST['view_order_field']? $_POST['view_order_field']:'quotation_id';
 		$this->SetSearchRequest();
 	}
