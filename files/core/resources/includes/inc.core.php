@@ -1,4 +1,5 @@
 <?php
+	include_once("../../../core/resources/classes/class.core.login.php");
 	session_name("rollerservice");
 	session_cache_expire(3600*CoreLogin::HOURS);
 	session_start();
