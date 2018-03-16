@@ -199,6 +199,7 @@ class CoreLogin
 	
 	public function Logout()
 	{
+		session_unset();
 		session_destroy();
 		//Unset Cookies
 		setcookie("rollerservice", "", 0 ,"/");

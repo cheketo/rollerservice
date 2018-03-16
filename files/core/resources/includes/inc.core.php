@@ -1,5 +1,6 @@
 <?php
 	include_once("../../../core/resources/classes/class.core.login.php");
+	ini_set('session.gc-maxlifetime', 3600*CoreLogin::HOURS);
 	session_name("rollerservice");
 	session_cache_expire(3600*CoreLogin::HOURS);
 	session_start();
@@ -29,7 +30,7 @@
 		$Cookies 	= new CoreLogin();
 		$Cookies	->SetData($CoreUser->Data['user']);
 		$Cookies	->SetCookies();
-		$CoreUser->GetOrganization();
+		$CoreUser	->GetOrganization();
 	}
 	
 	/* ADDING SLASHES TO PUBLIC VARIABLES */

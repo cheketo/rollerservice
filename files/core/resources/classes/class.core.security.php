@@ -76,6 +76,29 @@ class CoreSecurity
 			return false;
 		}
 	}
+	
+	public function CheckSessionExpire()
+	{
+		if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 3600*CoreLogin::HOURS)) {
+		    // session_unset();     // unset $_SESSION variable for the run-time
+		    // session_destroy();   // destroy session data in storage
+		    $Logout = new CoreLogin();
+		    $Logout->Logout();
+		    return false;
+		}else{
+			$_SESSION['last_activity'] = time(); // update last activity time stamp
+			if (!isset($_SESSION['created']))
+			{
+				$_SESSION['created'] = time();
+			}
+			elseif(time() - $_SESSION['created'] > (900*CoreLogin::HOURS))
+			{
+			    session_regenerate_id(true);    // change session ID for the current session and invalidate old session ID
+			    $_SESSION['created'] = time();  // update creation time
+			}
+			return true;
+		}
+	}
 }
 
 ?>
