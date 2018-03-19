@@ -196,6 +196,7 @@ class Quotation
 		$this->SearchFields['quotation_id'] = Core::InsertElement('text','quotation_id','','form-control','placeholder="N&uacute;mero de Cotizaci&oacute;n"');
 		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control inputMask','placeholder="Art&iacute;culo"');
 		$this->SearchFields['order_number'] = Core::InsertElement('text','order_number','','form-control ','placeholder="N&uacute;mero de Orden" validateOnlyNumbers="Ingrese &uacute;nicamente n&uacute;meros."');
+		$this->SearchFields['company'] = Core::InsertElement('text','company','','form-control','placeholder="Empresa"');
 		$this->SearchFields['quantity'] = Core::InsertElement('text','quantity','','form-control','placeholder="Cantidad"');
 	}
 	
