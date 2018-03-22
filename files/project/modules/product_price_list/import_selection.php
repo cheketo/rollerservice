@@ -49,7 +49,6 @@
               echo Core::InsertElement('autocomplete','company_id',$CompanyId.",".$Data['name'],'txC form-control','placeholder="Seleccionar Empresa" disabled="disabled" validateEmpty="Seleccione una Empresa" placeholderauto="Empresa no encontrada" iconauto="building"','Company','SearchCompanies');
             ?>
           </div>
-          
           <div class="col-xs-12 col-sm-4 col-sm-offset-1 col-md-4 col-md-offset-1 col-lg-4 col-lg-offset-1">
             <?php
               echo Core::InsertElement('select','currency','','txC form-control chosenSelect','data-placeholder="Seleccionar Moneda" validateEmpty="Seleccione una Moneda"',Currency::GetSelectCurrency(),' ','');

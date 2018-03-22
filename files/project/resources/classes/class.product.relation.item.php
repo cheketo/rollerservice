@@ -361,6 +361,7 @@ class ProductRelationItem
 		{
 			$CompanyID = $_POST['id'];
 			$BrandID = $_POST['brand']?$_POST['brand']:0;
+			$CurrencyID = $_POST['currency']?$_POST['currency']:0;
 			$ListDate = Core::FromDateToDB($_POST['date']);
 			$Description = $_POST['description'];
 			$OriginalName = $_FILES['price_list']['name'];
@@ -369,7 +370,7 @@ class ProductRelationItem
 			$File = new CoreFileData($_FILES['price_list'],$FileDir,$FileName);
 			$File->SaveFile();
 			$FileURL = $FileDir.$FileName.".".$File->GetExtension();
-			$ImportID = Core::Insert('product_relation_import',Company::TABLE_ID.','.Brand::TABLE_ID.',list_date,file,name,description,creation_date,created_by,'.CoreOrganization::TABLE_ID,$CompanyID.",".$BrandID.",'".$ListDate."','".$FileURL."','".$OriginalName."','".$Description."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+			$ImportID = Core::Insert('product_relation_import',Company::TABLE_ID.','.Brand::TABLE_ID.','.Currency::TABLE_ID.',list_date,file,name,description,creation_date,created_by,'.CoreOrganization::TABLE_ID,$CompanyID.",".$BrandID.",".$CurrencyID.",'".$ListDate."','".$FileURL."','".$OriginalName."','".$Description."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
 			$this->ReadImportedFile($ImportID,$BrandID);
 		}else{
 			echo "No se encontr&oacute; el archivo";
@@ -394,6 +395,7 @@ class ProductRelationItem
 				if($RowIndex>0)
 				{
 					$BID = 0;
+					$PBID = 0;
 					$Data = array();
 					//echo '    Row number - ' . $RowIndex."<br>";
 					$CellIterator = $Row->getCellIterator();
@@ -431,17 +433,35 @@ class ProductRelationItem
 							//echo '        Cell  - ' . $Cell->getCoordinate() . ' - ' . $Cell->getCalculatedValue()."<br>";
 						}
 					}
-					// If brand ID is set by default, it will be default value for codes that doesn't has a brand ID
-					if($BrandID)
-					{
-						$BID = $BrandID;	
-					}
 					// If code has a brand name, search it at the data base and obtain brand ID if the name exists
 					if($Data[3])
 					{
-						$SearchID = Core::Select(Brand::TABLE,"*","name='".$Data[3]."' AND status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID])[0][Brand::TABLE_ID];
+						$ProviderBrand = Core::Select('product_relation_brand',"*",Company::TABLE_ID."=".$Import[Company::TABLE_ID]." AND REPLACE(name,' ','')='".str_replace(' ','',$Data[3])."' AND status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID])[0];
+						$SearchID = $ProviderBrand['product_brand_id'];
+						$PBID = $ProviderBrand['brand_id'];
+						if(!$SearchID)
+						{
+							$SearchID = Core::Select(Brand::TABLE,"*","REPLACE(name,' ','')='".str_replace(' ','',$Data[3])."' AND status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID])[0][Brand::TABLE_ID];
+						}else{
+							$PBID = $ProviderBrand['brand_id'];
+						}
+						if(!$PBID)
+						{
+							if($SearchID)
+							{
+								$PBID = Core::Insert('product_relation_brand','import_id,'.Company::TABLE_ID.',product_brand_id,name,status,creation_date,created_by,'.CoreOrganization::TABLE_ID,$ImportID.",".$Import[Company::TABLE_ID].",".$SearchID.",'".$Data[3]."','A',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+							}else{
+								$PBID = Core::Insert('product_relation_brand','import_id,'.Company::TABLE_ID.',name,status,creation_date,created_by,'.CoreOrganization::TABLE_ID,$ImportID.",".$Import[Company::TABLE_ID].",'".$Data[3]."','A',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+							}
+						}
 						if($SearchID)
 							$BID = $SearchID;
+					}else{
+						// If brand ID is set by default, it will be default value for codes that doesn't has a brand ID
+						if($BrandID)
+						{
+							$BID = $BrandID;	
+						}
 					}
 					// If there's a brand ID, search for previus relation using code and brand ID
 					if($BID)
@@ -460,21 +480,76 @@ class ProductRelationItem
 							// If product ID exists, replace old (or not set) abstract ID for recently obtained abstract ID
 							$Relation[ProductAbstract::TABLE_ID] = $Product[ProductAbstract::TABLE_ID];
 						}
-						
 					}
 					// If there's not product ID or abstract ID, stays at 0
 					$ProductID = $Relation[Product::TABLE_ID]?$Relation[Product::TABLE_ID]:0;
 					$AbstractID = $Relation[ProductAbstract::TABLE_ID]?$Relation[ProductAbstract::TABLE_ID]:0;
 					
-					$Fields = $ImportID.",".$Import[Company::TABLE_ID].",".$BID.",".$AbstractID.",".$ProductID.",'".$Data[0]."',".$Data[1].",".$Data[2].",'".$Data[3]."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
+					$Fields = $ImportID.",".$Import[Company::TABLE_ID].",".$BID.",".$PBID.",".$AbstractID.",".$ProductID.",'".$Data[0]."',".$Data[1].",".$Data[2].",'".$Data[3]."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID];
 					$Values .= $Values? "),(".$Fields : $Fields;
 				}
 			}
 		}
-		$Result = Core::Insert('product_relation_import_item',"import_id,".Company::TABLE_ID.",".Brand::TABLE_ID.",".ProductAbstract::TABLE_ID.",".Product::TABLE_ID.",code,price,stock,brand,creation_date,created_by,".CoreOrganization::TABLE_ID,$Values);
+		$Result = Core::Insert('product_relation_import_item',"import_id,".Company::TABLE_ID.",".Brand::TABLE_ID.",provider_brand_id,".ProductAbstract::TABLE_ID.",".Product::TABLE_ID.",code,price,stock,brand,creation_date,created_by,".CoreOrganization::TABLE_ID,$Values);
 		if($Result==false)
 			$this->Updateimportstatus($ImportID);
 		// echo Core::LastQuery();
+	}
+	
+	
+	public function Importbrand()
+	{
+		$CompanyID = $_POST['id'];
+		// $ImportID = Core::Select('product_relation_import',"import_id",Company::TABLE_ID."=".$CompanyID." AND status='A'","import_id DESC")[0]['import_id'];
+		$ImportID = $_POST['importid'];
+		
+		$ProviderBrands = Core::Select('product_relation_brand',"*",Company::TABLE_ID."=".$CompanyID." AND status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],'brand_id');
+		foreach($ProviderBrands as $Brand)
+		{
+			$ID = $Brand[Brand::TABLE_ID]; // Provider Brand ID
+			$RID = $_POST['roller_brand'.$ID]; // Roller Brand ID
+			if($RID)
+			{
+				Core::Update('product_relation_brand',"product_brand_id=".$RID,Brand::TABLE_ID."=".$ID);
+				Core::Update('product_relation',"brand_id=".$RID,Company::TABLE_ID."=".$CompanyID." AND provider_".Brand::TABLE_ID."=".$ID);
+				Core::Update('product_relation_import_item',"brand_id=".$RID,"import_id=".$ImportID." AND provider_brand_id=".$ID);
+			}else{
+				Core::Update('product_relation_brand',"product_brand_id=0",Brand::TABLE_ID."=".$ID);
+				Core::Update('product_relation',"provider_".Brand::TABLE_ID."=0",Company::TABLE_ID."=".$CompanyID." AND provider_".Brand::TABLE_ID."=".$ID);
+				Core::Update('product_relation_import_item',"brand_id=0","import_id=".$ImportID." AND provider_brand_id=".$ID);
+			}
+		}
+		
+		$ImportItems = Core::Select('product_relation_import_item',"import_id=".$ImportID);
+		foreach($ImportItems as $Item)
+		{
+			if($Item['item_id'])
+			{
+				$BID = $Item['brand_id'];
+				$PBID = $Item['provider_brand_id'];
+				$AbstractID = $Item['abstract_id'];
+				$ProductID = $Item['product_id'];
+				if($BID)
+					$Relation = Core::Select(ProductRelation::TABLE,"*",Company::TABLE_ID."=".$CompanyID." AND ".Brand::TABLE_ID."=".$BID." AND REPLACE(code,' ','')='".str_replace(' ','',$Item['code'])."'")[0];
+				if(!$Relation)
+					$Relation = Core::Select(ProductAbstract::TABLE,ProductAbstract::TABLE_ID,"REPLACE(code,' ','')='".str_replace(' ','',$Item['code'])."'")[0];
+				// If there's not a product ID but brand ID exists, search for product ID and abstract ID using code and brand ID
+				if(!$Relation[Product::TABLE_ID] && $BID)
+				{
+					$Product = Core::Select(Product::TABLE,Product::TABLE_ID.",".ProductAbstract::TABLE_ID,"REPLACE(code,' ','')='".str_replace(' ','',$Data[0])."' AND ".Brand::TABLE_ID."=".$BID)[0];
+					$Relation[Product::TABLE_ID] = $Product[Product::TABLE_ID];
+					if($Relation[Product::TABLE_ID] && !$Relation[ProductAbstract::TABLE_ID])
+					{
+						// If product ID exists, replace old (or not set) abstract ID for recently obtained abstract ID
+						$Relation[ProductAbstract::TABLE_ID] = $Product[ProductAbstract::TABLE_ID];
+					}
+				}
+				// If there's not product ID or abstract ID, stays at 0
+				$ProductID = $Relation[Product::TABLE_ID]? $Relation[Product::TABLE_ID]:0;
+				$AbstractID = $Relation[ProductAbstract::TABLE_ID]? $Relation[ProductAbstract::TABLE_ID]:0;
+				Core::Update('product_relation_import_item',"abstract_id=".$AbstractID.",product_id=".$ProductID,"item_id=".$Item['item_id']);
+			}
+		}
 	}
 	
 	public function Relation()
@@ -505,7 +580,7 @@ class ProductRelationItem
 					if(!empty($OtherProductID))
 					{
 						// If there is a product with same attributes then create a new one with different brand ID
-						$Item[Product::TABLE_ID] = Core::Insert(Product::TABLE,ProductAbstract::TABLE_ID.",".CoreOrganization::TABLE_ID.",".Brand::TABLE_ID.",".Category::TABLE_ID.",code,order_number,status,creation_date",$Item[ProductAbstract::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID].",".$Item[Brand::TABLE_ID].",".$OtherProductID[Category::TABLE_ID].",'".$OtherProductID['code']."',".$OtherProductID['order_number'].",'A',NOW()");
+						// $Item[Product::TABLE_ID] = Core::Insert(Product::TABLE,ProductAbstract::TABLE_ID.",".CoreOrganization::TABLE_ID.",".Brand::TABLE_ID.",".Category::TABLE_ID.",code,order_number,status,creation_date",$Item[ProductAbstract::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID].",".$Item[Brand::TABLE_ID].",".$OtherProductID[Category::TABLE_ID].",'".$OtherProductID['code']."',".$OtherProductID['order_number'].",'A',NOW()");
 					}
 				}
 			}elseif(!$Item[ProductAbstract::TABLE_ID] && !$Item[Product::TABLE_ID]){
@@ -543,6 +618,10 @@ class ProductRelationItem
 		Core::Update(self::TABLE,"status='F'","status='A' AND ".Brand::TABLE_ID.">0 AND import_id=".$ImportID);
 		Core::Update(self::TABLE,"status='I'","status='A' AND ".Brand::TABLE_ID."=0 AND import_id=".$ImportID);
 		Core::Update("product_relation_import",Currency::TABLE_ID."=".$CurrencyID.",status='F'","import_id=".$ImportID);
+		
+		// Set status = 'I' for relations 
+		Core::Update(ProductRelation::TABLE,"status='I'","company_id=".$CompanyID." AND list_date<'".$Date."'");
+		
 		// echo Core::LastQuery();
 		//Core::Update(self::TABLE,"status='F'","status ='A' AND brand_id>0 AND abstract_id>0");
 	}

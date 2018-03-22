@@ -108,8 +108,9 @@ class Currency
 		$Title	= $_POST['title'];
 		$Prefix	= htmlentities($_POST['prefix']);
 		$AFIP	= $_POST['afip_code'];
+		$APICode= $_POST['api_code'];
 		if(strlen($AFIP)==3)
-			Core::Insert(self::TABLE,'title,prefix,afip_code,creation_date,created_by,'.CoreOrganization::TABLE_ID,"'".$Title."','".$Prefix."','".$AFIP."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+			Core::Insert(self::TABLE,'title,prefix,api_code,afip_code,creation_date,created_by,'.CoreOrganization::TABLE_ID,"'".$Title."','".$Prefix."','".$APICode."','".$AFIP."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
 		else
 			echo "402";
 	}	
@@ -124,8 +125,9 @@ class Currency
 		$Title	= $_POST['title'];
 		$Prefix	= htmlentities($_POST['prefix']);
 		$AFIP	= $_POST['afip_code'];
+		$APICode= $_POST['api_code'];
 		if(strlen($AFIP)==3)
-			Core::Update(self::TABLE,"title='".$Title."',prefix='".$Prefix."',afip_code='".$AFIP."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
+			Core::Update(self::TABLE,"title='".$Title."',prefix='".$Prefix."',api_code='".$APICode."',afip_code='".$AFIP."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
 		else
 			echo "402";
 	}
@@ -133,6 +135,38 @@ class Currency
 	public function Validate()
 	{
 		echo self::ValidateValue('title',$_POST['title'],$_POST['actualtitle']);
+	}
+	
+	public function Checkcurrency()
+	{
+		
+		$Currencies = Core::Select(self::TABLE,'*',"status='A' AND last_api_refresh<'".date("Y-m-d")."'","last_api_refresh DESC");
+		if(count($Currencies)>0)
+		{
+			//API url
+			$CH = curl_init("http://apilayer.net/api/live?access_key=e9d4aea4e97e025c313a71f4fd98f07a");
+			curl_setopt($CH, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($CH, CURLOPT_CUSTOMREQUEST, "GET");
+			$Response = curl_exec($CH);
+			curl_close($CH);
+			if(!$Response)
+			{
+				echo "API ERROR";
+			}else{
+				$Response = json_decode($Response, true);
+				$Values = $Response['quotes'];
+				foreach($Currencies as $Currency)
+				{
+					$DolarExchange = $Values['USD'.$Currency['api_code']];
+					if($DolarExchange)
+					{
+						// Update dolar exchange rate
+						Core::Update(self::TABLE,"dolar_exchange=".$DolarExchange.",last_api_refresh=NOW(),updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$Currency[self::TABLE_ID]);
+						// Insert a history row
+					}	Core::Insert('currency_exchange_history',self::TABLE_ID.",dolar_exchange,created_by",$Currency[self::TABLE_ID].",".$DolarExchange.",".$_SESSION[CoreUser::TABLE_ID]);
+				}
+			}
+		}
 	}
 }
 ?>

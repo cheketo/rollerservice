@@ -6,7 +6,6 @@
     $Head->SetStyle('../../../../vendors/autocomplete/jquery.auto-complete.css'); // Autocomplete
     $Head->setHead();
     
-    $Category = new Category();
     $Brands = Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],'name');
     include('../../../project/resources/includes/inc.top.php');
     
@@ -27,7 +26,7 @@
       <div class="row">
         <div class="col-xs-12 col-sm-5 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
           <?php
-            echo Core::InsertElement('autocomplete','id','','txC form-control','placeholder="Seleccionar Empresa" validateEmpty="Seleccione una Empresa" placeholderauto="Empresa no encontrada" iconauto="building"','Company','SearchCompanies');
+            echo Core::InsertElement('autocomplete','id','','txC form-control','placeholder="Seleccionar Empresa" validateEmpty="Seleccione una Empresa" placeholderauto="Empresa no encontrada" iconauto="building"','Company','SearchProviders');
           ?>
         </div>
       </div>
@@ -44,6 +43,14 @@
         <div class="col-xs-12 col-sm-5 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
           <?php
             echo Core::InsertElement('text','date','','form-control txC datePicker','placeholder="Fecha del Listado" validateEmpty="Ingrese una fecha"');
+          ?>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-xs-12 col-sm-5 col-sm-offset-3 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+          <?php
+            echo Core::InsertElement('select','currency','','txC form-control chosenSelect','data-placeholder="Seleccionar Moneda" validateEmpty="Seleccione una Moneda"',Currency::GetSelectCurrency(),' ','');
           ?>
         </div>
       </div>

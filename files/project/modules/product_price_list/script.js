@@ -34,8 +34,12 @@ $(function(){
 		askAndSubmit(target,'ProductRelationItem','¿Desea cargar y/o modificar todos los c&oacute;digos,precios y stocks relacionados a la empresa <b>'+$('#TextAutoCompletecompany_id').val()+'</b>? Los c&oacute;digos vac&iacute;os o los que no tengan una marca asociada ser&aacute;n descartados.','Ha ocurrido un error al intentar generar la lista de precios.','PriceList');
 	});
 	$("#BtnImport").click(function(){
-		var target		= 'import_selection.php?id='+$('#id').val()+'&element='+$('#TextAutoCompleteid').val()+'&msg='+ $("#action").val();
+		var target		= 'import_brand.php?id='+$('#id').val()+'&element='+$('#TextAutoCompleteid').val()+'&msg='+ $("#action").val();
 		askAndSubmit(target,'ProductRelationItem','¿Desea importar el archivo <b>'+$('#Fileprice_list').val()+'</b>?','Ha ocurrido un error durante la importaci&oacute;n. Revise el documento que está importando y aseg&uacute;rese que la columna "C&oacute;digo" se encuentre completa en todas las filas.');
+	});
+	$("#BtnImportBrand").click(function(){
+		var target		= 'import_selection.php?id='+$('#id').val()+'&element='+$('#TextAutoCompleteid').val()+'&msg='+ $("#action").val();
+		askAndSubmit(target,'ProductRelationItem','¿Desea continuar con la importaci&oacute;n ?','Ha ocurrido un error durante la importaci&oacute;n. Revise el documento que está importando y aseg&uacute;rese que la columna "C&oacute;digo" se encuentre completa en todas las filas.');
 	});
 	$("input").keypress(function(e){
 		if(e.which==13){
@@ -168,7 +172,7 @@ function SaveRowChanges()
 			}
 			var noData		= function()
 			{
-				notifySuccess("El c&oacute;digo <b>"+code+"</b> ha sido modificado correctamente.");
+				// notifySuccess("El c&oacute;digo <b>"+code+"</b> ha sido modificado correctamente.");
 			}
 			sumbitFields(process,haveData,noData);
 			

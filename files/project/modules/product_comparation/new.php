@@ -16,7 +16,7 @@
     // HIDDEN ELEMENTS
     echo Core::InsertElement("hidden","action",'compare');
     // echo Core::InsertElement("hidden","updated",'');
-    echo Core::InsertElement("hidden","relation",$ID);
+    // echo Core::InsertElement("hidden","relation",$ID);
 ?>
   <!-- ////////// SECOND SCREEN ////////////////// -->
   <div class="ProductDetails box animated fadeIn">
