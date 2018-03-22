@@ -12,6 +12,8 @@ class ProductComparationItem
 	const DEFAULT_IMG_DIR	= '../../../../skin/images/products/default/';
 	const IMG_DIR			= '../../../../skin/images/products/';
 	const DEFAULT_FILE_DIR	= '../../../../skin/files/price_list/';
+	
+	var $Currencies = array();
 
 	public function __construct($ID=0)
 	{
@@ -22,7 +24,7 @@ class ProductComparationItem
 			$Data = Core::Select(self::SEARCH_TABLE,'*',self::TABLE_ID."=".$this->ID);
 			$this->Data = $Data[0];
 		}
-		
+		$this->Currencies = Core::Select(Currency::TABLE,"*","status='A'");
 		// $this->GetData();
 		// self::SetImg($this->Data['img']);
 		// $this->Data['items'] = $this->GetItems();
@@ -91,6 +93,22 @@ class ProductComparationItem
 		$Object->GetItems();
 		foreach($Object->Data['items'] as $Item)
 		{
+			if($Item['currency_id']!=1)
+			{
+				foreach($Object->Currencies as $Currency)
+				{
+					if($Currency['currency_id']==$Item['currency_id'])
+					{
+						$DolarExchange = $Currency['dollar_exchange'];
+						$ItemPrice = $Item['price']*$DolarExchange;
+						// $ItemPrice = print_r($Currency);
+					}
+				}
+			}else{
+				$ItemPrice = $Item['price'];
+			}
+			$ItemPrice = "$".number_format($ItemPrice,2,".","");
+			
 			$RowBg = $RowBg=='bg-gray'?'bg-gray-active':'bg-gray';
 				
 			switch ($Item['position'])
@@ -156,7 +174,7 @@ class ProductComparationItem
 							</div>
 							<div class="col-xs-1">
 								<div class="listRowInner">
-									<span class="label '.$PosClass.'">'.$Item['price'].'</span>
+									<span class="label '.$PosClass.'">'.$ItemPrice.'</span>
 								</div>
 							</div>
 							<div class="col-xs-3">

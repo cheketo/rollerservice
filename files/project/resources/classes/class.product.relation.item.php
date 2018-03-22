@@ -49,7 +49,7 @@ class ProductRelationItem
 		
 		if($Object->Data['item_status']=='A')
 		{
-			$HTML	.= 	'<a id="save_'.$Object->ID.'" item="'.$Object->ID.'" class="hint--bottom hint--bounce hint--success SaveRowChanges" aria-label="Guardar Cambios"><button type="button" class="btn btnGreen"><i class="fa fa-floppy-o"></i></button></a>';
+			// $HTML	.= 	'<a id="save_'.$Object->ID.'" item="'.$Object->ID.'" class="hint--bottom hint--bounce hint--success SaveRowChanges" aria-label="Guardar Cambios"><button type="button" class="btn btnGreen"><i class="fa fa-floppy-o"></i></button></a>';
 			//$HTML	.= 	'<a id="reload_'.$Object->ID.'" item="'.$Object->ID.'" class="hint--bottom hint--bounce ReloadRowData" aria-label="Recargar Datos"><button type="button" class="btn btn-github"><i class="fa fa-repeat"></i></button></a>';
 			
 			$HTML	.= '<a class="deleteElement hint--bottom hint--bounce hint--error" aria-label="Descartar" process="'.PROCESS.'" id="delete_'.$Object->ID.'"><button type="button" class="btn btnRed"><i class="fa fa-trash"></i></button></a>';
@@ -82,13 +82,13 @@ class ProductRelationItem
 				<div class="col-sm-4 col-xs-12">
 					<div class="listRowInner">
 						<span class="smallDetails">C&oacute;digo</span>
-						'.Core::InsertElement('text','code_'.$Object->Data['item_id'],$Object->Data['code'],'form-control txC','validateEmpty="Ingrese un c&oacute;digo"').'
+						'.Core::InsertElement('text','code_'.$Object->Data['item_id'],$Object->Data['code'],'form-control txC SaveRowChanges','validateEmpty="Ingrese un c&oacute;digo" item="'.$Object->ID.'"').'
 					</div>
 				</div>
 				<div class="col-sm-5 col-xs-12">
 					<div class="listRowInner">
 						<span class="smallDetails">Marca</span>
-						'.Core::InsertElement('select','brand_'.$Object->Data['item_id'],$Object->Data['item_brand_id'],'txC form-control chosenSelect','validateEmpty="Seleccione una marca." data-placeholder="Seleccionar Marca" ',$Object->SelectBrand,' ','').'
+						'.Core::InsertElement('select','brand_'.$Object->Data['item_id'],$Object->Data['item_brand_id'],'txC form-control chosenSelect SaveRowChanges','item="'.$Object->ID.'" validateEmpty="Seleccione una marca." data-placeholder="Seleccionar Marca" ',$Object->SelectBrand,' ','').'
 					</div>
 				</div>
 				<div class="col-sm-3 col-xs-12" style="height:70px;">
@@ -99,19 +99,19 @@ class ProductRelationItem
 				<div class="col-sm-2 col-xs-12">
 					<div class="listRowInner">
 						<span class="smallDetails">Precio</span>
-						'.Core::InsertElement('text','price_'.$Object->Data['item_id'],$Object->Data['price'],'txC form-controls inputMask','placeholder="Sin Precio" style="max-width:100px;" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': true, \'prefix\': \'\', \'placeholder\': \'0\'"').'
+						'.Core::InsertElement('text','price_'.$Object->Data['item_id'],$Object->Data['price'],'txC form-controls inputMask SaveRowChanges','item="'.$Object->ID.'" placeholder="Sin Precio" style="max-width:100px;" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': true, \'prefix\': \'\', \'placeholder\': \'0\'"').'
 					</div>
 				</div>
 				<div class="col-sm-2 col-xs-12">
 					<div class="listRowInner">
 						<span class="smallDetails">Stock</span>
-						'.Core::InsertElement('text','stock_'.$Object->Data['item_id'],$Object->Data['stock'],'txC form-controls','placeholder="Sin Stock" style="max-width:100px;"').'
+						'.Core::InsertElement('text','stock_'.$Object->Data['item_id'],$Object->Data['stock'],'txC form-controls SaveRowChanges','item="'.$Object->ID.'" placeholder="Sin Stock" style="max-width:100px;"').'
 					</div>
 				</div>
 				<div class="col-sm-5 col-xs-12">
 					<div class="listRowInner">
 						<span class="smallDetails">C&oacute;digo Gen&eacute;rico</span>
-						'.Core::InsertElement('autocomplete','abstract_'.$Object->Data['item_id'],$Abstract,'txC form-control','placeholder="Seleccionar C&oacute;digo" placeholderauto="C&oacute;digo no encontrada"','ProductAbstract','SearchAbstractCodes').'
+						'.Core::InsertElement('autocomplete','abstract_'.$Object->Data['item_id'],$Abstract,'txC form-control SaveRowChanges','item="'.$Object->ID.'" placeholder="Seleccionar C&oacute;digo" placeholderauto="C&oacute;digo no encontrada"','ProductAbstract','SearchAbstractCodes').'
 					</div>
 				</div>
 				</form>
@@ -189,10 +189,10 @@ class ProductRelationItem
 		
 	}
 	
-	public function InsertDefaultSearchButtons()
-	{
-		return '<div style="width:1px;height:35px;"></div>';
-	}
+	// public function InsertDefaultSearchButtons()
+	// {
+	// 	return '<div style="width:1px;height:35px;"></div>';
+	// }
 	
 	protected function InsertSearchButtons()
 	{

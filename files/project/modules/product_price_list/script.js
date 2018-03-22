@@ -152,7 +152,7 @@ function AdditionalSearchFunctions()
 
 function SaveRowChanges()
 {
-	$(".SaveRowChanges").on("click",function(){
+	$(".SaveRowChanges").on("change",function(){
 		var ID = $(this).attr("item");
 		var form = $("#form_"+ID).attr("id");
 		if(validate.validateFields(form))

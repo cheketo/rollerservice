@@ -161,9 +161,9 @@ class Currency
 					if($DolarExchange)
 					{
 						// Update dolar exchange rate
-						Core::Update(self::TABLE,"dolar_exchange=".$DolarExchange.",last_api_refresh=NOW(),updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$Currency[self::TABLE_ID]);
+						Core::Update(self::TABLE,"dollar_exchange=".$DolarExchange.",last_api_refresh=NOW(),updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$Currency[self::TABLE_ID]);
 						// Insert a history row
-					}	Core::Insert('currency_exchange_history',self::TABLE_ID.",dolar_exchange,created_by",$Currency[self::TABLE_ID].",".$DolarExchange.",".$_SESSION[CoreUser::TABLE_ID]);
+					}	Core::Insert('currency_exchange_history',self::TABLE_ID.",dollar_exchange,created_by",$Currency[self::TABLE_ID].",".$DolarExchange.",".$_SESSION[CoreUser::TABLE_ID]);
 				}
 			}
 		}

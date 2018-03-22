@@ -51,7 +51,7 @@
           </div>
           <div class="col-xs-12 col-sm-4 col-sm-offset-1 col-md-4 col-md-offset-1 col-lg-4 col-lg-offset-1">
             <?php
-              echo Core::InsertElement('select','currency','','txC form-control chosenSelect','data-placeholder="Seleccionar Moneda" validateEmpty="Seleccione una Moneda"',Currency::GetSelectCurrency(),' ','');
+              echo Core::InsertElement('select','currency',$Import['currency_id'],'txC form-control chosenSelect','data-placeholder="Seleccionar Moneda" validateEmpty="Seleccione una Moneda"',Currency::GetSelectCurrency(),' ','');
             ?>
           </div>
         </div>

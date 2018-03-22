@@ -209,12 +209,15 @@ class ProductComparation
 		
 		
 		if($Products)
+		{
 			$ComparationID = Core::Insert(self::TABLE,"stock_min,status,creation_date,created_by,".CoreOrganization::TABLE_ID,"'".$StockMin."','A',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".$_SESSION[CoreOrganization::TABLE_ID]);
+		}
 		if($ComparationID)
 		{
 			$AbstractID = 0;
 			foreach($Products as $Product)
 			{
+				$Currency = Core::Select(Currency::TABLE,"*",Currency::TABLE_ID."=".$Product['currency_id'])[0];
 				$Position++;
 				if($Product['abstract_id']!=$AbstractID)
 				{
@@ -241,7 +244,7 @@ class ProductComparation
 				$Product['product_id'] = $Product['actual_product_id'];
 				$Product['abstract_stock'] = $AbstractStock['abstract_stock'];
 				$Product['abstract_stock_diff'] = $AbstractStock['abstract_stock_diff'];
-				$Product['dollar_exchange_rate'] = 1; // DO NOT FORGET TO CALCULATE DOLLAR EXCHANGE RATE FOR EACH COMPANY PRICE LIST THAT DOESN'T HAVE DOLLAR AS DEFINED CURRENCY
+				$Product['dollar_exchange_rate'] = $Currency['dollar_exchange']; // DO NOT FORGET TO CALCULATE DOLLAR EXCHANGE RATE FOR EACH COMPANY PRICE LIST THAT DOESN'T HAVE DOLLAR AS DEFINED CURRENCY
 				
 				$Field =	$ComparationID.",".$Product['relation_id'].",".$Product['company_id'].",".$Product['product_id'].",".
 							$Product['abstract_id'].",".$Product['brand_id'].",".$Product['position'].",'A',".$Product['price'].",".
