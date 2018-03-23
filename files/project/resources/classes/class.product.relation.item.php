@@ -173,8 +173,10 @@ class ProductRelationItem
 		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo"');
 		// $this->SearchFields['local_code'] = Core::InsertElement('text','local_code','','form-control','placeholder="C&oacute;digo en Roller"');
 		// $this->SearchFields['product_id'] = Core::InsertElement('autocomplete',Product::TABLE_ID,'','form-control txC','placeholder="" placeholderauto="Empresa no encontrada" iconauto="building"','Product','GetFullCodes');
-		$this->SearchFields['data'] = Core::InsertElement('select','data','','form-control chosenSelect','',array('1'=>"Marca Completa",'2'=>"Marca Incompleta"),'','Marca Completa o Incompleta');
+		$this->SearchFields['data'] = Core::InsertElement('select','data','','form-control chosenSelect','',array('1'=>"Marca Completa",'2'=>"Marca Incompleta"),'0','Marca Completa o Incompleta');
 		$this->NoOrderSearchFields['data']=true;
+		$this->SearchFields['data2'] = Core::InsertElement('select','data2','','form-control chosenSelect','',array('1'=>"C&oacute;digo Gen&eacute;rico Completo",'2'=>"C&oacute;digo Gen&eacute;rico Incompleto"),'0','C&oacute;digo Gen&eacute;rico Completo o Incompleto');
+		$this->NoOrderSearchFields['data2']=true;
 		$this->SearchFields['item_status'] = Core::InsertElement('select','item_status','A','form-control chosenSelect','',array('A'=>"C&oacute;digos a Importar",'I'=>"C&oacute;digos Descartados"));
 		$this->NoOrderSearchFields['item_status']=true;
 		$this->SearchFields['item_brand_id'] = Core::InsertElement('select','item_'.Brand::TABLE_ID,'','form-control chosenSelect','',Core::Select(Brand::TABLE,Brand::TABLE_ID.',name',"status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],"name"),'','Cualquier Marca');
@@ -208,10 +210,21 @@ class ProductRelationItem
 			if($_POST['data']==1)
 			{
 				$this->AddWhereString(" AND item_brand_id>0");
-			}else{
+			}elseif($_POST['data']==2){
 				$this->AddWhereString(" AND item_brand_id=0 ");
 			}
 		}
+		
+		if($_POST['data2'])
+		{
+			if($_POST['data2']==1)
+			{
+				$this->AddWhereString(" AND abstract_id>0");
+			}elseif($_POST['data2']==2){
+				$this->AddWhereString(" AND abstract_id=0 ");
+			}
+		}
+		
 		if(!$_POST['item_status'])
 		{
 			if($_GET['item_status'])
