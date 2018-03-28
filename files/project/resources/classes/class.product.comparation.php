@@ -215,14 +215,12 @@ class ProductComparation
 		if($ComparationID)
 		{
 			$AbstractID = 0;
-			foreach($Products as $Product)
+			foreach($Products as $Key => $Product)
 			{
 				$Currency = Core::Select(Currency::TABLE,"*",Currency::TABLE_ID."=".$Product['currency_id'])[0];
 				$Position++;
 				if($Product['abstract_id']!=$AbstractID)
 				{
-					
-					
 					$BrandsIDs = array();
 					foreach($Products as $Prod)
 					{
@@ -240,6 +238,12 @@ class ProductComparation
 					$AbstractID = $Product['abstract_id'];
 					$Position = 1;
 				}
+				if($Products[$Key-1]['abstract_id']==$Product['abstract_id'] || $Products[$Key+1]['abstract_id']==$Product['abstract_id'])
+				{
+					$Product['single_comparation'] = 'N';
+				}else{
+					$Product['single_comparation'] = 'Y';
+				}
 				$Product['position'] = $Position;
 				$Product['product_id'] = $Product['actual_product_id'];
 				$Product['abstract_stock'] = $AbstractStock['abstract_stock'];
@@ -250,7 +254,7 @@ class ProductComparation
 							$Product['abstract_id'].",".$Product['brand_id'].",".$Product['position'].",'A',".$Product['price'].",".
 							$Product['stock'].",".$Product['currency_id'].",".$Product['dollar_exchange_rate'].",".$Product['actual_stock'].",".
 							$Product['actual_stock_diff'].",".$Product['abstract_stock'].",".
-							$Product['abstract_stock_diff'].",'".$Product['list_date']."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".
+							$Product['abstract_stock_diff'].",'".$Product['list_date']."','".$Product['single_comparation']."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".
 							$_SESSION[CoreOrganization::TABLE_ID];
 							
 				$Fields .= $Fields? "),(".$Field:$Field;
@@ -275,6 +279,7 @@ class ProductComparation
 								abstract_stock,
 								abstract_stock_diff,
 								list_date,
+								single_comparation,
 								creation_date,
 								created_by,
 								organization_id
