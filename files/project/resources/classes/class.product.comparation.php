@@ -240,9 +240,9 @@ class ProductComparation
 				}
 				if($Products[$Key-1]['abstract_id']==$Product['abstract_id'] || $Products[$Key+1]['abstract_id']==$Product['abstract_id'])
 				{
-					$Product['single_comparation'] = 'N';
+					$Product['single_comparation'] = '0';
 				}else{
-					$Product['single_comparation'] = 'Y';
+					$Product['single_comparation'] = '1';
 				}
 				$Product['position'] = $Position;
 				$Product['product_id'] = $Product['actual_product_id'];
@@ -254,7 +254,7 @@ class ProductComparation
 							$Product['abstract_id'].",".$Product['brand_id'].",".$Product['position'].",'A',".$Product['price'].",".
 							$Product['stock'].",".$Product['currency_id'].",".$Product['dollar_exchange_rate'].",".$Product['actual_stock'].",".
 							$Product['actual_stock_diff'].",".$Product['abstract_stock'].",".
-							$Product['abstract_stock_diff'].",'".$Product['list_date']."','".$Product['single_comparation']."',NOW(),".$_SESSION[CoreUser::TABLE_ID].",".
+							$Product['abstract_stock_diff'].",'".$Product['list_date']."',".$Product['single_comparation'].",NOW(),".$_SESSION[CoreUser::TABLE_ID].",".
 							$_SESSION[CoreOrganization::TABLE_ID];
 							
 				$Fields .= $Fields? "),(".$Field:$Field;

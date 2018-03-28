@@ -286,7 +286,7 @@ class ProductComparationItem
 		$this->SearchFields['product_code'] = Core::InsertElement('text','product_code','','form-control','placeholder="C&oacute;digo Roller"');
 		$this->SearchFields['abstract_code'] = Core::InsertElement('text','abstract_code','','form-control','placeholder="C&oacute;digo Gen&eacuterico"');
 		$this->SearchFields['code'] = Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo Empresa"');
-		$this->SearchFields['single_comparation'] = Core::InsertElement('select','single_comparation','','form-control chosenSelect','',array("N"=>"Mayores a 1","Y"=>"Solo de 1"),'','Todas las comparaciones');
+		$this->SearchFields['single_comparation'] = Core::InsertElement('select','single_comparation','','form-control chosenSelect','',array("0"=>"Mayores a 1","1"=>"Solo de 1"),'','Todas las comparaciones');
 		$this->NoOrderSearchFields['code']=true;
 		$this->NoOrderSearchFields['product_code']=true;
 		$this->NoOrderSearchFields['single_comparation']=true;
