@@ -84,11 +84,13 @@ class ProductComparationItem
 		if($Object->Data['abstract_stock_diff']>0)
 		{
 			$AbstractStockClass = "label-danger";
+			$Object->Data['abstract_stockmin'] = ($Object->Data['abstract_stock_diff'] + $Object->Data['abstract_stock']);
 		}else{
 			$AbstractStockClass = "bg-olive";
 			$Object->Data['abstract_stock_diff'] = $Object->Data['abstract_stock_diff']*(-1);
+			$Object->Data['abstract_stockmin'] = ($Object->Data['abstract_stock_diff'] - $Object->Data['abstract_stock']);
 		}
-		$Object->Data['abstract_stockmin'] = ($Object->Data['abstract_stock_diff'] - $Object->Data['abstract_stock']);
+		// $Object->Data['abstract_stockmin'] = ($Object->Data['abstract_stock_diff'] - $Object->Data['abstract_stock']);
 		$Object->Data['abstract_stockmin'] *= $Object->Data['abstract_stockmin']>0?1:-1;
 		
 		$Object->GetItems();
