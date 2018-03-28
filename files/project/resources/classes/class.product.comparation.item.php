@@ -145,7 +145,7 @@ class ProductComparationItem
 			// 	print_r($Item);
 			
 			
-			// $Item['stockmin'] = Core::Select(Product::TABLE,'stock_min',Product::TABLE_ID."=".$Item[Product::TABLE_ID])[0]['stock_min'];
+			$Item['stockmin'] = Core::Select(Product::TABLE,'stock_min',Product::TABLE_ID."=".$Item[Product::TABLE_ID])[0]['stock_min'];
 			
 			$Items .= '
 			<div class="row '.$RowBg.'" style="padding:5px;">
