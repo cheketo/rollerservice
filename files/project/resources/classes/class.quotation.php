@@ -278,7 +278,7 @@ class Quotation
 			
 			//Create and send email
 			$Mail = new Mailer();
-			$Sender = 'ventas@rollersevice.com.ar';
+			$Sender = 'ventas@rollerservice.com.ar';
 			//Add BCC
 			$BCC = "ventas@rollerservice.com.ar";
 			$Mail->AddBCC($BCC, "Ventas Roller Service");
