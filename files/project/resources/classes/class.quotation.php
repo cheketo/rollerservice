@@ -284,7 +284,7 @@ class Quotation
 			$Mail->AddBCC($BCC, "Ventas Roller Service");
 			$Subject = 'Cotización N°'.$QID;
 			//Set Batch TRUE to send emails through remote server
-			$Mail->SetBatch(true);
+			//$Mail->SetBatch(true);
 			$Sent = $Mail->QuotationEmail($QID,$Receiver,$Quotation->Data['company'],$Subject,$File,$Sender);
 			
 			//Check for errors

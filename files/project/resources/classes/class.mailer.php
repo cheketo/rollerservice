@@ -74,7 +74,15 @@ class Mailer extends PHPMailer
 		{
 			$Sent = $this->InsertBatchEmail($QuotationID,$Sender,$SenderName,$ReceiverAddress,$ReceiverName,$Subject,$HTML,$Attachments,$AltBody,$CC,$BCC);
 		}else{
-			$this->isSendmail();
+			$this->ClearAddresses();
+			$this->isSMTP();
+			$this->SMTPDebug = 2;
+			$this->SMTPAuth = true;
+			$this->SMTPSecure = 'ssl';
+			$this->Host = 'mail.rollerservice.com.ar';
+			$this->Port = 465;
+			$this->Username = 'ventas@rollerservice.com.ar';
+			$this->Password = 'soccer2000';
 			$this->setFrom($Sender, $SenderName);
 			$this->addReplyTo($Sender, $SenderName);
 			$this->addAddress($ReceiverAddress, $ReceiverName);
@@ -90,7 +98,8 @@ class Mailer extends PHPMailer
 						$this->AddCC($CCemail, $CCemail);
 				}
 			}else{
-				$this->AddCC($CC, $CC);
+				if($CC)
+					$this->AddCC($CC, $CC);
 			}
 			if(is_array($BCC))
 			{
