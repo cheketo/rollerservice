@@ -76,7 +76,7 @@ class Mailer extends PHPMailer
 		}else{
 			$this->ClearAddresses();
 			$this->isSMTP();
-			$this->SMTPDebug = 2;
+			// $this->SMTPDebug = 2;
 			$this->SMTPAuth = true;
 			$this->SMTPSecure = 'ssl';
 			$this->Host = 'mail.rollerservice.com.ar';
