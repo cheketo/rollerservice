@@ -87,10 +87,10 @@ class CoreSecurity
 		    return false;
 		}else{
 			$_SESSION['last_activity'] = time(); // update last activity time stamp
-			if (!isset($_SESSION['created']))
-			{
-				$_SESSION['created'] = time();
-			}
+			// if (!isset($_SESSION['created']))
+			// {
+			// 	$_SESSION['created'] = time();
+			// }
 			// elseif(time() - $_SESSION['created'] > (900*CoreLogin::HOURS))
 			// {
 			//     session_regenerate_id(true);    // change session ID for the current session and invalidate old session ID

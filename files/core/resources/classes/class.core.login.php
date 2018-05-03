@@ -199,8 +199,6 @@ class CoreLogin
 	
 	public function Logout()
 	{
-		session_unset();
-		session_destroy();
 		//Unset Cookies
 		setcookie("rollerservice", "", 0 ,"/");
 		setcookie(CoreUser::TABLE_ID, "", 0 ,"/");
@@ -209,6 +207,9 @@ class CoreLogin
 		setcookie("last_name", "", 0 ,"/");
 		setcookie("user", "", 0 ,"/");
 		setcookie("password", "", 0 ,"/");
+		//Unset Session
+		session_unset();
+		session_destroy();
 	}
 }
 

@@ -1,8 +1,14 @@
 <?php
-	include_once("../../../core/resources/classes/class.core.login.php");
-	ini_set('session.gc-maxlifetime', 3600*CoreLogin::HOURS);
+	// include_once("../../../core/resources/classes/class.core.login.php");
+	/* LOADING CLASSES */
+	include_once("../../../core/resources/classes/class.core.php");
+	spl_autoload_register("Core::Autoload");
+	
+	ini_set("session.cookie_lifetime",3600*CoreLogin::HOURS);
+	ini_set("session.gc_maxlifetime",3600*CoreLogin::HOURS);
+	
 	session_name("rollerservice");
-	session_cache_expire(3600*CoreLogin::HOURS);
+	session_cache_expire(60*CoreLogin::HOURS);
 	session_start();
 	
 	// $ROOT = $_SERVER['DOCUMENT_ROOT'];
@@ -10,7 +16,7 @@
 	define("PROCESS", "../../../core/resources/processes/proc.core.php");
 	
 	/* SETTING DB CONNECTION */
-	include_once("../../../core/resources/classes/class.core.data.base.php");
+	// include_once("../../../core/resources/classes/class.core.data.base.php");
 	$GLOBALS['DB'] = new CoreDataBase();
 	if(!$GLOBALS['DB']->Connect())
 	{
@@ -18,9 +24,7 @@
 		die();
 	}
 	
-	/* LOADING CLASSES */
-	include_once("../../../core/resources/classes/class.core.php");
-	spl_autoload_register("Core::Autoload");
+	
 
 	/* SECURIRTY CHECKS */
 	$Security		= new CoreSecurity();
