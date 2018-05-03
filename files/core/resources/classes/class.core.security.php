@@ -91,11 +91,11 @@ class CoreSecurity
 			{
 				$_SESSION['created'] = time();
 			}
-			elseif(time() - $_SESSION['created'] > (900*CoreLogin::HOURS))
-			{
-			    session_regenerate_id(true);    // change session ID for the current session and invalidate old session ID
-			    $_SESSION['created'] = time();  // update creation time
-			}
+			// elseif(time() - $_SESSION['created'] > (900*CoreLogin::HOURS))
+			// {
+			//     session_regenerate_id(true);    // change session ID for the current session and invalidate old session ID
+			//     $_SESSION['created'] = time();  // update creation time
+			// }
 			return true;
 		}
 	}
