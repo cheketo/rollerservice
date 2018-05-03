@@ -40,7 +40,7 @@
             </div>
             <div class="form-group">
               C&oacute;digo:
-              <?php echo Core::InsertElement('text','code',$Data['code'],'form-control','placeholder="C&oacute;digo" validateEmpty="Ingrese un c&oacute;digo."') ?>
+              <?php echo Core::InsertElement('text','code',$Data['code'],'form-control','placeholder="C&oacute;digo" validateEmpty="Ingrese un c&oacute;digo." validateFromFile="'.PROCESS.'///El c&oacute;digo gen&eacute;rico ingresado ya existe///actualcode:='.$Data['code'].'///action:=validate///object:=ProductAbstract"') ?>
             </div>
             <hr>
             <div class="AsociateProduct animated fadeIn">

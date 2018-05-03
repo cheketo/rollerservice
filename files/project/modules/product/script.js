@@ -109,15 +109,28 @@ function discontinue()
 // }
 
 $(document).ready(function(){
-    ////////////////////////// SET VALUES TO SELECT FIELDS ////////////
-    // if($('option[selected="selected"]').length>0)
-    // {
-    //     var category = $('option[selected="selected"]');
-    //     var categoryID = category.attr("value");
-    //     var html = category.html();
-    //     $("#category_selected").html(html);
-    //     ShowCategoriesList(categoryID);
-    // }
+    $("#abstract_new").click(function(){
+      $("#new-abstract").removeClass("Hidden");
+      $("#abstract-assoc").addClass("Hidden");
+      $("#new_abstract").val("yes");
+      $("#abstract_code").attr("validateEmpty","Ingrese un c&oacute;digo gen&eacute;rico");
+      $("#abstract_code").attr("validateFromFile",process_url+"///El c&oacute;digo gen&eacute;rico ingresado ya existe///action:=validate///object:=ProductAbstract");
+      
+      if(!$("#abstract_code").val())
+      {
+        $("#abstract_code").val($("#code").val());
+      }
+      
+    });
+    
+    $("#abstract_cancel").click(function(){
+      $("#new-abstract").addClass("Hidden");
+      $("#abstract-assoc").removeClass("Hidden");
+      $("#new_abstract").val("");
+      $("#abstract_code").attr("validateEmpty","");
+      $("#abstract_code").attr("validateFromFile","");
+      
+    });
 });
 /////////// Show or Hide Icons On subtop //////////////////////
 $(document).ready(function() {

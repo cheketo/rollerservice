@@ -19,6 +19,7 @@
     // HIDDEN ELEMENTS
     echo Core::InsertElement("hidden","id",$ID);
     echo Core::InsertElement("hidden","action",'update');
+    echo Core::InsertElement("hidden","new_abstract");
     //echo Core::InsertElement("hidden","category",$Data[Category::TABLE_ID]);
 
 ?>
@@ -149,6 +150,40 @@
                 <div class="indicator"><span class="current-length">150</span></div>
               </div>
             </div>
+            
+            
+            <!-- Abstract Product Association -->
+              <div class="form-group row" id="abstract-assoc">
+                <div class="col-xs-12">
+                  Asociar con producto gen&eacute;rico:
+                </div>
+                <div class="col-xs-12">
+                  <?php echo Core::InsertElement('select','abstract',$Data['abstract_id'],'form-control chosenSelect','data-placeholder="Seleccionar C&oacute;digo Gen&eacute;rico" style="width:100%!important;"',Core::Select(ProductAbstract::TABLE,ProductAbstract::TABLE_ID.",code","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' '); ?>
+                </div>
+                <!-- New Abstract Button -->
+                <div class="col-xs-12">
+                  <br>
+                  <?php echo Core::InsertElement('button','abstract_new','<i class="fa fa-exchange"></i> Crear un nuevo art&iacute;culo gen&eacute;rico y asociarlo al art&iacute;culo','btn btn-info','style="width:100%;"') ?>
+                </div>
+              </div>
+            <!--</form>-->
+            
+            <!--<form id="abstract_form" name="abstract_form">-->
+              <!-- New Abstract Data -->
+              <div class="form-group row Hidden" id="new-abstract">
+                <div class="col-xs-12">
+                  C&oacute;digo:
+                </div>
+                <div class="col-xs-12">
+                  <?php echo Core::InsertElement('text','abstract_code','','form-control','placeholder="C&oacute;digo Gen&eacute;rico"') ?>
+                </div>
+                <div class="col-xs-12">
+                    <br>
+                    <?php echo Core::InsertElement('button','abstract_cancel','Cancelar','btn btn-danger','style="width:100%;"') ?>
+                </div>
+              </div>
+            
+            
             <div class="txC">
               <button type="button" class="btn btn-success btnGreen" id="BtnEdit"><i class="fa fa-check"></i> Finalizar Edici&oacute;n</button>
               <button type="button" class="btn btn-error btnRed" id="BtnCancel" name="BtnCancel"><i class="fa fa-times"></i> Cancelar</button>

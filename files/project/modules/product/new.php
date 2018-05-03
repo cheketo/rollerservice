@@ -10,6 +10,7 @@
     
     // HIDDEN ELEMENTS
     echo Core::InsertElement("hidden","action",'insert');
+    echo Core::InsertElement("hidden","new_abstract");
    // echo Core::InsertElement("hidden","category");
 
 ?>
@@ -80,76 +81,117 @@
         <div class="innerContainer">
           <h4 class="subTitleB"><i class="fa fa-cube"></i> Detalles del Art&iacute;culo</h4>
           
-            <div class="row form-group inline-form-custom">
-              <!--L&iacute;nea: <b><span id="category_selected"></span></b>-->
-              <div class="col-xs-12 col-sm-6">
-                <?php echo Core::InsertElement('select','category','','form-control chosenSelect','data-placeholder="Seleccionar L&iacute;nea" validateEmpty="Seleccione una l&iacute;nea."',Core::Select(Category::TABLE,Category::TABLE_ID.",title","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' ') ?>
+            <!--<form id="product_form" name="product_form">-->
+              <div class="row form-group inline-form-custom">
+                <!--L&iacute;nea: <b><span id="category_selected"></span></b>-->
+                <div class="col-xs-12 col-sm-6">
+                  <?php echo Core::InsertElement('select','category','','form-control chosenSelect','data-placeholder="Seleccionar L&iacute;nea" validateEmpty="Seleccione una l&iacute;nea."',Core::Select(Category::TABLE,Category::TABLE_ID.",title","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' ') ?>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <?php echo Core::InsertElement('text','order_number','','form-control','placeholder="N&uacute;mero de Orden" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 0, \'digitsOptional\': false, \'prefix\': \'\', \'placeholder\': \'0\'"') ?>
+                </div>
               </div>
-              <div class="col-xs-12 col-sm-6">
-                <?php echo Core::InsertElement('text','order_number','','form-control','placeholder="N&uacute;mero de Orden" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 0, \'digitsOptional\': false, \'prefix\': \'\', \'placeholder\': \'0\'"') ?>
-              </div>
-            </div>
-            <!--<div class="form-group">-->
-            <!--  <?php //echo Core::InsertElement('text','title','','form-control','placeholder="Nombre del Art&iacute;culo"') ?>-->
-            <!--</div>-->
-            <div class="row form-group inline-form-custom">
-              <div class="col-xs-12 col-sm-4">
-                <?php //echo Core::InsertElement('text','short_title','','form-control','placeholder="Nombre Corto"') ?>
-                <?php echo Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo" validateEmpty="Ingrese un c&oacute;digo."') ?>
-              </div>
-              <div class="col-xs-12 col-sm-4">
-                <?php echo Core::InsertElement('text','price','','form-control','placeholder="Precio" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$\', \'placeholder\': \'0\'"') ?>
-              </div>
-              <div class="col-xs-12 col-sm-4">
-                <?php echo Core::InsertElement('text','rack','','form-control','placeholder="Estanter&iacute;a"') ?>
-              </div>
-            </div>
-            <div class="row form-group inline-form-custom">
-              <!--<div class="col-xs-12 col-sm-4">-->
-              <!--  <?php //echo Core::InsertElement('text','rack','','form-control','placeholder="Estanter&iacute;a"') ?>-->
+              <!--<div class="form-group">-->
+              <!--  <?php //echo Core::InsertElement('text','title','','form-control','placeholder="Nombre del Art&iacute;culo"') ?>-->
               <!--</div>-->
-              <div class="col-xs-12 col-sm-12">
-                <?php echo Core::InsertElement('select','brand','','form-control chosenSelect','data-placeholder="Seleccionar Marca" validateEmpty="Seleccione una marca." style="width:100%!important;"',Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' '); ?>
+              <div class="row form-group inline-form-custom">
+                <div class="col-xs-12 col-sm-4">
+                  <?php //echo Core::InsertElement('text','short_title','','form-control','placeholder="Nombre Corto"') ?>
+                  <?php echo Core::InsertElement('text','code','','form-control','placeholder="C&oacute;digo" validateEmpty="Ingrese un c&oacute;digo."') ?>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                  <?php echo Core::InsertElement('text','price','','form-control','placeholder="Precio" data-inputmask="\'alias\': \'numeric\', \'groupSeparator\': \'\', \'autoGroup\': true, \'digits\': 2, \'digitsOptional\': false, \'prefix\': \'$\', \'placeholder\': \'0\'"') ?>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                  <?php echo Core::InsertElement('text','rack','','form-control','placeholder="Estanter&iacute;a"') ?>
+                </div>
               </div>
-            </div>
-            <div class="form-group">
-              <?php echo Core::InsertElement('text','size','','form-control','placeholder="Medidas"') ?>
-            </div>
-            <div class="row form-group inline-form-custom">
-              <div class="col-xs-12 col-sm-4">
-                <?php echo Core::InsertElement('text','stock','','form-control','placeholder="Stock Incial"') ?>
+              <div class="row form-group inline-form-custom">
+                <!--<div class="col-xs-12 col-sm-4">-->
+                <!--  <?php //echo Core::InsertElement('text','rack','','form-control','placeholder="Estanter&iacute;a"') ?>-->
+                <!--</div>-->
+                <div class="col-xs-12 col-sm-12">
+                  <?php echo Core::InsertElement('select','brand','','form-control chosenSelect','data-placeholder="Seleccionar Marca" validateEmpty="Seleccione una marca." style="width:100%!important;"',Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' '); ?>
+                </div>
               </div>
-              <div class="col-xs-12 col-sm-4">
-                <?php echo Core::InsertElement('text','stock_min','','form-control','placeholder="Stock M&iacute;nimo"') ?>
+              <div class="form-group">
+                <?php echo Core::InsertElement('text','size','','form-control','placeholder="Medidas"') ?>
               </div>
-              <div class="col-xs-12 col-sm-4">
-                <?php echo Core::InsertElement('text','stock_max','','form-control','placeholder="Stock M&aacute;ximo"') ?>
+              <div class="row form-group inline-form-custom">
+                <div class="col-xs-12 col-sm-4">
+                  <?php echo Core::InsertElement('text','stock','','form-control','placeholder="Stock Incial"') ?>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                  <?php echo Core::InsertElement('text','stock_min','','form-control','placeholder="Stock M&iacute;nimo"') ?>
+                </div>
+                <div class="col-xs-12 col-sm-4">
+                  <?php echo Core::InsertElement('text','stock_max','','form-control','placeholder="Stock M&aacute;ximo"') ?>
+                </div>
               </div>
-            </div>
-            <div class="form-group">
-              <?php echo Core::InsertElement('button','dispatch_data','Agregar datos de &uacute;ltima importaci&oacute;n','btn btn-warning','style="width:100%;"') ?>
-            </div>
-            <div class="row form-group inline-form-custom Hidden Dispatch animated fadeIn">
-              <div class="col-md-12">
-                <?php echo Core::InsertElement('text','dispatch','','form-control','placeholder="Desp. Aduana"') ?>
+              
+              <!-- Dispatch -->
+              <div class="form-group">
+                <?php echo Core::InsertElement('button','dispatch_data','<i class="fa fa-ship"></i> Agregar datos de &uacute;ltima importaci&oacute;n','btn btn-warning','style="width:100%;"') ?>
               </div>
-            </div>
-            <div class="row form-group inline-form-custom Hidden Dispatch animated fadeIn">
-              <div class="col-xs-12 col-sm-6">
-                <?php echo Core::InsertElement('text','price_fob','','form-control','placeholder="Costo Fob"') ?>
+              <div class="row form-group inline-form-custom Hidden Dispatch animated fadeIn">
+                <div class="col-md-12">
+                  <?php echo Core::InsertElement('text','dispatch','','form-control','placeholder="Desp. Aduana"') ?>
+                </div>
               </div>
-              <div class="col-xs-12 col-sm-6">
-                <?php echo Core::InsertElement('text','price_dispatch','','form-control','placeholder="Costo Desp."') ?>
+              <div class="row form-group inline-form-custom Hidden Dispatch animated fadeIn">
+                <div class="col-xs-12 col-sm-6">
+                  <?php echo Core::InsertElement('text','price_fob','','form-control','placeholder="Costo Fob"') ?>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                  <?php echo Core::InsertElement('text','price_dispatch','','form-control','placeholder="Costo Desp."') ?>
+                </div>
               </div>
-            </div>
-            <!-- Description (Character Counter)-->
-            <div class="form-group textWithCounter">
-              <textarea id="description" name="description" class="text-center" placeholder="Descripción" rows="4" maxlength="150"></textarea>
-              <div class="indicator-wrapper">
-                <p>Caracteres restantes</p>
-                <div class="indicator"><span class="current-length">150</span></div>
+              
+              
+              
+              
+              <!-- Description (Character Counter)-->
+              <div class="form-group textWithCounter">
+                <textarea id="description" name="description" class="text-center" placeholder="Descripción" rows="4" maxlength="150"></textarea>
+                <div class="indicator-wrapper">
+                  <p>Caracteres restantes</p>
+                  <div class="indicator"><span class="current-length">150</span></div>
+                </div>
               </div>
-            </div>
+              
+              
+              <!-- Abstract Product Association -->
+              <div class="form-group row" id="abstract-assoc">
+                <div class="col-xs-12">
+                  Asociar con producto gen&eacute;rico:
+                </div>
+                <div class="col-xs-12">
+                  <?php echo Core::InsertElement('select','abstract','','form-control chosenSelect','data-placeholder="Seleccionar C&oacute;digo Gen&eacute;rico" style="width:100%!important;"',Core::Select(ProductAbstract::TABLE,ProductAbstract::TABLE_ID.",code","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' '); ?>
+                </div>
+                <!-- New Abstract Button -->
+                <div class="col-xs-12">
+                  <br>
+                  <?php echo Core::InsertElement('button','abstract_new','<i class="fa fa-exchange"></i> Crear un nuevo art&iacute;culo gen&eacute;rico y asociarlo al art&iacute;culo','btn btn-info','style="width:100%;"') ?>
+                </div>
+              </div>
+            <!--</form>-->
+            
+            <!--<form id="abstract_form" name="abstract_form">-->
+              <!-- New Abstract Data -->
+              <div class="form-group row Hidden" id="new-abstract">
+                <div class="col-xs-12">
+                  C&oacute;digo:
+                </div>
+                <div class="col-xs-12">
+                  <?php echo Core::InsertElement('text','abstract_code','','form-control','placeholder="C&oacute;digo Gen&eacute;rico"') ?>
+                </div>
+                <div class="col-xs-12">
+                    <br>
+                    <?php echo Core::InsertElement('button','abstract_cancel','Cancelar','btn btn-danger','style="width:100%;"') ?>
+                </div>
+              </div>
+            <!--</form>-->
+            
             <div class="txC">
               <button type="button" class="btn btn-success btnGreen" id="BtnCreate"><i class="fa fa-check"></i> Finalizar</button>
               <button type="button" class="btn btn-success btnBlue" id="BtnCreateNext"><i class="fa fa-plus"></i> Finalizar y Crear Otro</button>

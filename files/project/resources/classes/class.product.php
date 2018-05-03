@@ -307,8 +307,12 @@ class Product
 		if(!$StockMax) $StockMax = 0;
 		if(!$PriceFob) $PriceFob = 0;
 		if(!$PriceDispatch) $PriceDispatch = 0;
-		Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.',price,'.Brand::TABLE_ID.',rack,size,stock_min,stock_max,description,creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Price.",".$Brand.",'".$Rack."','".$Size."',".$StockMin.",".$StockMax.",'".$Description."',NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
+		$_POST['id'] = Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.',price,'.Brand::TABLE_ID.',rack,size,stock_min,stock_max,description,creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Price.",".$Brand.",'".$Rack."','".$Size."',".$StockMin.",".$StockMax.",'".$Description."',NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
 		//echo $this->LastQuery();
+		
+		$this -> CreateAbstract();
+		$this -> AssociateAbstract();
+		
 	}	
 	
 	public function Quickinsert()
@@ -318,7 +322,7 @@ class Product
 		$Category	= $_POST['category'];
 		$Brand		= $_POST['brand'];
 		if($Code && $OrderNumber && $Category && $Brand)
-			Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.','.Brand::TABLE_ID.',creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Brand.",NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
+			$_POST['id'] = Core::Insert(self::TABLE,'code,order_number,'.Category::TABLE_ID.','.Brand::TABLE_ID.',creation_date,organization_id,created_by',"'".$Code."',".$OrderNumber.",".$Category.",".$Brand.",NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
 		else
 			echo 402;
 	}
@@ -342,6 +346,9 @@ class Product
 		if(!$StockMax) $StockMax = 0;
 		Core::Update(self::TABLE,"code='".$Code."',order_number=".$OrderNumber.",".Category::TABLE_ID."=".$Category.",".Brand::TABLE_ID."=".$Brand.",price=".$Price.",rack='".$Rack."',size='".$Size."',stock_min='".$StockMin."',stock_max='".$StockMax."',description='".$Description."',updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
 		//echo $this->LastQuery();
+		
+		$this -> CreateAbstract();
+		$this -> AssociateAbstract();
 	}
 	
 	public function Validate()
@@ -359,6 +366,20 @@ class Product
 	{
 		$ID = $_POST['id'];
 		Core::Update(self::TABLE,"discontinued='N'",self::TABLE_ID."=".$ID);
+	}
+	
+	public function CreateAbstract()
+	{
+		if($_POST["new_abstract"]=="yes")
+		{
+			$CodeAbs = $_POST['abstract_code'];
+			$_POST['abstract'] = Core::Insert(ProductAbstract::TABLE,'code,'.Category::TABLE_ID.',relation_status,creation_date,organization_id,created_by',"'".$CodeAbs."',".$_POST['category'].",'A',NOW(),".$_SESSION[CoreOrganization::TABLE_ID].",".$_SESSION[CoreUser::TABLE_ID]);
+		}
+	}
+	
+	public function AssociateAbstract()
+	{
+		Core::Update(self::TABLE,ProductAbstract::TABLE_ID."=".$_POST['abstract'],self::TABLE_ID." = ".$_POST['id']);
 	}
 }
 ?>

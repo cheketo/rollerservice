@@ -252,7 +252,9 @@ class ProductAbstract
 	
 	public function Validate()
 	{
-		self::ValidateValue("code",$_POST['code'],$_POST['actualcode']);
+		if($_POST['abstract_code'])
+			$_POST['code'] = $_POST['abstract_code'];
+		echo self::ValidateValue("code",$_POST['code'],$_POST['actualcode']);
 	}
 }
 ?>
