@@ -8,6 +8,7 @@
     $Head->SetSubTitle($Menu->GetTitle());
     $Head->SetIcon($Menu->GetHTMLicon());
     $Head->SetStyle('../../../../vendors/bootstrap-switch/bootstrap-switch.css'); // Switch On Off
+    $Head->SetStyle('../../../../vendors/autocomplete/jquery.auto-complete.css'); // Autocomplete
      
     $Head->setHead();
     
@@ -158,7 +159,8 @@
                   Asociar con producto gen&eacute;rico:
                 </div>
                 <div class="col-xs-12">
-                  <?php echo Core::InsertElement('select','abstract',$Data['abstract_id'],'form-control chosenSelect','data-placeholder="Seleccionar C&oacute;digo Gen&eacute;rico" style="width:100%!important;"',Core::Select(ProductAbstract::TABLE,ProductAbstract::TABLE_ID.",code","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' '); ?>
+                  <?php //echo Core::InsertElement('select','abstract',$Data['abstract_id'],'form-control chosenSelect','data-placeholder="Seleccionar C&oacute;digo Gen&eacute;rico" style="width:100%!important;"',Core::Select(ProductAbstract::TABLE,ProductAbstract::TABLE_ID.",code","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' '); ?>
+                  <?php echo Core::InsertElement('autocomplete','abstract',$Data['abstract_id'].','.$Data['abstract_code'],'form-control','placeholder="C&oacute;digo a asociar" placeholderauto="C&oacute;digo no encontrado" iconauto="cube"','ProductAbstract','SearchAbstractCodes'); ?>
                 </div>
                 <!-- New Abstract Button -->
                 <div class="col-xs-12">
@@ -198,6 +200,7 @@
 
   <!-- Help Modal -->
 <?php
+$Foot->SetScript('../../../../vendors/autocomplete/jquery.auto-complete.min.js');
 $Foot->SetScript('../../../../vendors/bootstrap-switch/script.bootstrap-switch.min.js');
 $Foot->SetScript('../../../../vendors/jquery-mask/src/jquery.mask.js');
 $Foot->SetScript('../../../../vendors/inputmask3/jquery.inputmask.bundle.min.js');

@@ -98,15 +98,89 @@ function discontinue()
 }
 
 //////////////////////////// CREATE/EDIT FUNCTIONS /////////////////////
-// function ShowCategoriesList(id)
-// {
-//     $('option[value="'+id+'"]').parent().parent().removeClass("Hidden");
-//     id = $('option[value="'+id+'"]').parent().parent().attr("category");
-//     if(id>0)
+//// AutoComplete Product Abstract
+// $("#asoc").autoComplete({
+//     minChars: 0,
+//     delay: 600,
+//     cache: false,
+//     source: function(term, response)
 //     {
-//         ShowCategoriesList(id);
+//       // var products = '';
+//       // $(".CodeID").each(function(element){
+//       //   if(products)
+//       //     products = products+','+$(this).val();
+//       //   else
+//       //     products = $(this).val();
+//       // })
+      
+//       var target = process_url;
+//       var object = "ProductAbstract";
+// 			var action = "SearchAbstractCodes";
+//       var variables		= "text="+term+"&object="+object+"&action="+action;
+  	    
+      
+//       try { xhr.abort(); } catch(e){}
+//       xhr = $.getJSON(target,variables, function(data){
+//         response(data);
+//       });
+//     },
+//     renderItem: function (item, search)
+//     {
+//       var key = item.text;
+//       var text = item.text;
+//       var id = item.id;
+//       // var abstract = item.abstract;
+//       // console.log("1: "+abstract);
+//       if(key=="no-result")
+//       {
+//         var defaultSearchText = 'Sin resultados';
+//         key='';
+//         text='<i>'+defaultSearchText+'</i>'
+//       }
+//       return '<div class="autocomplete-suggestion" data-key="'+key+'" data-id="'+id+'" data-val="'+search+'">'+text+'</div>';
+//     },
+//     onSelect: function(e, term, item)
+//     {
+//         var textval = item.data('key');
+//         textval = textval.replace(/(<([^>]+)>)/ig,"");
+//         $("#asoc").val(term);
+//         var id = item.data('id');
+//         // var abstract = item.data('abstract');
+//         // console.log("2: "+abstract);
+//         // if(id && checkCodeId(id))
+//         // {
+//         //   var text = textval.split(" - ").reverse();
+//         //   var stock = text[0];
+//         //   var category = text[1];
+//         //   var brand = text[2];
+//         //   var code = "";
+//         //   var i;
+//         //   for(i=3;i<text.length;i++)
+//         //   {
+//         //     if(text[i].trim())
+//         //     {
+//         //       if(code)
+//         //         code = text[i] + '-' +code;
+//         //       else
+//         //         code = text[i];
+//         //     }
+//         //   }
+//         //   if(abstract)
+//         //   {
+//         //     alertify.confirm("El c&oacute;digo <b>"+code+"</b> se encuentra relacionado con el art&iacute;culo gen&eacute;rico <b>"+abstract+"</b>. Si lo asocia al c&oacute;digo gen&eacute;rico actual perder&aacute; la relaci&oacute;n anterior.<br>¿Desea continuar?", function(e)
+//         //     {
+//         //       if(e)
+//         //       {
+//         //         appendCodeInfo(code,id,category,brand);
+//         //       }
+//         //     });
+//         //   }else{
+//         //     appendCodeInfo(code,id,category,brand);
+//         //   }
+//         // }
 //     }
-// }
+// });
+
 
 $(document).ready(function(){
     $("#abstract_new").click(function(){

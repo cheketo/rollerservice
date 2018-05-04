@@ -20,7 +20,47 @@
                         <?php echo Core::InsertElement('select','new_product_brand','','form-control chosenSelect','data-placeholder="Seleccionar Marca" validateEmpty="Seleccione una marca." style="width:100%!important;"',Core::Select(Brand::TABLE,Brand::TABLE_ID.",name","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),' ',''); ?>
                     </div>
                 </div>
+            
+                <?php echo Core::InsertElement("hidden","new_abstract"); ?>
+            
+                <!-- Abstract Product Association -->
+                  <div class="form-group row" id="abstract-assoc">
+                    <div class="col-xs-12">
+                      Asociar con producto gen&eacute;rico:
+                    </div>
+                    <div class="col-xs-12">
+                      <?php //echo Core::InsertElement('select','abstract','','form-control chosenSelect','data-placeholder="Seleccionar C&oacute;digo Gen&eacute;rico" style="width:100%!important;"',Core::Select(ProductAbstract::TABLE,ProductAbstract::TABLE_ID.",code","status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID]),'',' '); ?>
+                      <?php echo Core::InsertElement('autocomplete','abstract','','form-control','placeholder="C&oacute;digo a asociar" placeholderauto="C&oacute;digo no encontrado" iconauto="cube"','ProductAbstract','SearchAbstractCodes'); ?>
+                    </div>
+                    <!-- New Abstract Button -->
+                    <div class="col-xs-12 text-center">
+                      <br>
+                      <?php //echo Core::InsertElement('button','abstract_new','<i class="fa fa-exchange"></i> Crear un nuevo art&iacute;culo gen&eacute;rico y asociarlo al art&iacute;culo','btn btn-info') ?>
+                      <span id="abstract_new" name="abstract_new" class="btn btn-info"><i class="fa fa-exchange"></i> Crear un nuevo artículo genérico y asociarlo al artículo</span>
+                    </div>
+                  </div>
+                <!--</form>-->
+                
+                <!--<form id="abstract_form" name="abstract_form">-->
+                  <!-- New Abstract Data -->
+                  <div class="form-group row Hidden" id="new-abstract">
+                    <div class="col-xs-12">
+                      C&oacute;digo:
+                    </div>
+                    <div class="col-xs-12">
+                      <?php echo Core::InsertElement('text','abstract_code','','form-control','placeholder="C&oacute;digo Gen&eacute;rico"') ?>
+                    </div>
+                    <div class="col-xs-12 text-center">
+                        <br>
+                        <?php //echo Core::InsertElement('button','abstract_cancel','Cancelar','btn btn-danger','style="width:100%;"') ?>
+                        <span id="abstract_cancel" name="abstract_cancel" class="btn btn-danger"><i class="fa fa-times"></i> Cancelar</span>
+                    </div>
+                  </div>
+                <!--</form>-->
             </div>
+            
+            
+            
         </form>
     </div>
     <div class="window-border txC">

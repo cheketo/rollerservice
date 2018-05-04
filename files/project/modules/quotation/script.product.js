@@ -6,6 +6,34 @@ $(document).ready(function(){
 	});
 });
 
+
+///////// ABSTRACT FUNCTIONS
+$(document).ready(function(){
+    $("#abstract_new").click(function(){
+      $("#new-abstract").removeClass("Hidden");
+      $("#abstract-assoc").addClass("Hidden");
+      $("#new_abstract").val("yes");
+      $("#abstract_code").attr("validateEmpty","Ingrese un c&oacute;digo gen&eacute;rico");
+      $("#abstract_code").attr("validateFromFile",process_url+"///El c&oacute;digo gen&eacute;rico ingresado ya existe///action:=validate///object:=ProductAbstract");
+      
+      if(!$("#abstract_code").val())
+      {
+        $("#abstract_code").val($("#new_product_code").val());
+      }
+      
+    });
+    
+    $("#abstract_cancel").click(function(){
+      $("#new-abstract").addClass("Hidden");
+      $("#abstract-assoc").removeClass("Hidden");
+      $("#new_abstract").val("");
+      $("#abstract_code").attr("validateEmpty","");
+      $("#abstract_code").attr("validateFromFile","");
+      
+    });
+});
+
+
 function ShowProductWindow()
 {
 	
@@ -23,7 +51,14 @@ function CreateProduct()
             {
                 if(e)
                 {
-                    var string	= 'object=Product&action=Quickinsert&code='+$("#new_product_code").val()+'&brand='+$("#new_product_brand").val()+'&order_number='+$("#new_product_order_number").val()+'&category='+$("#new_product_category").val();
+                    var string	=   'object=Product&action=Quickinsert&code='+$("#new_product_code").val()
+                                    +'&brand='+$("#new_product_brand").val()
+                                    +'&order_number='+$("#new_product_order_number").val()
+                                    +'&category='+$("#new_product_category").val()
+                                    +'&new_abstract='+$("#new_abstract").val()
+                                    +'&abstract='+$("#abstract").val()
+                                    +'&abstract_code='+$("#abstract_code").val()
+                                    ;
                     $.ajax(
                     {
                         type: "POST",
