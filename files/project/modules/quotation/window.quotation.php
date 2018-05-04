@@ -94,6 +94,8 @@
               <tbody><tr id="QuotationWrapperTh" name="QuotationWrapperTh">
                 <th class="txC">Fecha</th>
                 <th class="txC">Proveedor</th>
+                <th class="txC">C&oacute;digo</th>
+                <th class="txC">Marca</th>
                 <th class="txC">Precio</th>
                 <th class="txC">Cantidad</th>
                 <th class="txC">Total</th>

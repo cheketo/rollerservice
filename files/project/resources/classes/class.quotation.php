@@ -458,7 +458,8 @@ class Quotation
 	public function Fillproviderquotations()
 	{
 		$ProductID = $_POST['product'];
-		$Quotations = Core::Select(self::SEARCH_TABLE,"*","status <> 'I' AND receiver_id=0 AND ".Product::TABLE_ID."=".$ProductID,'quotation_date DESC,creation_date DESC,quotation_id DESC');
+		$AbstractID = Core::Select(Product::TABLE,ProductAbstract::TABLE_ID,Product::TABLE_ID.'='.$ProductID)[0][ProductAbstract::TABLE_ID];
+		$Quotations = Core::Select(self::SEARCH_TABLE,"*","status <> 'I' AND receiver_id=0 AND (".Product::TABLE_ID."=".$ProductID." OR ".ProductAbstract::TABLE_ID."=".$AbstractID." )",'quotation_date DESC,creation_date DESC,quotation_id DESC');
 		foreach($Quotations as $Quotation)
 		{
 			$FilesHTML = "";
@@ -471,9 +472,15 @@ class Quotation
 					$FilesHTML .= '<div><a href="'.$File['url'].'" target="_blank"><img src="'.$IconURL.'" width="32" height="32"> '.$File['name'].'</a></div>';
 				}
 			}
+			if($Quotation['product_id']==$ProductID)
+			{
+				$Quotation['code'] = '<span class="label label-primary">'.$Quotation['code'].'</span>';
+			}
 			$HTML .= '<tr class="ClearWindow">
 		                <td>'.Core::FromDBToDate($Quotation['quotation_date']).'</td>
 		                <td>'.$Quotation['company'].'</td>
+		                <td>'.$Quotation['code'].'</td>
+		                <td>'.$Quotation['brand'].'</td>
 		                <td><span class="label label-success">'.$Quotation['currency'].' '.$Quotation['price'].'</span></td>
 		                <td>'.$Quotation['quantity'].'</td>
 		                <td>'.$Quotation['currency'].' '.$Quotation['total_item'].'</td>

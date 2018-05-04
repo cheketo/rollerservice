@@ -273,7 +273,7 @@ function FillProviderQuotations()
     var noData = function()
     {
         // notifyError("Ha ocurrido un error al obtener las cotizaciones de este producto.");
-        var HTML = '<tr class="QuotationDeleteable"><td colspan="8"><div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron cotizaciones de proveedores para este art&iacute;culo.</h4><p>Puede crear una nueva cotizaci&oacute;n completando los campos de "Nueva Cotizaci&oacute;n de Proveedor"</p></div></td></tr>';
+        var HTML = '<tr class="QuotationDeleteable"><td colspan="10"><div class="callout callout-info"><h4><i class="icon fa fa-info-circle"></i> No se encontraron cotizaciones de proveedores para este art&iacute;culo.</h4><p>Puede crear una nueva cotizaci&oacute;n completando los campos de "Nueva Cotizaci&oacute;n de Proveedor"</p></div></td></tr>';
         $("#QuotationWrapper").children("tbody").append(HTML);
     }
     sumbitFields(process,haveData,noData);
@@ -393,10 +393,16 @@ function InsertQuotationHTML(data)
         }
         FilesHTML = FilesHTML + '<div><a href="'+FileURL+'" target="_blank"><img src="'+FileIconURL+'" height="32" width="32"> '+$(this).attr("filename")+'</a></div>';
     })
+    var CodeArray = $("#ProductName").children('kbd').html().split(" - ");
+    
+    var Brand = CodeArray[1];
+    var Code = CodeArray[0];
     var total = (parseFloat($("#tprice").val())*parseInt($("#tquantity").val())).toFixed(2);
     var HTML = '<tr class="ClearWindow">'+
                 '<td>'+$("#tdate").val()+'</td>'+
                 '<td>'+$("#TextAutoCompletetprovider").val()+'</td>'+
+                '<td><span class="label label-primary">'+Code+'</span></td>'+
+                '<td>'+Brand+'</td>'+
                 '<td><span class="label label-success">'+data.currency+$("#tprice").val()+'</span></td>'+
                 '<td>'+$("#tquantity").val()+'</td>'+
                 '<td>'+data.currency+' '+total+'</td>'+
