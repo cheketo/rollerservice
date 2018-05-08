@@ -382,7 +382,8 @@ class Product
 	
 	public function AssociateAbstract()
 	{
-		Core::Update(self::TABLE,ProductAbstract::TABLE_ID."=".$_POST['abstract'],self::TABLE_ID." = ".$_POST['id']);
+		if($_POST['abstract'])
+			Core::Update(self::TABLE,ProductAbstract::TABLE_ID."=".$_POST['abstract'],self::TABLE_ID." = ".$_POST['id']);
 	}
 }
 ?>
