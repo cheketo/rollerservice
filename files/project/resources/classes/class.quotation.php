@@ -332,7 +332,8 @@ class Quotation
 		$Extra			= $_POST['extra'];
 		$ExpireDays		= $_POST['expire_days']?$_POST['expire_days']:0;
 		$ExpireDate		= Core::FromDateToDB($_POST['expire_date']);
-		$Update			= Core::Update(self::TABLE,Company::TABLE_ID."=".$CompanyID.",agent_id=".$AgentID.",currency_id=".$CurrencyID.",delivery_date='".$Date."',extra='".$Extra."',expire_days=".$ExpireDays.",expire_date='".$ExpireDate."',total=".$Total.",updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
+		$Field			= $_POST['company_type'].'_id';
+		$Update			= Core::Update(self::TABLE,Company::TABLE_ID."=".$CompanyID.",".$Field."=".$CompanyID.",agent_id=".$AgentID.",currency_id=".$CurrencyID.",delivery_date='".$Date."',extra='".$Extra."',expire_days=".$ExpireDays.",expire_date='".$ExpireDate."',total=".$Total.",updated_by=".$_SESSION[CoreUser::TABLE_ID],self::TABLE_ID."=".$ID);
 		
 		// DELETE OLD ITEMS
 		QuotationItem::DeleteItems($ID);
