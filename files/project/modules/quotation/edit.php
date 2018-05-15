@@ -16,6 +16,22 @@
 			die();
     }
     $Agents     = Core::Select('company_agent','agent_id,name',Company::TABLE_ID.'='.$Data[Company::TABLE_ID]);
+    if(empty($Agents))
+    {
+      $AgentClass = "warning";
+      $AgentIcon = "times";
+      $AgentName = "Sin Contacto";
+    }else{
+      $AgentClass = "success";
+      $AgentIcon = "male";
+      foreach ($Agents as $Agent)
+      {
+        if($Agent[CompanyAgent::TABLE_ID]==$Data['agent_id'])
+          $AgentName = $Agent['name'];
+      }
+    }
+    
+    
     $TotalItems = count($Data['items']);
     
     
@@ -73,6 +89,7 @@
 
 <?php include_once('window.quotation.php'); ?>
 <?php include_once('window.product.php'); ?>
+<?php include_once('window.agent.php'); ?>
 <?php if($Customer=='Y') include_once('window.email.php'); ?>
 
   <div class="box animated fadeIn" style="min-width:99%">
@@ -87,20 +104,15 @@
                     $CompanyName = $Field=="provider"?"CONCAT(name,' - ',IF(old_id>0,old_id,company_id))":"CONCAT(name,' - ',company_id)";
                     echo Core::InsertElement('select','company',$Data['company_id'],'form-control chosenSelect','validateEmpty="Seleccione un '.$Role.'" data-placeholder="Seleccione un '.$Role.'"',Core::Select(Company::TABLE,Company::TABLE_ID.','.$CompanyName,$Field."= 'Y' ".$FieldInternational." AND status='A' AND ".CoreOrganization::TABLE_ID."=".$_SESSION[CoreOrganization::TABLE_ID],'name'),' ','');
                   ?>
-                  <?php //echo Core::InsertElement("text","provider",'','Hidden',''); ?>
               </div>
             </div>
-            <h4 class="subTitleB"><i class="fa fa-male"></i> Contacto</h4>
+            <!--<h4 class="subTitleB"><i class="fa fa-male"></i> Contacto</h4>-->
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12">
                   <div id="agent-wrapper">
-                    <?php if(empty($Agents))
-                          {
-                            echo '<select id="agent" class="form-control chosenSelect" disabled="disabled"><option value="0">Sin Contacto</option></select>';
-                          }else{
-                            echo Core::InsertElement('select','agent',$Data['agent_id'],'form-control chosenSelect','',$Agents);
-                          }
-                     ?>
+                    
+                    <?php echo Core::InsertElement("hidden","agent",$Data['agent_id']); ?>
+                    <strong><button type="button" class="btn btn-lg btn-<?php echo $AgentClass ?>" id="ShowAgentBtn"><i class="fa fa-<?php echo $AgentIcon ?>"></i> <?php echo $AgentName ?></button></strong>
                 </div>
               </div>
             </div>
@@ -313,6 +325,7 @@ $Foot->SetScript('../../../../vendors/datepicker/bootstrap-datepicker.js');
 $Foot->SetScript('../../../../vendors/dropzone/dropzone.min.js');
 $Foot->SetScript('script.traceability.js');
 $Foot->SetScript('script.dropzone.js');
+$Foot->SetScript('script.agent.js');
 $Foot->SetScript('script.email.js');
 $Foot->SetScript('script.product.js');
 include('../../../project/resources/includes/inc.bottom.php');

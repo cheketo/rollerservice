@@ -52,6 +52,7 @@
 
 <?php include_once('window.quotation.php'); ?>
 <?php include_once('window.product.php'); ?>
+<?php include_once('window.agent.php'); ?>
 <?php if($Customer=='Y') include_once('window.email.php'); ?>
 
   <div class="box animated fadeIn" style="min-width:99%">
@@ -68,10 +69,14 @@
                   ?>
               </div>
             </div>
-            <h4 class="subTitleB"><i class="fa fa-male"></i> Contacto</h4>
+            <!--<h4 class="subTitleB"><i class="fa fa-male"></i> Contacto</h4>-->
             <div class="row form-group inline-form-custom">
               <div class="col-xs-12">
-                  <div id="agent-wrapper"><?php echo Core::InsertElement('select','agent','','form-control chosenSelect','validateEmpty="Seleccione un Contacto" disabled="disabled"','','0','Sin Contacto'); ?></div>
+                  <div id="agent-wrapper">
+                    <?php //echo Core::InsertElement('select','agent','','form-control chosenSelect','validateEmpty="Seleccione un Contacto" disabled="disabled"','','0','Sin Contacto'); ?>
+                    <?php echo Core::InsertElement("hidden","agent"); ?>
+                    <strong><button type="button" class="btn btn-lg btn-warning" id="ShowAgentBtn"><i class="fa fa-times"></i> Seleccionar Contacto</button></strong>
+                  </div>
               </div>
             </div>
             
@@ -231,6 +236,7 @@ $Foot->SetScript('../../../../vendors/autocomplete/jquery.auto-complete.min.js')
 $Foot->SetScript('../../../../vendors/datepicker/bootstrap-datepicker.js');
 $Foot->SetScript('../../../../vendors/dropzone/dropzone.min.js');
 $Foot->SetScript('script.dropzone.js');
+$Foot->SetScript('script.agent.js');
 $Foot->SetScript('script.traceability.js');
 $Foot->SetScript('script.email.js');
 $Foot->SetScript('script.product.js');

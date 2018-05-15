@@ -375,39 +375,39 @@ function showHistoryWindow()
 }
 
 /////////////////////////// LOAD AGENT SELECT ////////////////////////////////
-$(function(){
-	$("#company").change(function(){
-		if($(this).val())
-		{
-			fillAgent();
-		}
-	});
-});
+// $(function(){
+// 	$("#company").change(function(){
+// 		if($(this).val())
+// 		{
+// 			fillAgent();
+// 		}
+// 	});
+// });
 
-function fillAgent()
-{
-	var company = $('#company').val();
-	var process = process_url;
-	var string      = 'id='+ company +'&action=fillagents&object=Purchase';
-    var data;
-    $.ajax({
-        type: "POST",
-        url: process,
-        data: string,
-        cache: false,
-        success: function(data){
-            if(data)
-            {
-                $('#agent-wrapper').html(data);
+// function fillAgent()
+// {
+// 	var company = $('#company').val();
+// 	var process = process_url;
+// 	var string      = 'id='+ company +'&action=fillagents&object=Purchase';
+//     var data;
+//     $.ajax({
+//         type: "POST",
+//         url: process,
+//         data: string,
+//         cache: false,
+//         success: function(data){
+//             if(data)
+//             {
+//                 $('#agent-wrapper').html(data);
                 
-            }else{
-                $('#agent-wrapper').html('<select id="agents" class="form-control chosenSelect" disabled="disabled" ><option value="0">Sin Contacto</option</select>');
+//             }else{
+//                 $('#agent-wrapper').html('<select id="agents" class="form-control chosenSelect" disabled="disabled" ><option value="0">Sin Contacto</option</select>');
                 
-            }
-            chosenSelect();
-        }
-    });
-}
+//             }
+//             chosenSelect();
+//         }
+//     });
+// }
 
 
 ////////////////////////////////////////// CALCULATE ITEM PRICE BY CUSTOMER ///////////////////////////////
