@@ -8,13 +8,6 @@
         <div id="AgentWrapper" class="info-card">
             
         </div>
-        
-        <!--<div id="AddAgentWrapper">-->
-        <!--    <form id="AgentWindowForm">-->
-            
-        <!--    </form>-->
-        <!--</div>-->
-      
     </div>
     <div class="window-border txC">
         <!--<button type="button" class="btn btn-primary btnBlue" id="SaveAndSend"><i class="fa fa-send"></i> Enviar</button>-->

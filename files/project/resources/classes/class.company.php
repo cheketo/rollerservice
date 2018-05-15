@@ -360,5 +360,17 @@ class Company
 			}
 		}
 	}
+	
+	public function Fillbranches()
+	{
+		$Company = $_POST['id'];
+		$Branches = Core::Select(CompanyBranch::TABLE,CompanyBranch::TABLE_ID.",CONCAT(name,' (',address,')') AS name",Company::TABLE_ID."=".$Company);
+		if(count($Branches)<1)
+		{
+			$Disabled = 'disabled="disabled"';
+		}
+		$HTML = Core::InsertElement('select','agent_branch','','form-control chosenSelect','data-placeholder="Seleccione una Sucursal" '.$Disabled,$Branches,' ','');
+		echo $HTML;
+	}
 }
 ?>
